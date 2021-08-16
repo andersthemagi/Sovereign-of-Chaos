@@ -6,6 +6,7 @@ import sys
 
 import discord 
 from discord.ext import commands
+
 ##############################################
 # Constants and Setup
 ##############################################
@@ -55,6 +56,7 @@ class General(commands.Cog, name = "General"):
     """
     await self.bot.wait_until_ready()
     
+    # Create embed for sending the question
     embed = discord.Embed(
       title="**My Answer:**",
       description=
@@ -62,13 +64,21 @@ class General(commands.Cog, name = "General"):
       color=0x42F56C )
     embed.set_footer(
       text=f"Question: { question }" )
+    # Send question
     await ctx.send( embed=embed )
 
+    return
+
+  # HELP COMMAND
   @commands.command( name = "help", aliases = ["h"])
   async def help( self, ctx ):
+    """
+    Sends a link to the documentation of the bot
+    """
 
     await ctx.send("Looks like you need some help getting around. Take a look at this link for how to use my powers to your benefit.")
     await ctx.send( HELP_LINK )
+
     return
 
   # PING COMMAND
@@ -82,6 +92,8 @@ class General(commands.Cog, name = "General"):
     await ctx.send( "Pong! The crows took {0}ms in reaching you...".format(
     round( self.bot.latency * 1000, 1 ) ) )
 
+    return
+
   # STATS COMMAND
   @commands.command( name = "stats" )
   async def stats( self, ctx ):
@@ -94,25 +106,7 @@ class General(commands.Cog, name = "General"):
     dpyVersion = discord.__version__
     await ctx.send( f"I'm running on Python {pythonVersion} and discord.py {dpyVersion}! Whatever that means." )
 
-  @commands.command( name = "whack" )
-  async def whack( self, ctx, *args ):
-    """
-    Bailiff, whack his pp!
-    """
-    await self.bot.wait_until_ready()
-
-    BAILIFF_PP_MP4 = "https://cdn.discordapp.com/attachments/207364433561911297/872878650456944710/6f7336e20b17b139706a821ef03a67d69dc6a29c98a451a7a5726252e4fc59d7_1.mp4"
-
-    if len(args) > 0:
-        person = " ".join(args)
-        await ctx.send(person + "\n" + BAILIFF_PP_MP4)
-    else:
-      await ctx.send("You forgot the person for the message, get whacked.")
-      await ctx.send(ctx.message.author + "\n" + BAILIFF_PP_MP4)
-
     return
-
-
 
 ##############################################
 # Setup Command for Bot

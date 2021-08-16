@@ -9,9 +9,6 @@ from random import randint
 ##############################################
 # Constants and Setup
 ##############################################
-UC_COLOR = discord.Color.green() 
-R_COLOR = discord.Color.blue()
-VR_COLOR = discord.Color.purple()
 READ_TAG = "r"
 
 class GachaRoll( commands.Cog, name = "gacharoll"):
@@ -28,8 +25,10 @@ class GachaRoll( commands.Cog, name = "gacharoll"):
     self.UNCOMMON_ITEMS_PATH = "data/uncommon.json"
     self.RARE_ITEMS = {}
     self.RARE_ITEMS_PATH = "data/rare.json"
+    self.R_COLOR = discord.Color.blue()
     self.VERYRARE_ITEMS = {}
     self.VERYRARE_ITEMS_PATH = "data/veryrare.json"
+    self.VR_COLOR = discord.Color.purple()
 
     self.loadGachaItemLists()
 
@@ -44,9 +43,15 @@ class GachaRoll( commands.Cog, name = "gacharoll"):
 
   @gacharoll.command( name = "uncommon", aliases = ["UC", "uc"])
   async def rollUncommon( self, ctx, arg = None ):
+    """
+    Generates a random 'uncommon' item from the associated .json file. 
+    """
+    # NOTE: Process for random item generation is very
+    # similar, so only the uncommon method is outlined
 
     await self.bot.wait_until_ready()
 
+    # Pull only uncommon items from imported dictionary
     uc_items = self.UNCOMMON_ITEMS['uncommon']
     total_items = len(uc_items)
 
@@ -55,14 +60,19 @@ class GachaRoll( commands.Cog, name = "gacharoll"):
     roll = randint( 1, total_items)
     await ctx.send(f"Pulled {roll}! Grabbing item from the archives...")
 
+    # Pull item from list
     item = uc_items[str(roll)]
 
+    # Send list to the user
     await self.displayGachaItemEmbed( ctx, item )
 
     return
 
   @gacharoll.command( name = "rare", aliases = ["R", "r"])
   async def rollRare( self, ctx, arg = None ):
+    """
+    Generates a random 'rare' item from the associated .json file. 
+    """
 
     await self.bot.wait_until_ready()
 
@@ -76,12 +86,15 @@ class GachaRoll( commands.Cog, name = "gacharoll"):
 
     item = rare_items[str(roll)]
 
-    await self.displayGachaItemEmbed( ctx, item , R_COLOR )
+    await self.displayGachaItemEmbed( ctx, item , self.R_COLOR )
 
     return
 
   @gacharoll.command( name = "veryrare", aliases = ["VR", "vr"])
   async def rollVeryRare( self, ctx, arg = None ):
+    """
+    Generates a random 'very rare' item from the associated .json file. 
+    """
 
     await self.bot.wait_until_ready()
 
@@ -95,7 +108,7 @@ class GachaRoll( commands.Cog, name = "gacharoll"):
 
     item = vr_items[str(roll)]
 
-    await self.displayGachaItemEmbed( ctx, item , VR_COLOR )
+    await self.displayGachaItemEmbed( ctx, item , self.VR_COLOR )
 
     return
 
@@ -103,10 +116,10 @@ class GachaRoll( commands.Cog, name = "gacharoll"):
   # GachaRoll Cog Support Functions
   ##############################################
   # DISPLAY GACHA ITEM EMBED FUNCTION
-  async def displayGachaItemEmbed( self, ctx, item , color = UC_COLOR ):
+  async def displayGachaItemEmbed( self, ctx, item , color = discord.Color.green() ):
 
     """
-    Displays an embed of a given Gacha
+    Displays an embed of a given Magical Item
     """
 
     # Get Item Data 

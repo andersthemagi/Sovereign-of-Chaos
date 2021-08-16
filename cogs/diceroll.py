@@ -30,17 +30,24 @@ class DiceRoll( commands.Cog, name = "DiceRoll" ):
     if rollStr == '0/0':
       return await ctx.send("What do you expect me to do, destroy the universe?")
 
+    # If the player would like to roll at advantage
     if 'adv' in rollStr:
       rollStr = rollStr.replace('1', '2', 1)
       rollStr = rollStr.replace('adv', 'kh1', 1)
+
+    # If the player would like to roll at disadvantage
     if 'dis' in rollStr:
       rollStr = rollStr.replace('1', '2', 1)
       rollStr = rollStr.replace('dis', 'kl1', 1)
     
-
+    # Parse roll through dice interpreter
     roll = d20.roll(rollStr)
+
+    # Prep message for send through Discord
     messageStr = f"{ctx.message.author.mention} :game_die:\n"
     messageStr += str(roll)
+
+    # Send message
     return await ctx.send(messageStr)
 
 ##############################################

@@ -18,17 +18,23 @@ app = Flask( 'discord bot' )
 
 OWNER_ID = os.getenv( "OWNER_ID" )
 
-bot = commands.Bot( command_prefix = '!' )
+# Initialize Bot with cmd prefix
+bot = commands.Bot( 
+  command_prefix = '!',
+  owner = OWNER_ID )
 bot.remove_command( 'help' )
 
 # Import Cogs from /cogs directory
 print( '------' )
-print( "Attempting load of extension in '/cog' directory...")
+print( "Attempting load of extensions in '/cog' directory...")
 allExtensionsLoaded = True
 if __name__ == "__main__":
   for file in os.listdir( "./cogs" ):
     if file.endswith( ".py" ):
       extension = file[:-3]
+      # Attempt to load extension 
+      # Some python files might not have a properly
+      # configured setup() method, need to account for that.
       try:
         bot.load_extension( f"cogs.{extension}" )
         print( f"Loaded extension '{extension}'" )
@@ -37,8 +43,9 @@ if __name__ == "__main__":
         print( f"Failed to load extension {extension}\n{exception}" )
         allExtensionsLoaded = False 
 
+# Display success / failure on console
 if allExtensionsLoaded:
-  print("All extensions in '/cog' directory loaded successfully!")
+  print("SUCCESS: All extensions in '/cog' directory loaded successfully!")
 else:
   print("WARNING: One or more extensions could not be loaded. See above for error output.")
 print( '------' )
@@ -52,6 +59,7 @@ async def on_message( message ):
   """
   Defines behavior for bot on receiving message in chat
   """
+  # Ignore messages from self or other bots
   if message.author == bot.user or message.author.bot:
     return
   await bot.process_commands(message)
@@ -61,10 +69,12 @@ async def on_ready():
   """
   Defines behavior for bot when ready to execute commands
   """
+  # Change status on Discord
   await bot.change_presence(
     activity = discord.Activity(
       type = discord.ActivityType.watching,
       name = 'the sands of time... | !s help' ) )
+  # Console output for debugging
   print( '------\nLogged in as' )
   print( bot.user.name )
   print( bot.user.id )
@@ -76,6 +86,8 @@ async def on_command_completion(ctx):
   """
   Defines behavior for bot whenever a command is completed successfully
   """
+  # Console output to note whenever the bot successfully
+  # runs a command
   fullCommandName = ctx.command.qualified_name
   split = fullCommandName.split( " " )
   executedCommand = str(split[0])
@@ -95,7 +107,7 @@ def start_server():
   app.run( host="0.0.0.0", port = 8080 )
   
 ##############################################
-# Bot Initialization
+# Bot / Server Initialization
 ##############################################
 
 # Starts the Flask server
