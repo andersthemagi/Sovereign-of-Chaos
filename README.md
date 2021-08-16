@@ -1,3 +1,11 @@
+<!-- Project Tab things -->
+![Last Commit](https://img.shields.io/github/last-commit/andresgsepulveda/Sovereign-of-Chaos)
+![Issues Open](https://img.shields.io/github/issues/andresgsepulveda/Sovereign-of-Chaos)
+![Issues Closed](https://img.shields.io/github/issues-closed/andresgsepulveda/Sovereign-of-Chaos)
+![Repo Size](https://img.shields.io/github/repo-size/andresgsepulveda/Sovereign-of-Chaos)
+![License](https://img.shields.io/github/license/andresgsepulveda/sovereign-of-chaos)
+ 
+
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
