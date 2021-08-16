@@ -12,11 +12,15 @@ from discord.ext import commands
 READ_TAG = "r"
 START_MSG_PATH = "data/startmessage.txt"
 
+# Creature Type Enumerable
+# - used to enumerate the different creature types
 class CreatureType(enum.Enum):
   ALLY = 1,
   ENEMY = 2,
   PLAYER = 3
 
+# Creature class
+# - data structure representing a creature in the initiative order 
 class Creature:
 
   def __init__(self, name, init_count , creature_type = CreatureType.PLAYER ):
@@ -87,6 +91,8 @@ class Initiative( commands.Cog, name = "Initiative" ):
     Lets the user add creature(s) to an already
     active initiative order 
     """
+    await self.bot.wait_until_ready()
+
     if not self.activeInitiative:
       await self.displayActiveInitError( ctx )
       return
@@ -130,6 +136,8 @@ class Initiative( commands.Cog, name = "Initiative" ):
     Allows the edit of a creature's initiative count
     while an initiative order is already set
     """
+    await self.bot.wait_until_ready()
+
     if not self.activeInitiative:
       await self.displayActiveInitError( ctx )
       return
@@ -192,6 +200,8 @@ class Initiative( commands.Cog, name = "Initiative" ):
     initiative order, but will still be visible in 
     a separate list when checking. 
     """
+    await self.bot.wait_until_ready()
+
     if not self.activeInitiative:
       await self.displayActiveInitError( ctx )
       return 
@@ -205,6 +215,7 @@ class Initiative( commands.Cog, name = "Initiative" ):
 
       getInput = True
       creature = None
+      # Get the name of the creature to remove
       while getInput:
         await ctx.send("Please type the name of the creature you would like to remove.")
         msg = await self.bot.wait_for("message")
@@ -213,8 +224,8 @@ class Initiative( commands.Cog, name = "Initiative" ):
           return
         creature, getInput = self.findCreatureInList( msg )
         
-
       await ctx.send(f"This is the creature I found:\n**('{creature.initCount}') -{creature.name}**")
+
       # Confirm removal
       awaitingConfirmation = True 
       while awaitingConfirmation:
@@ -226,6 +237,8 @@ class Initiative( commands.Cog, name = "Initiative" ):
         elif msg.content == "n":
           await ctx.send("Sure. We can go back to make sure you can remove the right creature.")
           awaitingConfirmation = False
+    
+    return 
 
     # Remove character from the initiative order
     self.initOrder.remove(creature)
@@ -241,6 +254,8 @@ class Initiative( commands.Cog, name = "Initiative" ):
     """
     Allows the shuffling of creature in the initiative order. Less of a necessary functionality and more of a fun option in case it's needed 
     """
+    await self.bot.wait_until_ready()
+
     if not self.activeInitiative:
       await self.displayActiveInitError( ctx )
       return
@@ -248,17 +263,21 @@ class Initiative( commands.Cog, name = "Initiative" ):
     await ctx.send("Alright, you're the boss!")
 
     newCounts = []
+    # for each creature, generate a random intiative count between 1 and 30
     for creature in self.initOrder:
       newCounts.append(random.randint(1, 30))
     
+    # Shuffle the lists
     random.shuffle(newCounts)
     random.shuffle(self.initOrder)
 
     i = 0
+    # Assign new initiative counts
     for creature in self.initOrder:
       creature.initCount = newCounts[i]
       i += 1
 
+    # Re-sort the initiative order 
     self.sortInitOrder()
     await ctx.send("Initiative has been shuffled! New order is as follows:")
     await self.displayInitOrder( ctx )
@@ -271,9 +290,12 @@ class Initiative( commands.Cog, name = "Initiative" ):
     Ends the initiative tracking, allowing for another
     encounter to start if need be.
     """
+    await self.bot.wait_until_ready()
+
     if not self.activeInitiative:
       await self.displayActiveInitError( ctx )
       return
+
     await ctx.send("Ending the encounter!")
     await ctx.send("----------")
     await ctx.send("Final Results: ")
@@ -292,35 +314,52 @@ class Initiative( commands.Cog, name = "Initiative" ):
     are no duplicates, and handles duplicates by creating
     'decimal initiative'. 
     """
+    # Support function to make sure input is correct 
     def check(msg):
       return msg.content == "1" or msg.content == "2"
 
     noConflicts = False 
     conflict = False
+    # While there are stil lconflicts in the list 
     while not noConflicts:
       totalCreatures = len(self.initOrder)
-      conflict = False 
+
+      conflict = False # used to make sure we need to check again
+      # Loop through the whole list 
       for i in range(0, totalCreatures):
+        # if we're not at the end
         if i != totalCreatures - 1:
+
           creature = self.initOrder[i]
           nextCreature = self.initOrder[i+1]
+          # if these creatures have the same initiative count
           if creature.initCount == nextCreature.initCount:
             conflict = True
+
+            # Display the conflicting creatures
             messageStr = f"WARNING: One or more creatures has the same initiative count '{creature.initCount}':\n"
             messageStr += f"1. {creature.name}\n"
             messageStr += f"2. {nextCreature.name}\n"
             messageStr += "Which creature would you like to go first (1 or 2)?"
+
+            # check for user input that is within given constraints
             await ctx.send(messageStr)
             msg = await self.bot.wait_for("message", check=check)
 
+            # turn the creature's initiative count into a string
             initStr = str(math.floor(creature.initCount))
+            # add the string to the conflicts list
             if initStr in self.conflicts:
               self.conflicts[initStr] += 1
             else:
               self.conflicts[initStr] = 1
 
+            # Calculate the new count based on how many conflicts:
+            # 1 conflict = 0.5, 2 = 0.25, etc. The decimal is added to the initiative count
+            # in order to resolve the conflict while still maintaining order
             newCount = creature.initCount + 1 / (2 * self.conflicts[initStr])
             newCount = round(newCount, 3)
+
             if msg.content == "1":
               creature.initCount = newCount
               await ctx.send(f"Alright! Creature '{creature.name}' has been updated with an initiative count of '{creature.initCount}'.")
@@ -328,9 +367,13 @@ class Initiative( commands.Cog, name = "Initiative" ):
               nextCreature.initCount = newCount
               await ctx.send(f"Alright! Creature '{nextCreature.name}' has been updated with an initiative count of '{nextCreature.initCount}'.")
             break
+          # We keep looping until there are guaranteed no conflicts
           elif i + 1 == totalCreatures - 1 and not conflict:
             noConflicts = True
+      # re-sort the initiative order to make sure everything is correct
       self.sortInitOrder()
+
+    return 
 
   async def checkMsg(self, ctx, msg):
     """
@@ -343,24 +386,31 @@ class Initiative( commands.Cog, name = "Initiative" ):
     channel = msg.channel
     try:
 
+      # If the channel is different than the starting channel for initiative
       if channel != self.initChannel:
         return True
+      # If someone indicates we're finished
       elif content == "done":
         return False
 
+      # if creature is designated an ally
       if "ALLY" in content:
         content = content.replace("ALLY", "")
         ctype = CreatureType.ALLY
+      # if creature is designated an enemy
       elif "ENEMY" in content:
         content = content.replace("ENEMY", "")
         ctype = CreatureType.ENEMY
+      # otherwise, it must be a player
       else:
         ctype = CreatureType.PLAYER
         
-
+      # parse the number from the message
       numbers = [int(word) for word in content.split() if word.isdigit()]
+      # get the rest of the message
       words = [word for word in content.split() if not word.isdigit()]
       
+      # Combine the words together into the creature's name
       name = ""
       wordCount = 0
       for word in words:
@@ -369,11 +419,16 @@ class Initiative( commands.Cog, name = "Initiative" ):
         name += word
         wordCount += 1
         
+      # get the initiative count from numbers
       initCount = numbers[0]
+      # Add the creature to the initiative count
       newCreature = Creature( name, initCount , ctype )
       self.initOrder.append( newCreature )
+      # let the user know the creature was successfully added
       await ctx.send(f"Creature '{name}' with initiative count '{initCount}' added!")
       return True 
+
+    # Something was not right about the creature
     except:
       await ctx.send("Huh. That doesn't look right. Try sending it again in the following format. ```<name> <roll> OR <roll> <name>\nExample: 'Flint 13' OR '13 Flint'```")
       return True
@@ -382,16 +437,15 @@ class Initiative( commands.Cog, name = "Initiative" ):
     """
     Displays an error message when initiative is not set.
     """
-    await ctx.send("ERROR: There is not a current initiative order set. Please use `!s init start` and set an initiative order before using this command.")
-    return 
+    return await ctx.send("ERROR: There is not a current initiative order set. Please use `!s init start` and set an initiative order before using this command.")
 
   async def displayInitOrder( self, ctx ):
     """
     Displays the initiative order in code snippet format on discord.
     """
-    # This loop is used to determine the longest # of digits
-    # in a single initiative count, in order to make sure they
-    # neatly take up the same amount of space
+    # This loop is used to determine the longest number of digits in a 
+    # single initiative count, in order to make sure they neatly take 
+    # up the same amount of space
     toplength = 1
     for creature in self.initOrder:
       initStr = str(creature.initCount).replace(".", "")
@@ -400,8 +454,11 @@ class Initiative( commands.Cog, name = "Initiative" ):
         toplength = digits
     
     message = "```md\nInitiative Order: \n====================\n"
+    # Format the creature strings for display in markdown
     for creature in self.initOrder:
       message += self.makeCharString( creature, toplength )
+
+    # If there are any creatures removed
     if len(self.removedCreatures) > 0:
       message += "\nRemoved Creatures: \n====================\n"
       for creature in self.removedCreatures:
@@ -409,8 +466,7 @@ class Initiative( commands.Cog, name = "Initiative" ):
         message += addStr
 
     message += "```"
-    await ctx.send(message)
-    return
+    return await ctx.send(message)
 
   async def displayRandStartQuip( self , ctx ):
     """
@@ -440,13 +496,23 @@ class Initiative( commands.Cog, name = "Initiative" ):
     while collectInitiative:
       msg = await self.bot.wait_for("message")
       collectInitiative = await self.checkMsg( ctx, msg )
+
+    # Sort the list
     self.sortInitOrder()
+    # Check if there are duplicate initiative counts
     await self.checkDuplicateCounts( ctx )
+
     await ctx.send("----------")
     await ctx.send("Initiative Order collected!")
+
     return 
 
   def findCreatureinList( self, msg ):
+    """
+    Searches for the name of a given creature in a passed in message, returning the creature and a boolean.
+
+    If no creature, the creature returned is None. The additional boolean represents whether the bot has to keep accepting input, with true representing 'yes, keep asking' and false representing 'we've found it'
+    """
     creature = None
     for pos in self.initOrder:
       if msg.content in pos.name:
@@ -457,30 +523,48 @@ class Initiative( commands.Cog, name = "Initiative" ):
       return creature, False
 
   def importStartMessages( self ):
-
+    """
+    Imports a text file containing various
+    start messages, or 'quips', that are added
+    before initiative is collected.
+    """
     msgList = []
 
+    # Open File
     with open(START_MSG_PATH, READ_TAG) as read_file:
+      # Add lines from file one by one
       for line in read_file:
         msgList.append(line)
 
+    # Save messages to internal variable
     self.msgList = msgList
 
     return
 
   def makeCharString( self, char , toplength ):
-
+    """
+    Formats a string representing a character
+    object, allowing display of initiative order via markdown in Discord
+    """
     returnStr = ""
 
+    # Formats Initiative Count to be the same length, visually appealing
     formatStr = "." + str(toplength - 2) + "f"
     count = str(format(char.initCount, formatStr))
     addStr = ("{:<" + str(toplength + 1) + "}").format(count)
     addStr = addStr.strip()
 
+    # Check if creature is an ally, enemy,
+    #  or player
+    # If creature is an ally
     if char.creatureType == CreatureType.ALLY:
       returnStr += f"<A>: ({addStr}) - {char.name}\n"
+
+    # If creature is an enemy
     elif char.creatureType == CreatureType.ENEMY:
       returnStr += f"[E]: ({addStr}) - {char.name}\n"
+
+    # If creature is a player
     elif char.creatureType == CreatureType.PLAYER:
       returnStr += "{P}: "
       returnStr += f"({addStr}) - {char.name}\n"
@@ -489,8 +573,7 @@ class Initiative( commands.Cog, name = "Initiative" ):
   
   def resetInitData( self ):
     """
-    Resets relevant stored data to default setting for
-    initiative tracking
+    Resets relevant stored data to default setting for initiative tracking
     """
     self.activeInitiative = False 
     self.conflicts = {}
