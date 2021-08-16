@@ -9,69 +9,8 @@ from discord.ext import commands
 ##############################################
 # Constants and Setup
 ##############################################
-
-startMessages = [
-  'Open the Game!',
-  'Mankind knew they could not change society. So instead of reflecting on themselves, they blamed the Beasts.\nHEAVEN OR HELL\nDUEL 1\nLET\'S ROCK!',
-  'Work together, and you might survive.',
-  'The enemy is all around you.',
-  'The Iron Lords are watching, Guardians.',
-  'How will you fare against utter chaos?',
-  'Once more unto the breach!',
-  'It\'s time to kick ass and chew bubble gum... and you\'re all out of gum.',
-  'Would you kindly start the encounter?',
-  'Remove any doubts in your head. It\'s you or them.',
-  'Are we rushing in? Or are we going sneaky-beaky like?',
-  'For Queen and country, men!',
-  'For King and country, men!',
-  'These fellas are gonna regret waking up this morning.',
-  'Gentlemen and Ladies, it\'s time to fight!',
-  'Ladies and gentlemen, let\'s get ready to rumble!',
-  'Time to wrestle like bear!',
-  'Can\'t escape from crossing fate. Fight!',
-  'The wheel of fate is turning! Rebel 1! ACTION!!',
-  'Put on a show!\nWORLD IS A FUCK\nFirst Regret, Let\'s GET IT, CRACKERS!!',
-  'Stay focused, stay alive.',
-  'Busy night...but there\'s always room for another!',
-  'Everyone! Get in here!',
-  'Liadrin! Versus! Jaina!\n...wait. That\'s the wrong one. Just start the encounter...',
-  'The right people in the wrong place can make all the difference in the world.',
-  'No gods or kings, only man. Get on with it.',
-  'If our lives are already written, it would take courageous souls to change the script.',
-  'Do you think love can bloom, even on a battlefield?',
-  'If we are to be swallowed by fate, we must have fought well.',
-  'The courage to walk into the Darkness, but strength to return to the Light.',
-  'Nothing is true, everything is permitted.',
-  'NOTHING IS MORE BADASS THAN TREATING WOMEN WITH RESPECT! *guitar solo*',
-  'It\'s dangerous to go alone, take this!',
-  'Often when we guess at other\'s motives, we reveal only our own.',
-  'Endure and survive.',
-  'You can\'t undo what you\'ve already done, but you can face up to it.',
-  'Life is all about resolve. Outcome is secondary.',
-  'What is a man? A miserable little pile of secrets. But whatever, have at you!',
-  'A man chooses, a slave obeys.',
-  'Grass grows, birds fly, sun shines, and brother, you guys hurt people.',
-  'It\'s more important to master the cards you\'re holding than to complain about the ones your opponents were dealt.',
-  'What is a man but the sum of his memories? We are the stories we live! The tales we tell ourselves!',
-  "When life gives you lemons, don't make lemonade. Make life take the lemons back! Get mad! I don't want your damn lemons! What am I supposed to do with these?! Demand to see life's manager! Make life rue the day it thought it could give Cave Johnson lemons! Do you know who I am?! I'm the man who's gonna burn your house down! With the lemons! I'm gonna get my engineers to invent a combustible lemon that burns your house down!",
-  "Do you *like* hurting other people?",
-  "What is bravery, without a dash of recklessness?",
-  "Panasonic Blu-Ray $499... Hh yep. That\'s the wrong paper. Ignore that, please.",
-  "Can the defiled be consecrated? Can the fallen find rest?",
-  "I knew all of these paths once; now they are as twisted as man\'s ambitions."
-  "Driving out corruption is an endless battle, but one that must be fought.",
-  "A spark without kindling is a goal without hope.",
-  "Cruel machinations spring to life with a singular purpose!",
-  "The blood pumps, the limbs obey!",
-  "Death is patient, it will wait.",
-  "Prodigious size alone does not dissuade the sharpened blade",
-  "The bigger the beast, the greater the glory.",
-  "Death waits for the slightest lapse in concentration.",
-  "A brilliant confluence of skill and purpose!",
-  "These nightmarish creatures can be felled! They can be beaten!",
-  "Success so clearly in view... or is it merely a trick of the light?",
-  "Remind yourself that overconfidence is a slow and insidious killer."
-]
+READ_TAG = "r"
+START_MSG_PATH = "data/startmessage.txt"
 
 class CreatureType(enum.Enum):
   ALLY = 1,
@@ -93,9 +32,9 @@ class Initiative( commands.Cog, name = "Initiative" ):
   ##############################################
   def __init__( self, bot ):
     self.bot = bot
+    self.importStartMessages()
     self.resetInitData()
     
-
   ##############################################
   # Initiative Cog Commands
   ##############################################
@@ -107,25 +46,47 @@ class Initiative( commands.Cog, name = "Initiative" ):
 
   @initiative.command( name = "start")
   async def rollInitiative( self, ctx ):
+    """
+    Allows the collection of initiative order in a 
+    discord channel. 
+    """
+    await self.bot.wait_until_ready()
+
     if self.activeInitiative:
       await ctx.send("ERROR: Initiative already set! Please use `!s init end` to finish with the current encounter")
       return 
+
+    # Save initialization channel for later use
     self.initChannel = ctx.message.channel
+
+    # Display random start quip
     await self.displayRandStartQuip( ctx )
+
     await ctx.send("----------")
     await ctx.send("Initiative Tracker is online!\n\nPlease type in '<name> <roll>' into the chat and I'll make a note of it. Example ```'Flint 13' OR\n'13 Flint' OR\n'Diva 13 Thiccums'```")
     await ctx.send("----------")
+
+    # Grab initiative order from the chat
     await self.getInitOrder(ctx)
+
     # ERROR CASE: No creatures added by the users
     if len(self.initOrder) < 1:
       await ctx.send("ERROR: No creature in initiative order. How are you going to have a fight with no people? Try adding creatures next time.")
       return
+
+    # Display initiative order 
     await self.displayInitOrder( ctx )
+    # set active intiative to true, unlocks other commands
     self.activeInitiative = True
+
     return
 
   @initiative.command( name = "add" )
   async def addCreatures( self, ctx ):
+    """
+    Lets the user add creature(s) to an already
+    active initiative order 
+    """
     if not self.activeInitiative:
       await self.displayActiveInitError( ctx )
       return
@@ -140,6 +101,7 @@ class Initiative( commands.Cog, name = "Initiative" ):
       collectInitiative = await self.checkMsg( ctx, msg )
     self.sortInitOrder()
     await self.checkDuplicateCounts( ctx )
+
     await ctx.send("----------")
     await ctx.send("Character input complete!")
     await self.displayInitOrder( ctx )
@@ -164,19 +126,13 @@ class Initiative( commands.Cog, name = "Initiative" ):
   @initiative.command( name = "edit" ,
   aliases = ["e"])
   async def editCreature( self, ctx ):
+    """
+    Allows the edit of a creature's initiative count
+    while an initiative order is already set
+    """
     if not self.activeInitiative:
       await self.displayActiveInitError( ctx )
       return
-
-    def checkValidInput( msg ):
-      creature = None
-      for pos in self.initOrder:
-        if msg.content in pos.name:
-          creature = pos
-      if creature is None:
-        return creature, True
-      else:
-        return creature, False
 
     # Allow the user to designate creature to edit
     acceptingInput = True
@@ -187,17 +143,19 @@ class Initiative( commands.Cog, name = "Initiative" ):
 
       getInput = True
       creature = None
+      # While we don't have valid input, loop through
+      # and ask the user for input. 
       while getInput:
-        await ctx.send("Please type the name of the creature you would like to edit the initiative order for.")
+        await ctx.send("Please type the name of the creature you would like to edit the initiative order for. Type 'nvm' to exit.")
         msg = await self.bot.wait_for("message")
         if msg == "nvm":
           await ctx.send("Alright. I'll be on the lookout for when you do want to remove a creature. Carry on!")
           return
-        creature, getInput = checkValidInput( msg )
+        creature, getInput = self.findCreatureInList( msg )
         
-
       await ctx.send(f"This is the creature I found:\n**('{creature.initCount}') -{creature.name}**")
-      # Confirm removal
+
+      # Check what the user would like to change the count to
       changingCount = True 
       while changingCount:
         await ctx.send("What would you like to change the initiative order to? Plase input a valid number. Type 'nvm' to exit.")
@@ -215,7 +173,7 @@ class Initiative( commands.Cog, name = "Initiative" ):
         except:
           await ctx.send("That's odd. I don't think that was a number. Try again.")
 
-    # Remove character from the initiative order
+    # Send message confirming update of creature in initiative order
     await ctx.send(f"Creature '{creature.name}' has been updated with initiative count of {creature.initCount}! Your new initiative order is below.")
 
     self.sortInitOrder()
@@ -226,19 +184,17 @@ class Initiative( commands.Cog, name = "Initiative" ):
   @initiative.command( name = "remove" ,
   aliases = ["r","rem"])
   async def removeCreature( self, ctx ):
+    """
+    Allows the removal of a creature while an 
+    initiative order is still active.
+
+    Removed creatures will not be displayed in the
+    initiative order, but will still be visible in 
+    a separate list when checking. 
+    """
     if not self.activeInitiative:
       await self.displayActiveInitError( ctx )
       return 
-
-    def checkValidInput( msg ):
-      creature = None
-      for pos in self.initOrder:
-        if msg.content in pos.name:
-          creature = pos
-      if creature is None:
-        return creature, True
-      else:
-        return creature, False
 
     # Allow the user to designate creature to remove
     acceptingInput = True
@@ -255,7 +211,7 @@ class Initiative( commands.Cog, name = "Initiative" ):
         if msg == "nvm":
           await ctx.send("Alright. I'll be on the lookout for when you do want to remove a creature. Carry on!")
           return
-        creature, getInput = checkValidInput( msg )
+        creature, getInput = self.findCreatureInList( msg )
         
 
       await ctx.send(f"This is the creature I found:\n**('{creature.initCount}') -{creature.name}**")
@@ -282,7 +238,9 @@ class Initiative( commands.Cog, name = "Initiative" ):
 
   @initiative.command( name = "shuffle" )
   async def shuffleCreatures( self, ctx ):
-
+    """
+    Allows the shuffling of creature in the initiative order. Less of a necessary functionality and more of a fun option in case it's needed 
+    """
     if not self.activeInitiative:
       await self.displayActiveInitError( ctx )
       return
@@ -309,6 +267,10 @@ class Initiative( commands.Cog, name = "Initiative" ):
 
   @initiative.command( name = "end" )
   async def endEncounter( self, ctx ):
+    """
+    Ends the initiative tracking, allowing for another
+    encounter to start if need be.
+    """
     if not self.activeInitiative:
       await self.displayActiveInitError( ctx )
       return
@@ -322,29 +284,53 @@ class Initiative( commands.Cog, name = "Initiative" ):
   ##############################################
   # Initiative Cog Support Functions
   ##############################################
-  async def displayActiveInitError( self, ctx):
-    """
-    Displays an error message when initiative is not set.
-    """
-    await ctx.send("ERROR: There is not a current initiative order set. Please use `!s init start` and set an initiative order before using this command.")
-    return 
 
-  async def displayRandStartQuip( self , ctx ):
+  # ASYNC SUPPORT FUNCTIONS
+  async def checkDuplicateCounts( self, ctx ):
     """
-    Helper function for '!s init start'.
-    Displays a random 'quip' from various video games
+    Checks the initiative count list to ensure there 
+    are no duplicates, and handles duplicates by creating
+    'decimal initiative'. 
     """
-    # Shuffle Quips
-    random.shuffle(startMessages)
-    # Get Quip 
-    totalQuips = len(startMessages)
-    roll = random.randint(0, totalQuips - 1)
-    quip = "\n"
-    quip += startMessages[roll]
+    def check(msg):
+      return msg.content == "1" or msg.content == "2"
 
-    # Send Quip
-    await ctx.send(quip)
-    return
+    noConflicts = False 
+    conflict = False
+    while not noConflicts:
+      totalCreatures = len(self.initOrder)
+      conflict = False 
+      for i in range(0, totalCreatures):
+        if i != totalCreatures - 1:
+          creature = self.initOrder[i]
+          nextCreature = self.initOrder[i+1]
+          if creature.initCount == nextCreature.initCount:
+            conflict = True
+            messageStr = f"WARNING: One or more creatures has the same initiative count '{creature.initCount}':\n"
+            messageStr += f"1. {creature.name}\n"
+            messageStr += f"2. {nextCreature.name}\n"
+            messageStr += "Which creature would you like to go first (1 or 2)?"
+            await ctx.send(messageStr)
+            msg = await self.bot.wait_for("message", check=check)
+
+            initStr = str(math.floor(creature.initCount))
+            if initStr in self.conflicts:
+              self.conflicts[initStr] += 1
+            else:
+              self.conflicts[initStr] = 1
+
+            newCount = creature.initCount + 1 / (2 * self.conflicts[initStr])
+            newCount = round(newCount, 3)
+            if msg.content == "1":
+              creature.initCount = newCount
+              await ctx.send(f"Alright! Creature '{creature.name}' has been updated with an initiative count of '{creature.initCount}'.")
+            elif msg.content == "2":
+              nextCreature.initCount = newCount
+              await ctx.send(f"Alright! Creature '{nextCreature.name}' has been updated with an initiative count of '{nextCreature.initCount}'.")
+            break
+          elif i + 1 == totalCreatures - 1 and not conflict:
+            noConflicts = True
+      self.sortInitOrder()
 
   async def checkMsg(self, ctx, msg):
     """
@@ -392,54 +378,13 @@ class Initiative( commands.Cog, name = "Initiative" ):
       await ctx.send("Huh. That doesn't look right. Try sending it again in the following format. ```<name> <roll> OR <roll> <name>\nExample: 'Flint 13' OR '13 Flint'```")
       return True
 
-  async def checkDuplicateCounts( self, ctx ):
+  async def displayActiveInitError( self, ctx):
     """
-    Checks the initiative count list to ensure there 
-    are no duplicates, and handles duplicates by creating
-    'decimal initiative'. 
+    Displays an error message when initiative is not set.
     """
-    def check(msg):
-      return msg.content == "1" or msg.content == "2"
+    await ctx.send("ERROR: There is not a current initiative order set. Please use `!s init start` and set an initiative order before using this command.")
+    return 
 
-    noConflicts = False 
-    conflict = False
-    while not noConflicts:
-      totalCreatures = len(self.initOrder)
-      conflict = False 
-      for i in range(0, totalCreatures):
-        if i != totalCreatures - 1:
-          creature = self.initOrder[i]
-          nextCreature = self.initOrder[i+1]
-          if creature.initCount == nextCreature.initCount:
-            conflict = True
-            messageStr = f"WARNING: One or more creatures has the same initiative count '{creature.initCount}':\n"
-            messageStr += f"1. {creature.name}\n"
-            messageStr += f"2. {nextCreature.name}\n"
-            messageStr += "Which creature would you like to go first (1 or 2)?"
-            await ctx.send(messageStr)
-            msg = await self.bot.wait_for("message", check=check)
-
-            initStr = str(math.floor(creature.initCount))
-            if initStr in self.conflicts:
-              self.conflicts[initStr] += 1
-            else:
-              self.conflicts[initStr] = 1
-
-            newCount = creature.initCount + 1 / (2 * self.conflicts[initStr])
-            newCount = round(newCount, 3)
-            if msg.content == "1":
-              creature.initCount = newCount
-              await ctx.send(f"Alright! Creature '{creature.name}' has been updated with an initiative count of '{creature.initCount}'.")
-            elif msg.content == "2":
-              nextCreature.initCount = newCount
-              await ctx.send(f"Alright! Creature '{nextCreature.name}' has been updated with an initiative count of '{nextCreature.initCount}'.")
-            break
-          elif i + 1 == totalCreatures - 1 and not conflict:
-            noConflicts = True
-      self.sortInitOrder()
-            
-
-    
   async def displayInitOrder( self, ctx ):
     """
     Displays the initiative order in code snippet format on discord.
@@ -467,6 +412,62 @@ class Initiative( commands.Cog, name = "Initiative" ):
     await ctx.send(message)
     return
 
+  async def displayRandStartQuip( self , ctx ):
+    """
+    Helper function for '!s init start'.
+    Displays a random 'quip' from various video games
+    """
+    # Shuffle Quips
+    random.shuffle(self.msgList)
+    # Get Quip 
+    totalQuips = len(self.msgList)
+    roll = random.randint(0, totalQuips - 1)
+    quip = "\n"
+    quip += self.msgList[roll]
+
+    # Send Quip
+    await ctx.send(quip)
+    return
+
+  async def getInitOrder( self , ctx ):
+    """
+    Helper Function for '!s init start' command.
+    Handles the collecting of initiative until the typing
+    of done is completed.
+    """
+    # Collect initiative 
+    collectInitiative = True 
+    while collectInitiative:
+      msg = await self.bot.wait_for("message")
+      collectInitiative = await self.checkMsg( ctx, msg )
+    self.sortInitOrder()
+    await self.checkDuplicateCounts( ctx )
+    await ctx.send("----------")
+    await ctx.send("Initiative Order collected!")
+    return 
+
+  def findCreatureinList( self, msg ):
+    creature = None
+    for pos in self.initOrder:
+      if msg.content in pos.name:
+        creature = pos
+    if creature is None:
+      return creature, True
+    else:
+      return creature, False
+
+  def importStartMessages( self ):
+
+    msgList = []
+
+    with open(START_MSG_PATH, READ_TAG) as read_file:
+      for line in read_file:
+        msgList.append(line)
+
+    self.msgList = msgList
+
+    return
+
   def makeCharString( self, char , toplength ):
 
     returnStr = ""
@@ -485,25 +486,6 @@ class Initiative( commands.Cog, name = "Initiative" ):
       returnStr += f"({addStr}) - {char.name}\n"
 
     return returnStr
-
-
-  async def getInitOrder( self , ctx ):
-    """
-    Helper Function for '!s init start' command.
-
-    Handles the collecting of initiative until the typing
-    of done is completed.
-    """
-    # Collect initiative 
-    collectInitiative = True 
-    while collectInitiative:
-      msg = await self.bot.wait_for("message")
-      collectInitiative = await self.checkMsg( ctx, msg )
-    self.sortInitOrder()
-    await self.checkDuplicateCounts( ctx )
-    await ctx.send("----------")
-    await ctx.send("Initiative Order collected!")
-    return 
   
   def resetInitData( self ):
     """
