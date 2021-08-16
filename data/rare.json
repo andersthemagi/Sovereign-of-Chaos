@@ -1,0 +1,974 @@
+{
+    "rare":{
+        "1": {
+            "name":"Ammunition +2",
+            "attn":"NO",
+            "desc":"You have a bonus to attack and damage rolls made with this piece of magic ammunition. The bonus is determined by the rarity of the ammunition. Once it hits a target, the ammunition is no longer magical."
+        },
+        "2": {
+            "name":"Amulet of Health",
+            "attn":"YES",
+            "desc":"Your Constitution score is 19 while you wear this amulet. It has no effect on you if your Constitution is already 19 or higher."
+        },
+        "3": {
+            "name":"Armor +1",
+            "attn":"NO",
+            "desc":"You have a bonus to AC while wearing this armor. The bonus is determined by its rarity."
+        },
+        "4": {
+            "name":"Armor of Resistance",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/armor-of-resistance/"
+        },
+        "5": {
+            "name":"Armor of Vulnerability",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/armor-of-vulnerability/"
+        },
+        "6": {
+            "name":"Arrow-Catching Shield",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/arrow-catching-shield/"
+        },
+        "7": {
+            "name":"Bag of Beans",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/bag-of-beans/"
+        },
+        "8": {
+            "name":"Bead of Force",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/bead-of-force/"
+        },
+        "9": {
+            "name":"Belt of Dwarvenkind",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/belt-of-dwarvenkind/"
+        },
+        "10": {
+            "name":"Belt of Hill Giant Strength",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/belt-of-giant-strength/"
+        },
+        "11": {
+            "name":"Berserker Axe",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/berserker-axe/"
+        },
+        "12": {
+            "name":"Boots of Levitation",
+            "attn":"YES",
+            "desc":"While you wear these boots, you can use an action to cast the levitate spell on yourself at will."
+        },
+        "13": {
+            "name":"Bowl of Commanding Water Elementals",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/bowl-of-commanding-water-elementals/"
+        },
+        "14": {
+            "name":"Bracers of Defense",
+            "attn":"YES",
+            "desc":"While wearing these bracers, you gain a +2 bonus to AC if you are wearing no armor and using no shield."
+        },
+        "15": {
+            "name":"Brazier of Commanding Fire Elementals",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/brazier-of-commanding-fire-elementals/"
+        },
+        "16": {
+            "name":"Cape of the Mounteback",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/cape-of-the-mountebank/"
+        },
+        "17": {
+            "name":"Censer of Controlling Air Elementals",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/censer-of-controlling-air-elementals/"
+        },
+        "18": {
+            "name":"Chime of Opening",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/chime-of-opening/"
+        },
+        "19": {
+            "name":"Cloak of Displacement",
+            "attn":"YES",
+            "desc":"While you wear this cloak, it projects an illusion that makes you appear to be standing in a place near your actual location, causing any creature to have disadvantage on attack rolls against you. If you take damage, the property ceases to function until the start of your next turn. This property is suppressed while you are incapacitated, restrained, or otherwise unable to move."
+        },
+        "20": {
+            "name":"Cloak of the Bat",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/cloak-of-the-bat/"
+        },
+        "21": {
+            "name":"Cube of Force",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/cube-of-force/"
+        },
+        "22": {
+            "name":"Dagger of Venom",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/dagger-of-venom/"
+        },
+        "23": {
+            "name":"Dancing Sword",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/dancing-sword/"
+        },
+        "24": {
+            "name":"Dimensional Shackles",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/dimensional-shackles/"
+        },
+        "25": {
+            "name":"Dragon Slayer",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/dragon-slayer/"
+        },
+        "26": {
+            "name":"Elven Chain",
+            "attn":"NO",
+            "desc":"You gain a +1 bonus to AC while you wear this armor. You are considered proficient with this armor even if you lack proficiency with medium armor."
+        },
+        "27": {
+            "name":"Feather Token",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/feather-token/"
+        },
+        "28": {
+            "name":"Figurine of Wonderous Power (Bronze Griffon)",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/figurine-of-wondrous-power/"
+        },
+        "29": {
+            "name":"Figurine of Wonderous Power (Ebony Fly)",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/figurine-of-wondrous-power/"
+        },
+        "30": {
+            "name":"Figurine of Wonderous Power (Golden Lions)",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/figurine-of-wondrous-power/"
+        },
+        "31": {
+            "name":"Figurine of Wonderous Power (Ivory Goats)",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/figurine-of-wondrous-power/"
+        },
+        "32": {
+            "name":"Figurine of Wonderous Power (Marble Elephant)",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/figurine-of-wondrous-power/"
+        },
+        "33": {
+            "name":"Figurine of Wonderous Power (Onyx Dog)",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/figurine-of-wondrous-power/"
+        },
+        "34": {
+            "name":"Figurine of Wonderous Power (Serpentine Owl)",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/figurine-of-wondrous-power/"
+        },
+        "35": {
+            "name":"Flame Tongue",
+            "attn":"YES",
+            "desc":"You can use a bonus action to speak this magic sword’s command word, causing flames to erupt from the blade. These flames shed bright light in a 40-foot radius and dim light for an additional 40 feet. While the sword is ablaze, it deals an extra 2d6 fire damage to any target it hits. The flames last until you use a bonus action to speak the command word again or until you drop or sheathe the sword."
+        },
+        "36": {
+            "name":"Folding Boat",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/folding-boat/"
+        },
+        "37": {
+            "name":"Gem of Seeing",
+            "attn":"YES",
+            "desc":"This gem has 3 charges. As an action, you can speak the gem’s command word and expend 1 charge. For the next 10 minutes, you have truesight out to 120 feet when you peer through the gem. The gem regains 1d3 expended charges daily at dawn."
+        },
+        "38": {
+            "name":"Giant Slayer",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/giant-slayer/"
+        },
+        "39": {
+            "name":"Glamoured Studded Leather",
+            "attn":"NO",
+            "desc":"While wearing this armor, you gain a +1 bonus to AC. You can also use a bonus action to speak the armor’s command word and cause the armor to assume the appearance of a normal set of clothing or some other kind of armor. You decide what it looks like, including color, style, and accessories, but the armor retains its normal bulk and weight. The illusory appearance lasts until you use this property again or remove the armor."
+        },
+        "40": {
+            "name":"Handy Haversack",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/handy-haversack/"
+        },
+        "41": {
+            "name":"Helm of Teleportation",
+            "attn":"YES",
+            "desc":"This helm has 3 charges. While wearing it, you can use an action and expend 1 charge to cast the teleport spell from it. The helm regains 1d3 expended charges daily at dawn."
+        },
+        "42": {
+            "name":"Horn of Blasting",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/horn-of-blasting/"
+        },
+        "43": {
+            "name":"Horn of Valhalla (Silver)",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/horn-of-valhalla/"
+        },
+        "44": {
+            "name":"Horn of Valhalla (Brass)",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/horn-of-valhalla/"
+        },
+        "45": {
+            "name":"Horseshoes of Speed",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/horseshoes-of-speed/"
+        },
+        "46": {
+            "name":"Instant Fortress",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/instant-fortress/"
+        },
+        "47": {
+            "name":"Ioun Stone (Absorption)",
+            "attn":"YES",
+            "desc":"https://roll20.net/compendium/dnd5e/Ioun%20Stone#content"
+        },
+        "48": {
+            "name":"Ioun Stone (Awareness)",
+            "attn":"YES",
+            "desc":"https://roll20.net/compendium/dnd5e/Ioun%20Stone#content"
+        },
+        "49": {
+            "name":"Ioun Stone (Protection)",
+            "attn":"YES",
+            "desc":"https://roll20.net/compendium/dnd5e/Ioun%20Stone#content"
+        },
+        "50": {
+            "name":"Ioun Stone (Reserve)",
+            "attn":"YES",
+            "desc":"https://roll20.net/compendium/dnd5e/Ioun%20Stone#content"
+        },
+        "51": {
+            "name":"Ioun Stone (Sustenance)",
+            "attn":"YES",
+            "desc":"https://roll20.net/compendium/dnd5e/Ioun%20Stone#content"
+        },
+        "52": {
+            "name":"Iron Bands of Binding",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/iron-bands-of-binding/"
+        },
+        "53": {
+            "name":"Mace of Disruption",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/mace-of-disruption/"
+        },
+        "54": {
+            "name":"Mace of Smiting",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/mace-of-smiting/"
+        },
+        "55": {
+            "name":"Mace of Terror",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/mace-of-terror/"
+        },
+        "56": {
+            "name":"Mantle of Spell Resistance",
+            "attn":"YES",
+            "desc":"You have advantage on saving throws against spells while you wear this cloak."
+        },
+        "57": {
+            "name":"Necklace of Fireballs",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/necklace-of-fireballs/"
+        },
+        "58": {
+            "name":"Necklace of Prayer Beads",
+            "attn":"YES (by a cleric, druid, or paladin)",
+            "desc":"https://dnd5e.info/magic-items/item/necklace-of-prayer-beads/"
+        },
+        "59": {
+            "name":"Oil of Etherealness",
+            "attn":"NO",
+            "desc":"Beads of this cloudy gray oil form on the outside of its container and quickly evaporate. The oil can cover a Medium or smaller creature, along with the equipment it’s wearing and carrying (one additional vial is required for each size category above Medium). Applying the oil takes 10 minutes. The affected creature then gains the effect of the etherealness spell for 1 hour."
+        },
+        "60": {
+            "name":"Periapt of Proof Against Posion",
+            "attn":"NO",
+            "desc":"This delicate silver chain has a brilliant-cut black gem pendant. While you wear it, poisons have no effect on you. You are immune to the poisoned condition and have immunity to poison damage."
+        },
+        "61": {
+            "name":"Portable Hole",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/portable-hole/"
+        },
+        "62": {
+            "name":"Potion of Clairvoyance",
+            "attn":"NO",
+            "desc":"When you drink this potion, you gain the effect of the clairvoyance spell. An eyeball bobs in this yellowish liquid but vanishes when the potion is opened."
+        },
+        "63": {
+            "name":"Potion of Diminution",
+            "attn":"NO",
+            "desc":"When you drink this potion, you gain the “reduce” effect of the enlarge/reduce spell for 1d4 hours (no concentration required). The red in the potion’s liquid continuously contracts to a tiny bead and then expands to color the clear liquid around it. Shaking the bottle fails to interrupt this process."
+        },
+        "64": {
+            "name":"Potion of Gaseous Form",
+            "attn":"NO",
+            "desc":"When you drink this potion, you gain the effect of the gaseous form spell for 1 hour (no concentration required) or until you end the effect as a bonus action. This potion’s container seems to hold fog that moves and pours like water."
+        },
+        "65": {
+            "name":"Potion of Frost/Stone Giant Strength",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/potion-of-giant-strength/"
+        },
+        "66": {
+            "name":"Potion of Fire Giant Strength",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/potion-of-giant-strength/"
+        },
+        "67": {
+            "name":"Potion of Superior Healing",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/potion-of-healing/"
+        },
+        "68": {
+            "name":"Potion of Heroism",
+            "attn":"NO",
+            "desc":"For 1 hour after drinking it, you gain 10 temporary hit points that last for 1 hour. For the same duration, you are under the effect of the bless spell (no concentration required). This blue potion bubbles and steams as if boiling."
+        },
+        "69": {
+            "name":"Potion of Mind Reading",
+            "attn":"NO",
+            "desc":"When you drink this potion, you gain the effect of the detect thoughts spell (save DC 13). The potion’s dense, purple liquid has an ovoid cloud of pink floating in it."
+        },
+        "70": {
+            "name":"Ring of Animal Influence",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/ring-of-animal-influence/"
+        },
+        "71": {
+            "name":"Ring of Evasion",
+            "attn":"YES",
+            "desc":"This ring has 3 charges, and it regains 1d3 expended charges daily at dawn. When you fail a Dexterity saving throw while wearing it, you can use your reaction to expend 1 of its charges to succeed on that saving throw instead."
+        },
+        "72": {
+            "name":"Ring of Feather Falling",
+            "attn":"YES",
+            "desc":"When you fall while wearing this ring, you descend 60 feet per round and take no damage from falling."
+        },
+        "73": {
+            "name":"Ring of Free Action",
+            "attn":"YES",
+            "desc":"While you wear this ring, difficult terrain doesn’t cost you extra movement. In addition, magic can neither reduce your speed nor cause you to be paralyzed or restrained."
+        },
+        "74": {
+            "name":"Ring of Protection",
+            "attn":"YES",
+            "desc":"You gain a +1 bonus to AC and saving throws while wearing this ring."
+        },
+        "75": {
+            "name":"Ring of Resistance",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/ring-of-resistance/"
+        },
+        "76": {
+            "name":"Ring of Spell Storing",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/ring-of-spell-storing/"
+        },
+        "77": {
+            "name":"Ring of the Ram",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/ring-of-the-ram/"
+        },
+        "78": {
+            "name":"Ring of X-ray Vision",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/ring-of-x-ray-vision/"
+        },
+        "79": {
+            "name":"Robe of Eyes",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/robe-of-eyes/"
+        },
+        "80": {
+            "name":"Rod of Rulership",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/rod-of-rulership/"
+        },
+        "81": {
+            "name":"Rope of Entanglement",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/rope-of-entanglement/"
+        },
+        "82": {
+            "name":"Shield +2",
+            "attn":"NO",
+            "desc":"While holding this shield, you have a bonus to AC determined by the shield’s rarity. This bonus is in addition to the shield’s normal bonus to AC."
+        },
+        "83": {
+            "name":"Shield of Missile Attraction",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/shield-of-missile-attraction/"
+        },
+        "84": {
+            "name":"Spell Scroll (4th-Level)",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/spell-scroll/"
+        },
+        "85": {
+            "name":"Spell Scroll (5th-Level)",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/spell-scroll/"
+        },
+        "86": {
+            "name":"Staff of Charming",
+            "attn":"YES (by a bard, cleric, druid, sorcerer, warlock, or wizard)",
+            "desc":"https://dnd5e.info/magic-items/item/staff-of-charming/"
+        },
+        "87": {
+            "name":"Staff of Healing",
+            "attn":"YES (by a bard, cleric, or druid)",
+            "desc":"https://dnd5e.info/magic-items/item/staff-of-healing/"
+        },
+        "88": {
+            "name":"Staff of Swarming Insects",
+            "attn":"YES (by a bard, cleric, druid, sorcerer, warlock, or wizard)",
+            "desc":"https://dnd5e.info/magic-items/item/staff-of-swarming-insects/"
+        },
+        "89": {
+            "name":"Staff of the Woodlands",
+            "attn":"YES (by a druid)",
+            "desc":"https://dnd5e.info/magic-items/item/staff-of-the-woodlands/"
+        },
+        "90": {
+            "name":"Staff of Withering",
+            "attn":"YES (by a cleric, druid, or warlock)",
+            "desc":"https://dnd5e.info/magic-items/item/staff-of-withering/"
+        },
+        "91": {
+            "name":"Stone of Controlling Earth Elementals",
+            "attn":"NO",
+            "desc":"If the stone is touching the ground, you can use an action to speak its command word and summon an earth elemental, as if you had cast the conjure elemental spell. The stone can’t be used this way again until the next dawn. The stone weighs 5 pounds."
+        },
+        "92": {
+            "name":"Sun Blade",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/sun-blade/"
+        },
+        "93": {
+            "name":"Sword of Life Stealing",
+            "attn":"YES",
+            "desc":"When you attack a creature with this magic weapon and roll a 20 on the attack roll, that target takes an extra 3d6 necrotic damage, provided that the target isn’t a construct or an undead. You gain temporary hit points equal to the extra damage dealt."
+        },
+        "94": {
+            "name":"Sword of Wounding",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/sword-of-wounding/"
+        },
+        "95": {
+            "name":"Vicious Weapon",
+            "attn":"NO",
+            "desc":"When you roll a 20 on your attack roll with this magic weapon, your critical hit deals an extra 2d6 damage of the weapon’s type."
+        },
+        "96": {
+            "name":"Wand of Binding",
+            "attn":"YES (by a spellcaster)",
+            "desc":"https://dnd5e.info/magic-items/item/wand-of-binding/"
+        },
+        "97": {
+            "name":"Wand of Enemy Detection",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/wand-of-enemy-detection/"
+        },
+        "98": {
+            "name":"Wand of Fear",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/wand-of-fear/"
+        },
+        "99": {
+            "name":"Wand of Fireballs",
+            "attn":"YES (by a spellcaster)",
+            "desc":"https://dnd5e.info/magic-items/item/wand-of-fireballs/"
+        },
+        "100": {
+            "name":"Wand of Lightning Bolts",
+            "attn":"YES (by a spellcaster)",
+            "desc":"https://dnd5e.info/magic-items/item/wand-of-lightning-bolts/"
+        },
+        "101": {
+            "name":"Wand of Paralysis",
+            "attn":"YES (by a spellcaster)",
+            "desc":"https://dnd5e.info/magic-items/item/wand-of-paralysis/"
+        },
+        "102": {
+            "name":"Wand of the War Mage (+2)",
+            "attn":"YES (by a spellcaster)",
+            "desc":"While holding this wand, you gain a bonus to spell attack rolls determined by the wand’s rarity. In addition, you ignore half cover when making a spell attack."
+        },
+        "103": {
+            "name":"Wand of Wonder",
+            "attn":"YES (by a spellcaster)",
+            "desc":"https://dnd5e.info/magic-items/item/wand-of-wonder/"
+        },
+        "104": {
+            "name":"Weapon (+2)",
+            "attn":"NO",
+            "desc":"You have a bonus to attack and damage rolls made with this magic weapon. The bonus is determined by the weapon’s rarity."
+        },
+        "105": {
+            "name":"Wings of Flying",
+            "attn":"YES",
+            "desc":"While wearing this cloak, you can use an action to speak its command word. This turns the cloak into a pair of bat wings or bird wings on your back for 1 hour or until you repeat the command word as an action. The wings give you a flying speed of 60 feet. When they disappear, you can’t use them again for 1d12 hours."
+        },
+        "106": {
+            "name":"Acheron Blade",
+            "attn":"YES",
+            "desc":"https://5e.tools/items/acheron-blade-egw.html"
+        },
+        "107": {
+            "name":"Barrier Tattoo",
+            "attn":"YES (by visiting a tattoo artist)",
+            "desc":"https://www.dndbeyond.com/magic-items/barrier-tattoo-ua"
+        },
+        "108": {
+            "name":"Banner fo the Krig Rune",
+            "attn":"YES",
+            "desc":"https://5e.tools/items/banner-of-the-krig-rune-skt.html"
+        },
+        "109": {
+            "name":"Blod Stone",
+            "attn":"YES",
+            "desc":"https://5e.tools/items/blod-stone-skt.html"
+        },
+        "110": {
+            "name":"Bonecounter",
+            "attn":"NO",
+            "desc":"https://5e.tools/items/bonecounter-sdw.html"
+        },
+        "111": {
+            "name":"Boots of Speed",
+            "attn":"YES",
+            "desc":"https://www.dndbeyond.com/magic-items/boots-of-speed"
+        },
+        "112": {
+            "name":"Bracers of Flying Daggers",
+            "attn":"YES",
+            "desc":"https://5e.tools/items/bracer-of-flying-daggers-wdh.html"
+        },
+        "113": {
+            "name":"Bridle of Capturing",
+            "attn":"NO",
+            "desc":"https://5e.tools/items/bridle-of-capturing-imr.html"
+        },
+        "114": {
+            "name":"Butchers Bib",
+            "attn":"YES",
+            "desc":"https://5e.tools/items/butchers-bib-egw.html"
+        },
+        "115": {
+            "name":"Cauldron of Plenty",
+            "attn":"NO",
+            "desc":"https://5e.tools/items/cauldron-of-plenty-idrotf.html"
+        },
+        "116": {
+            "name":"Charm of Plant Command",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#charm%20of%20plant%20command_gos"
+        },
+        "117": {
+            "name":"Claw of the Wyrm Rune",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#claw%20of%20the%20wyrm%20rune_skt"
+        },
+        "118": {
+            "name":"Claws of the Umber Hulk",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#claws%20of%20the%20umber%20hulk_pota"
+        },
+        "119": {
+            "name":"Concertina",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#concertina_rmbre"
+        },
+        "120": {
+            "name":"Corpse Slayer",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#corpse%20slayer_egw"
+        },
+        "121": {
+            "name":"Dagger of Blindsight",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#dagger%20of%20blindsight_wdmm"
+        },
+        "122": {
+            "name":"Battering Shield",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#battering%20shield_egw"
+        },
+        "123": {
+            "name":"Dodecahedron of Doom",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#dodecahedron%20of%20doom_wdmm"
+        },
+        "124": {
+            "name":"Dragonguard",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#dragonguard_lmop"
+        },
+        "125": {
+            "name":"Dragontooth Dagger",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#dragontooth%20dagger_rot"
+        },
+        "126": {
+            "name":"Eagle Whistle",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#eagle%20whistle_tftyp"
+        },
+        "127": {
+            "name":"Failed Experiment Wand",
+            "attn":"YES (by a spellcaster)",
+            "desc":"https://5e.tools/items.html#failed%20experiment%20wand_ai"
+        },
+        "128": {
+            "name":"Feather of Diatryma Summoning",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#feather%20of%20diatryma%20summoning_wdh"
+        },
+        "129": {
+            "name":"Galder's Bubble Pipe",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#galder's%20bubble%20pipe_llk"
+        },
+        "130": {
+            "name":"Gambler's Blade",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#gambler's%20blade_llk"
+        },
+        "131": {
+            "name":"Gauntlets of Flaming Fury",
+            "attn":"YES",
+            "desc":"While you wear both of these steel gauntlets, any non- magical weapon you grasp with either gauntlet is treated as a magic weapon. As a bonus action, you can use the gauntlets to cause magical flames to envelop one or two melee weapons in your grasp. Each flaming weapon deals an extra 1d6 fire damage on a hit. The flames last until you sheath or let go of either weapon. Once used, this property can't be used again until the next dawn."
+        },
+        "132": {
+            "name":"Gavel of the Venn Rune",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#gavel%20of%20the%20venn%20rune_skt"
+        },
+        "133": {
+            "name":"Ghost Lantern",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#ghost%20lantern_toa"
+        },
+        "134": {
+            "name":"Ghost Step Tattoo",
+            "attn":"YES (by visiting a tattoo artist)",
+            "desc":"https://5e.tools/items.html#ghost%20step%20tattoo_ua2020spellsandmagictattoos"
+        },
+        "135": {
+            "name":"Gruul Keyrune",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#gruul%20keyrune_ggr"
+        },
+        "136": {
+            "name":"Gulthias Staff",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#gulthias%20staff_cos"
+        },
+        "137": {
+            "name":"Hell Hound Cloak",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#hell%20hound%20cloak_tftyp"
+        },
+        "138": {
+            "name":"Helm of the Gods",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#helm%20of%20the%20gods_mot"
+        },
+        "139": {
+            "name":"Hook of Fisher's Delight",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#hook%20of%20fisher's%20delight_idrotf"
+        },
+        "140": {
+            "name":"Horn of the Endless Maze",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#horn%20of%20the%20endless%20maze_wdmm"
+        },
+        "141": {
+            "name":"Ioun Stone (History)",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#ioun%20stone%2c%20historical%20knowledge_llk"
+        },
+        "142": {
+            "name":"Ioun Stone (Language)",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#ioun%20stone%2c%20language%20knowledge_llk"
+        },
+        "143": {
+            "name":"Ioun Stone (Nature)",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#ioun%20stone%2c%20natural%20knowledge_llk"
+        },
+        "144": {
+            "name":"Ioun Stone (Religion)",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#ioun%20stone%2c%20religious%20knowledge_llk"
+        },
+        "145": {
+            "name":"Ioun Stone (Self-Preservation)",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#ioun%20stone%2c%20self-preservation_llk"
+        },
+        "146": {
+            "name":"Ioun Stone (Intellect)",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#ioun%20stone%2c%20supreme%20intellect_llk"
+        },
+        "147": {
+            "name":"Izzet Keyrune",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#izzet%20keyrune_ggr"
+        },
+        "148": {
+            "name":"Knave's Eyepatch",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#knave's%20eye%20patch_wdh"
+        },
+        "149": {
+            "name":"Leather Golem Armor",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#leather%20golem%20armor_llk"
+        },
+        "150": {
+            "name":"Lifewell Tattoo",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#lifewell%20tattoo_ua2020spellsandmagictattoos"
+        },
+        "151": {
+            "name":"Mind Blade",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#mind%20blade_vgm"
+        },
+        "152": {
+            "name":"Mind Lash",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#mind%20lash_vgm"
+        },
+        "153": {
+            "name":"Mirror of the Past",
+            "attn":"NO",
+            "desc":"The holder of this platinum hand mirror can learn something about the history of a specific object or creature by taking an action to gaze into the mirror and think of the target. Instead of the holder's reflection, the mirror presents scenes from the target's past. Information conveyed is accurate, but it is random and cryptic, and presented in no particular order. Once it is activated, the mirror gives its information for 1 minute or less, then returns to normal. It can't be used again until the next dawn."
+        },
+        "154": {
+            "name":"Mizzium Armor",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#mizzium%20armor_ggr"
+        },
+        "155": {
+            "name":"Mizzium Mortar",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#mizzium%20mortar_ggr"
+        },
+        "156": {
+            "name":"Molten Bronze Skin",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#molten%20bronze%20skin_mot"
+        },
+        "157": {
+            "name":"Needle of Mending",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#needle%20of%20mending_egw"
+        },
+        "158": {
+            "name":"Opal of the Ild Rune",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#opal%20of%20the%20ild%20rune_skt"
+        },
+        "159": {
+            "name":"Orb of the Stein Rune",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#orb%20of%20the%20stein%20rune_skt"
+        },
+        "160": {
+            "name":"Silver Dragon Shield",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#order%20of%20the%20silver%20dragon%20%2b2%20shield_cos"
+        },
+        "161": {
+            "name":"Orzhov Keyrune",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#orzhov%20keyrune_ggr"
+        },
+        "162": {
+            "name":"Pariah's Shield",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#pariah's%20shield_ggr"
+        },
+        "163": {
+            "name":"Pennant of the Vind Rune",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#pennant%20of%20the%20vind%20rune_uaprestigeclassesrunmagic"
+        },
+        "164": {
+            "name":"Piercer",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#piercer_ai"
+        },
+        "165": {
+            "name":"Piwafwi of Fire Resistance",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#piwafwi%20of%20fire%20resistance_oota"
+        },
+        "166": {
+            "name":"Potion of Aqueous Form",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#potion%20of%20aqueous%20form_mot"
+        },
+        "167": {
+            "name":"Potion of Maximum Spell",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#potion%20of%20maximum%20power_egw"
+        },
+        "168": {
+            "name":"Potion of Mind Control (beast)",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#potion%20of%20mind%20control%20(beast)_tftyp"
+        },
+        "169": {
+            "name":"Potion of Mind Control (humanoid)",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#potion%20of%20mind%20control%20(humanoid)_tftyp"
+        },
+        "170": {
+            "name":"Professor Orb",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#professor%20orb_wdmm"
+        },
+        "171": {
+            "name":"Ring of Temporal Salvation",
+            "attn":"YES",
+            "desc":"If you die while wearing this gray crystal ring, you vanish and reappear in an unoccupied space within 5 feet of the space you left (or the nearest unoccupied space). You have a number of hit points equal to 3d6 + your Constitution modifier. If your hit point maximum is lower than the number of hit points you regain, your hit point maximum rises to a similar amount. If you have any levels of exhaustion, reduce your level of exhaustion by 1. Once the ring is used, it turns to dust and is destroyed."
+        },
+        "172": {
+            "name":"Robe of Summer",
+            "attn":"YES",
+            "desc":"This elegant garment is made from fine cloth in hues of red, orange, and gold. While you wear the robe, you have resistance to cold damage. In addition, you are comfortable as if the temperature were that of a balmy day, so you suffer no ill effects from the weather's temperature extremes."
+        },
+        "173": {
+            "name":"Rod of the Vonindod",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#rod%20of%20the%20vonindod_skt"
+        },
+        "174": {
+            "name":"Saint Markovia's Thighbone",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#saint%20markovia's%20thighbone_cos"
+        },
+        "175": {
+            "name":"Scorpion Armor",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#scorpion%20armor_toa"
+        },
+        "176": {
+            "name":"Selesnya Keyrune",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#selesnya%20keyrune_ggr"
+        },
+        "177": {
+            "name":"Shield Guardian Amulet",
+            "attn":"YES (by a humanoid)",
+            "desc":"https://5e.tools/items.html#shield%20guardian%20amulet_idrotf"
+        },
+        "178": {
+            "name":"Shield of Far Sight",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#shield%20of%20far%20sight_vgm"
+        },
+        "179": {
+            "name":"Siren Song Lyre",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#siren%20song%20lyre_mot"
+        },
+        "180": {
+            "name":"Spell Stone (Bloodstone)",
+            "attn":"MAYBE",
+            "desc":"https://5e.tools/items.html#spell%20gem%20(bloodstone)_oota"
+        },
+        "181": {
+            "name":"Spell Stone (Quartz)",
+            "attn":"MAYBE",
+            "desc":"https://5e.tools/items.html#spell%20gem%20(quartz)_oota"
+        },
+        "182": {
+            "name":"Spellwrought Tattoo",
+            "attn":"YES (by visiting a tattoo artist)",
+            "desc":"https://5e.tools/items.html#spellwrought%20tattoo%20(4th%20level)_ua2020spellsandmagictattoos"
+        },
+        "183": {
+            "name":"Spider Staff",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#spider%20staff_lmop"
+        },
+        "184": {
+            "name":"Staff of Defense",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#staff%20of%20defense_lmop"
+        },
+        "185": {
+            "name":"Staff of the Ivory Claw",
+            "attn":"YES (by a spellcaster)",
+            "desc":"https://5e.tools/items.html#staff%20of%20the%20ivory%20claw_egw"
+        },
+        "186": {
+            "name":"Stonespeaker Crystal",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#stonespeaker%20crystal_oota"
+        },
+        "187": {
+            "name":"Sunforger",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#sunforger_ggr"
+        },
+        "188": {
+            "name":"Two-Birds Sling",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#two-birds%20sling_mot"
+        },
+        "189": {
+            "name":"Ventilating Lungs",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#ventilating%20lungs_erlw"
+        },
+        "190": {
+            "name":"Vicious Weapon +1",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#vicious%20%2b1%20weapon_ai"
+        },
+        "191": {
+            "name":"Wand of Viscid Globs",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#wand%20of%20viscid%20globs_oota"
+        },
+        "192": {
+            "name":"Wand of Winter",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#wand%20of%20winter_hotdq"
+        },
+        "193": {
+            "name":"Weapon of Certain Death",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#weapon%20of%20certain%20death_egw"
+        },
+        "194": {
+            "name":"Weird Tank",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#weird%20tank_pota"
+        }
+    }
+}

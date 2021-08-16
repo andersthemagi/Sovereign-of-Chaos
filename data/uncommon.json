@@ -1,0 +1,789 @@
+{
+    "uncommon": {
+        "1": {
+            "name":"Adamantine Armor (Medium or Heavy)",
+            "attn":"NO",
+            "desc":"This suit of armor is reinforced with adamantine, one of the hardest substances in existence. While you’re wearing it, any critical hit against you becomes a normal hit."
+        },
+        "2": {
+            "name":"Ammunition +1",
+            "attn":"NO",
+            "desc":"You have a bonus to attack and damage rolls made with this piece of magic ammunition. The bonus is determined by the rarity of the ammunition. Once it hits a target, the ammunition is no longer magical."
+        },
+        "3": {
+            "name":"Amulet of Proof Against Detection and Location",
+            "attn":"YES",
+            "desc":"While wearing this amulet, you are hidden from divination magic. You can’t be targeted by such magic or perceived through magical scrying sensors."
+        },
+        "4": {
+            "name":"Bag of Holding",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/bag-of-holding/"
+        },
+        "5": {
+            "name":"Bag of Tricks",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/bag-of-tricks/"
+        },
+        "6": {
+            "name":"Boots of Elvenkind",
+            "attn":"NO",
+            "desc":"While you wear these boots, your steps make no sound, regardless of the surface you are moving across. You also have advantage on Dexterity (Stealth) checks that rely on moving silently."
+        },
+        "7": {
+            "name":"Boots of Striding and Springing",
+            "attn":"YES",
+            "desc":"While you wear these boots, your walking speed becomes 30 feet, unless your walking speed is higher, and your speed isn’t reduced if you are encumbered or wearing heavy armor. In addition, you can jump three times the normal distance, though you can’t jump farther than your remaining movement would allow."
+        },
+        "8": {
+            "name":"Boots of the Winterlands",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/boots-of-the-winterlands/"
+        },
+        "9": {
+            "name":"Bracers of Archery",
+            "attn":"YES",
+            "desc":"While wearing these bracers, you have proficiency with the longbow and shortbow, and you gain a +2 bonus to damage rolls on ranged attacks made with such weapons."
+        },
+        "10": {
+            "name":"Brooch of Shielding",
+            "attn":"YES",
+            "desc":"While wearing this brooch, you have resistance to force damage, and you have immunity to damage from the magic missile spell."
+        },
+        "11": {
+            "name":"Broom of Flying",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/broom-of-flying/"
+        },
+        "12": {
+            "name":"Circlet of Blasting",
+            "attn":"NO",
+            "desc":"While wearing this circlet, you can use an action to cast the scorching ray spell with it. When you make the spell’s attacks, you do so with an attack bonus of +5. The circlet can’t be used this way again until the next dawn."
+        },
+        "13": {
+            "name":"Cloak of Elvenkind",
+            "attn":"YES",
+            "desc":"While you wear this cloak with its hood up, Wisdom (Perception) checks made to see you have disadvantage, and you have advantage on Dexterity (Stealth) checks made to hide, as the cloak’s color shifts to camouflage you. Pulling the hood up or down requires an action."
+        },
+        "14": {
+            "name":"Cloak of Protection",
+            "attn":"YES",
+            "desc":"You gain a +1 bonus to AC and saving throws while you wear this cloak."
+        },
+        "15": {
+            "name":"Cloak of the Manta Ray",
+            "attn":"NO",
+            "desc":"While wearing this cloak with its hood up, you can breathe underwater, and you have a swimming speed of 60 feet. Pulling the hood up or down requires an action."
+        },
+        "16": {
+            "name":"Decanter of Endless Water",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/decanter-of-endless-water/"
+        },
+        "17": {
+            "name":"Deck of Illusions",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/deck-of-illusions/"
+        },
+        "18": {
+            "name":"Dust of Disappearance",
+            "attn":"NO",
+            "desc":"Found in a small packet, this powder resembles very fine sand. There is enough of it for one use. When you use an action to throw the dust into the air, you and each creature and object within 10 feet of you become invisible for 2d4 minutes. The duration is the same for all subjects, and the dust is consumed when its magic takes effect. If a creature affected by the dust attacks or casts a spell, the invisibility ends for that creature."
+        },
+        "19": {
+            "name":"Dust of Dryness",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/dust-of-dryness/"
+        },
+        "20": {
+            "name":"Dust of Sneezing and Choking",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/dust-of-sneezing-and-choking/"
+        },
+        "21": {
+            "name":"Efficient Quiver",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/efficient-quiver/"
+        },
+        "22": {
+            "name":"Elemental Gem (Blue Sapphire)",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/elemental-gem/"
+        },
+        "23": {
+            "name":"Elemental Gem (Yellow Diamond)",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/elemental-gem/"
+        },
+        "24": {
+            "name":"Elemental Gem (Red Corundum)",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/elemental-gem/"
+        },
+        "25": {
+            "name":"Elemental Gem (Emerald)",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/elemental-gem/"
+        },
+        "26": {
+            "name":"Eversmoking Bottle",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/eversmoking-bottle/"
+        },
+        "27": {
+            "name":"Eyes of Charming",
+            "attn":"YES",
+            "desc":"These crystal lenses fit over the eyes. They have 3 charges. While wearing them, you can expend 1 charge as an action to cast the charm person spell (save DC 13) on a humanoid within 30 feet of you, provided that you and the target can see each other. The lenses regain all expended charges daily at dawn."
+        },
+        "28": {
+            "name":"Eyes of Minute Seeing",
+            "attn":"NO",
+            "desc":"These crystal lenses fit over the eyes. While wearing them, you can see much better than normal out to a range of 1 foot. You have advantage on Intelligence (Investigation) checks that rely on sight while searching an area or studying an object within that range."
+        },
+        "29": {
+            "name":"Eyes of the Eagle",
+            "attn":"YES",
+            "desc":"These crystal lenses fit over the eyes. While wearing them, you have advantage on Wisdom (Perception) checks that rely on sight. In conditions of clear visibility, you can make out details of even extremely distant creatures and objects as small as 2 feet across."
+        },
+        "30": {
+            "name":"Figurine of Wondrous Power (Silver Raven)",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/figurine-of-wondrous-power/"
+        },
+        "31": {
+            "name":"Gauntlets of Ogre Power",
+            "attn":"YES",
+            "desc":"Your Strength score is 19 while you wear these gauntlets. They have no effect on you if your Strength is already 19 or higher."
+        },
+        "32": {
+            "name":"Gem of Brightness",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/gem-of-brightness/"
+        },
+        "33": {
+            "name":"Gloves of Missile Snaring",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/gloves-of-missile-snaring/"
+        },
+        "34": {
+            "name":"Gloves of Swimming and Climbing",
+            "attn":"YES",
+            "desc":"While wearing these gloves, climbing and swimming don’t cost you extra movement, and you gain a +5 bonus to Strength (Athletics) checks made to climb or swim."
+        },
+        "35": {
+            "name":"Goggles of Night",
+            "attn":"NO",
+            "desc":"While wearing these dark lenses, you have darkvision out to a range of 60 feet. If you already have darkvision, wearing the goggles increases its range by 60 feet."
+        },
+        "36": {
+            "name":"Hat of Disguise",
+            "attn":"YES",
+            "desc":"While wearing this hat, you can use an action to cast the disguise self spell from it at will. The spell ends if the hat is removed."
+        },
+        "37": {
+            "name":"Headband of Intellect",
+            "attn":"YES",
+            "desc":"Your Intelligence score is 19 while you wear this headband. It has no effect on you if your Intelligence is already 19 or higher."
+        },
+        "38": {
+            "name":"Helm of Comprehending Languages",
+            "attn":"NO",
+            "desc":"While wearing this helm, you can use an action to cast the comprehend languages spell from it at will."
+        },
+        "39": {
+            "name":"Helm of Telepathy",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/helm-of-telepathy/"
+        },
+        "40": {
+            "name":"Immovable Rod",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/immovable-rod/"
+        },
+        "41": {
+            "name":"Javelin of Lightning",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/javelin-of-lightning/"
+        },
+        "42": {
+            "name":"Lantern of Revealing",
+            "attn":"NO",
+            "desc":"While lit, this hooded lantern burns for 6 hours on 1 pint of oil, shedding bright light in a 30-foot radius and dim light for an additional 30 feet. Invisible creatures and objects are visible as long as they are in the lantern’s bright light. You can use an action to lower the hood, reducing the light to dim light in a 5-foot radius."
+        },
+        "43": {
+            "name":"Medallion of Thoughts",
+            "attn":"YES",
+            "desc":"The medallion has 3 charges. While wearing it, you can use an action and expend 1 charge to cast the detect thoughts spell (save DC 13) from it. The medallion regains 1d3 expended charges daily at dawn."
+        },
+        "44": {
+            "name":"Mithral Armor (Medium or Heavy)",
+            "attn":"NO",
+            "desc":"Mithral is a light, flexible metal. A mithral chain shirt or breastplate can be worn under normal clothes. If the armor normally imposes disadvantage on Dexterity (Stealth) checks or has a Strength requirement, the mithral version of the armor doesn’t."
+        },
+        "45": {
+            "name":"Necklace of Adaptation",
+            "attn":"YES",
+            "desc":"While wearing this necklace, you can breathe normally in any environment, and you have advantage on saving throws made against harmful gases and vapors (such as cloudkill and stinking cloud effects, inhaled poisons, and the breath weapons of some dragons)."
+        },
+        "46": {
+            "name":"Oil of Slipperiness",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/oil-of-slipperiness/"
+        },
+        "47": {
+            "name":"Pearl of Power",
+            "attn":"YES (by a spellcaster)",
+            "desc":"While this pearl is on your person, you can use an action to speak its command word and regain one expended spell slot. If the expended slot was of 4th level or higher, the new slot is 3rd level. Once you use the pearl, it can’t be used again until the next dawn."
+        },
+        "48": {
+            "name":"Periapt of Health",
+            "attn":"NO",
+            "desc":"You are immune to contracting any disease while you wear this pendant. If you are already infected with a disease, the effects of the disease are suppressed you while you wear the pendant."
+        },
+        "49": {
+            "name":"Periapt of Wound Closure",
+            "attn":"YES",
+            "desc":"While you wear this pendant, you stabilize whenever you are dying at the start of your turn. In addition, whenever you roll a Hit Die to regain hit points, double the number of hit points it restores."
+        },
+        "50": {
+            "name":"Philter of Love",
+            "attn":"NO",
+            "desc":"The next time you see a creature within 10 minutes after drinking this philter, you become charmed by that creature for 1 hour. If the creature is of a species and gender you are normally attracted to, you regard it as your true love while you are charmed. This potion’s rose-hued, effervescent liquid contains one easy-to-miss bubble shaped like a heart."
+        },
+        "51": {
+            "name":"Pipes of Haunting",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/pipes-of-haunting/"
+        },
+        "52": {
+            "name":"Pipes of the Sewers",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/pipes-of-the-sewers/"
+        },
+        "53": {
+            "name":"Potion of Animal Friendship",
+            "attn":"NO",
+            "desc":"When you drink this potion, you can cast the animal friendship spell (save DC 13) for 1 hour at will. Agitating this muddy liquid brings little bits into view: a fish scale, a hummingbird tongue, a cat claw, or a squirrel hair."
+        },
+        "54": {
+            "name":"Potion of Hill Giant Strength",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/potion-of-giant-strength/"
+        },
+        "55": {
+            "name":"Potion of Growth",
+            "attn":"NO",
+            "desc":"When you drink this potion, you gain the “enlarge” effect of the enlarge/reduce spell for 1d4 hours (no concentration required). The red in the potion’s liquid continuously expands from a tiny bead to color the clear liquid around it and then contracts. Shaking the bottle fails to interrupt this process."
+        },
+        "56": {
+            "name":"Potion of Greater Healing",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/potion-of-healing/"
+        },
+        "57": {
+            "name":"Potion of Poison",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/potion-of-poison/"
+        },
+        "58": {
+            "name":"Potion of Resistance",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/potion-of-resistance/"
+        },
+        "59": {
+            "name":"Potion of Water Breathing",
+            "attn":"NO",
+            "desc":"You can breathe underwater for 1 hour after drinking this potion. Its cloudy green fluid smells of the sea and has a jellyfish-like bubble floating in it."
+        },
+        "60": {
+            "name":"Restorative Ointment",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/restorative-ointment/"
+        },
+        "61": {
+            "name":"Ring of Jumping",
+            "attn":"YES",
+            "desc":"While wearing this ring, you can cast the jump spell from it as a bonus action at will, but can target only yourself when you do so."
+        },
+        "62": {
+            "name":"Ring of Mind Shielding",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/ring-of-mind-shielding/"
+        },
+        "63": {
+            "name":"Ring of Swimming",
+            "attn":"NO",
+            "desc":"You have a swimming speed of 40 feet while wearing this ring."
+        },
+        "64": {
+            "name":"Ring of Warmth",
+            "attn":"YES",
+            "desc":"While wearing this ring, you have resistance to cold damage. In addition, you and everything you wear and carry are unharmed by temperatures as low as –50 degrees Fahrenheit."
+        },
+        "65": {
+            "name":"Ring of Water Walking",
+            "attn":"NO",
+            "desc":"While wearing this ring, you can stand on and move across any liquid surface as if it were solid ground."
+        },
+        "66": {
+            "name":"Robe of Useful Items",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/robe-of-useful-items/"
+        },
+        "67": {
+            "name":"Rope of Climbing",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/rope-of-climbing/"
+        },
+        "68": {
+            "name":"Shield +1",
+            "attn":"NO",
+            "desc":"While holding this shield, you have a bonus to AC determined by the shield’s rarity. This bonus is in addition to the shield’s normal bonus to AC."
+        },
+        "69": {
+            "name":"Slippers of Spider Climbing",
+            "attn":"YES",
+            "desc":"While you wear these light shoes, you can move up, down, and across vertical surfaces and upside down along ceilings, while leaving your hands free. You have a climbing speed equal to your walking speed. However, the slippers don’t allow you to move this way on a slippery surface, such as one covered by ice or oil."
+        },
+        "70": {
+            "name":"Spell Scroll (2nd Level)",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/spell-scroll/"
+        },
+        "71": {
+            "name":"Spell Scroll (3rd Level)",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/spell-scroll/"
+        },
+        "72": {
+            "name":"Staff of the Python",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/staff-of-the-python/"
+        },
+        "73": {
+            "name":"Stone of Good Luck (Luckstone)",
+            "attn":"YES",
+            "desc":"While this polished agate is on your person, you gain a +1 bonus to ability checks and saving throws."
+        },
+        "74": {
+            "name":"Trident of Fish Command",
+            "attn":"YES",
+            "desc":"This trident is a magic weapon. It has 3 charges. While you carry it, you can use an action and expend 1 charge to cast dominate beast (save DC 15) from it on a beast that has an innate swimming speed. The trident regains 1d3 expended charges daily at dawn."
+        },
+        "75": {
+            "name":"Wand of Magic Detection",
+            "attn":"NO",
+            "desc":"This wand has 3 charges. While holding it, you can expend 1 charge as an action to cast the detect magic spell from it. The wand regains 1d3 expended charges daily at dawn."
+        },
+        "76": {
+            "name":"Wand of Magic Missiles",
+            "attn":"NO",
+            "desc":"https://dnd5e.info/magic-items/item/wand-of-magic-missiles/"
+        },
+        "77": {
+            "name":"Wand of Secrets",
+            "attn":"NO",
+            "desc":"The wand has 3 charges. While holding it, you can use an action to expend 1 of its charges, and if a secret door or trap is within 30 feet of you, the wand pulses and points at the one nearest to you. The wand regains 1d3 expended charges daily at dawn."
+        },
+        "78": {
+            "name":"Wand of the War Mage (+1)",
+            "attn":"YES (by a spellcaster)",
+            "desc":"https://dnd5e.info/magic-items/item/wand-of-the-war-mage/"
+        },
+        "79": {
+            "name":"Wand of Web",
+            "attn":"YES (by a spellcaster)",
+            "desc":"https://dnd5e.info/magic-items/item/wand-of-web/"
+        },
+        "80": {
+            "name":"Weapon +1",
+            "attn":"NO",
+            "desc":"You have a bonus to attack and damage rolls made with this magic weapon. The bonus is determined by the weapon’s rarity."
+        },
+        "81": {
+            "name":"Wind Fan",
+            "attn":"NO",
+            "desc":"While holding this fan, you can use an action to cast the gust of wind spell (save DC 13) from it. Once used, the fan shouldn’t be used again until the next dawn. Each time it is used again before then, it has a cumulative 20 percent chance of not working and tearing into useless, nonmagical tatters."
+        },
+        "82": {
+            "name":"Winged Boots",
+            "attn":"YES",
+            "desc":"https://dnd5e.info/magic-items/item/winged-boots/"
+        },
+        "83": {
+            "name":"Rod of the Pact Keeper +1",
+            "attn":"YES (by a warlock)",
+            "desc":"https://5e.tools/items.html#%2b1%20rod%20of%20the%20pact%20keeper_dmg"
+        },
+        "84": {
+            "name":"Alchemy Jug",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#alchemy%20jug_dmg"
+        },
+        "85": {
+            "name":"Amulet of the Drunkard",
+            "attn":"NO",
+            "desc":"This amulet smells of old, ale-stained wood. While wearing it, you can regain 4d4 + 4 hit points when you drink a pint of beer, ale, mead, or wine. Once the amulet has restored hit points, it can't do so again until the next dawn."
+        },
+        "86": {
+            "name":"Azorius Signet",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#azorius%20guild%20signet_ggr"
+        },
+        "87": {
+            "name":"Balance of Harmony",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#balance%20of%20harmony_tftyp"
+        },
+        "88": {
+            "name":"Balloon Pack",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#balloon%20pack_pota"
+        },
+        "89": {
+            "name":"Blood Spear",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#blood%20spear_cos"
+        },
+        "90": {
+            "name":"Boros Signet",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#boros%20guild%20signet_ggr"
+        },
+        "91": {
+            "name":"Bottled Breath",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#bottled%20breath_pota"
+        },
+        "92": {
+            "name":"Brooch of Living Essence",
+            "attn":"YES",
+            "desc":"While wearing this nondescript brooch, spells and anything else that would detect or reveal your creature type treat you as humanoid, and those that would reveal your alignment treat it as neutral."
+        },
+        "93": {
+            "name":"Charred Wand of Magic Missiles",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#charred%20wand%20of%20magic%20missiles_wdh"
+        },
+        "94": {
+            "name":"Circlet of Human Perfection",
+            "attn":"YES (by a humanoid)",
+            "desc":"The Circlet of Human Perfection transforms its attuned wearer into an attractive human of average height and weight. The circlet chooses the physical characteristics of the form, such as age, gender, skin color, hair color, and voice. Except for size, the wearer's statistics and racial traits don't change, nor do items worn or carried by the wearer. Removing the circlet ends the effect."
+        },
+        "95": {
+            "name":"Coiling Grasp Tattoo",
+            "attn":"YES (by visiting a tattoo artist)",
+            "desc":"https://5e.tools/items.html#coiling%20grasp%20tattoo_tce"
+        },
+        "96": {
+            "name":"Dimir Signet",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#dimir%20guild%20signet_ggr"
+        },
+        "97": {
+            "name":"Dust of Deliciousness",
+            "attn":"NO",
+            "desc":"This reddish brown dust can be sprinkled over any edible substance to greatly improve the flavor. The dust also dulls the eater's senses: anyone eating food treated with this dust has disadvantage on Wisdom ability checks and Wisdom saving throws for 1 hour. There is enough dust to flavor six servings."
+        },
+        "98": {
+            "name":"Earworm",
+            "attn":"YES (see entry)",
+            "desc":"https://5e.tools/items.html#earworm_erlw"
+        },
+        "99": {
+            "name":"Elder Cartographer's Glossography",
+            "attn":"NO",
+            "desc":"This small magical tome grants advantage on Intelligence or Wisdom checks related to geographical features or locations."
+        },
+        "100": {
+            "name":"Finder's Goggles",
+            "attn":"YES (requires attunement by a creature with a dragonmark)",
+            "desc":"https://5e.tools/items.html#finder's%20goggles_erlw"
+        },
+        "101": {
+            "name":"Goggles of Object Reading",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#goggles%20of%20object%20reading_egw"
+        },
+        "102": {
+            "name":"Golgari Signet",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#golgari%20guild%20signet_ggr"
+        },
+        "103": {
+            "name":"Gruul Signet",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#gruul%20guild%20signet_ggr"
+        },
+        "104": {
+            "name":"Hellfire Weapon",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#hellfire%20weapon_bgdia"
+        },
+        "105": {
+            "name":"Helm of Underwater Action",
+            "attn":"YES",
+            "desc":"While wearing this brass helmet, you can breathe underwater, you gain darkvision with a range of 60 feet, and you gain a swimming speed of 30 feet."
+        },
+        "106": {
+            "name":"Infernal Puzzle Box",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#infernal%20puzzle%20box_bgdia"
+        },
+        "107": {
+            "name":"Insignia of Claws",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#insignia%20of%20claws_hotdq"
+        },
+        "108": {
+            "name":"Instrument of the Bards (Doss Lute)",
+            "attn":"YES (by a bard)",
+            "desc":"https://5e.tools/items.html#instrument%20of%20the%20bards%2c%20doss%20lute_dmg"
+        },
+        "109": {
+            "name":"Instrument of the Bards (Fochlucan Bandore)",
+            "attn":"YES (by a bard)",
+            "desc":"https://5e.tools/items.html#instrument%20of%20the%20bards%2c%20fochlucan%20bandore_dmg"
+        },
+        "110": {
+            "name":"Instrument of the Bards (Mach-Fuirmidh Cittern)",
+            "attn":"YES (by a bard)",
+            "desc":"https://5e.tools/items.html#instrument%20of%20the%20bards%2c%20mac-fuirmidh%20cittern_dmg"
+        },
+        "111": {
+            "name":"Izzet Signet",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#izzet%20guild%20signet_ggr"
+        },
+        "112": {
+            "name":"Lightbringer",
+            "attn":"NO",
+            "desc":"This +1 mace was made for a cleric of Lathander, the god of dawn. The head of the mace is shaped like a sunburst and made of solid brass. Named Lightbringer, this weapon glows as bright as a torch when its wielder commands. While glowing, the mace deals an extra 1d6 radiant damage to undead creatures."
+        },
+        "113": {
+            "name":"Living Gloves",
+            "attn":"YES (see description)",
+            "desc":"https://5e.tools/items.html#living%20gloves_erlw"
+        },
+        "114": {
+            "name":"Mask of the Beast",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#mask%20of%20the%20beast_toa"
+        },
+        "115": {
+            "name":"Mind Carapace Armor",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#mind%20carapace%20armor_vgm"
+        },
+        "116": {
+            "name":"Mizzium Apparatus",
+            "attn":"YES (by a sorcerer, warlock, or wizard)",
+            "desc":"https://5e.tools/items.html#mizzium%20apparatus_ggr"
+        },
+        "117": {
+            "name":"Night Caller",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#night%20caller_tftyp"
+        },
+        "118": {
+            "name":"Orc Stone",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#orc%20stone_idrotf"
+        },
+        "119": {
+            "name":"Orzhov Signet",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#orzhov%20guild%20signet_ggr"
+        },
+        "120": {
+            "name":"Paper Bird",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#paper%20bird_wdh"
+        },
+        "121": {
+            "name":"Propeller Helm",
+            "attn":"YES (by a small humanoid)",
+            "desc":"While worn, the helm allows its wearer to use an action to cast the levitate spell, requiring no components. The helm's propeller spins and whirs loudly until the spell ends. Each time the spell ends, there is a 50 percent chance that the helm loses its magic and becomes nonmagical."
+        },
+        "122": {
+            "name":"Psi Crystal",
+            "attn":"YES (by a creatuer of intelligence greater than 3)",
+            "desc":"https://5e.tools/items.html#psi%20crystal_idrotf"
+        },
+        "123": {
+            "name":"Pyroconverger",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#pyroconverger_ggr"
+        },
+        "124": {
+            "name":"Rakdos Signet",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#rakdos%20guild%20signet_ggr"
+        },
+        "125": {
+            "name":"Rakdos Keyrune",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#rakdos%20keyrune_ggr"
+        },
+        "126": {
+            "name":"Reszur",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#reszur_pota"
+        },
+        "127": {
+            "name":"Ring of Obscuring",
+            "attn":"YES",
+            "desc":"This band of iron resembles a skull and is cold to the touch. It has 3 charges and regains 1d3 expended charges daily at dawn. As an action while wearing the ring, you can expend 1 of its charges to cast the fog cloud spell from it, with the following changes: the cloud is centered on you when it first appears, and the spell lasts for 1 minute (no concentration required)."
+        },
+        "128": {
+            "name":"Ring of Truth Telling",
+            "attn":"YES",
+            "desc":"While wearing this ring, you have advantage on Wisdom (Insight) checks to determine whether someone is lying to you."
+        },
+        "129": {
+            "name":"Robe of Serpents",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#robe%20of%20serpents_skt"
+        },
+        "130": {
+            "name":"Rod of Retribution",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#rod%20of%20retribution_egw"
+        },
+        "131": {
+            "name":"Seeker Dart",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#seeker%20dart_pota"
+        },
+        "132": {
+            "name":"Selesnya Signet",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#selesnya%20guild%20signet_ggr"
+        },
+        "133": {
+            "name":"Sending Stone (x2)",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#sending%20stone_ai"
+        },
+        "134": {
+            "name":"Sentinel Shield",
+            "attn":"NO",
+            "desc":"While holding this shield, you have advantage on initiative rolls and Wisdom (Perception) checks. The shield is emblazoned with a symbol of an eye."
+        },
+        "135": {
+            "name":"Shatterspike",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#shatterspike_tftyp"
+        },
+        "136": {
+            "name":"Simic Signet",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#simic%20guild%20signet_ggr"
+        },
+        "137": {
+            "name":"Simic Keyrune",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#simic%20keyrune_ggr"
+        },
+        "138": {
+            "name":"Skyblinder Staff",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#skyblinder%20staff_ggr"
+        },
+        "139": {
+            "name":"Smoke Powder",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#smokepowder_wdh"
+        },
+        "140": {
+            "name":"Spell Gem (Lapis Lazuli)",
+            "attn":"MAYBE",
+            "desc":"https://5e.tools/items.html#spell%20gem%20(lapis%20lazuli)_oota"
+        },
+        "141": {
+            "name":"Spell Gem (Obsidian)",
+            "attn":"MAYBE",
+            "desc":"https://5e.tools/items.html#spell%20gem%20(obsidian)_oota"
+        },
+        "142": {
+            "name":"Spies' Murmur",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#spies'%20murmur_ggr"
+        },
+        "143": {
+            "name":"Storm Boomerang",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#storm%20boomerang_pota"
+        },
+        "144": {
+            "name":"Sword of Vengeance",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#sword%20of%20vengeance_dmg"
+        },
+        "145": {
+            "name":"Travel Alchemical Kit",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#travel%20alchemical%20kit_ai"
+        },
+        "146": {
+            "name":"Weapon of Warning",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#weapon%20of%20warning_dmg"
+        },
+        "147": {
+            "name":"Wingwear",
+            "attn":"YES",
+            "desc":"https://5e.tools/items.html#wingwear_pota"
+        },
+        "148": {
+            "name":"Winter's Dark Bite",
+            "attn":"NO",
+            "desc":"https://5e.tools/items.html#winter's%20dark%20bite_hftt"
+        },
+        "149": {
+            "name":"Bag of Bounty",
+            "attn":"NO",
+            "desc":"https://5e.tools/items/bag-of-bounty-uawge.html"
+        },
+        "150": {
+            "name":"Barrier Tattoo",
+            "attn":"YES (by visiting a tattoo artist)",
+            "desc":"https://www.dndbeyond.com/magic-items/barrier-tattoo-ua"
+        },
+        "151": {
+            "name":"Blood of the Lycanthrope",
+            "attn":"NO",
+            "desc":"https://5e.tools/items/blood-of-the-lycanthrope-imr.html"
+        },
+        "152": {
+            "name":"Crown of the Forest",
+            "attn":"NO",
+            "desc":"https://5e.tools/items/crown-of-the-forest-imr.html"
+        },
+        "153": {
+            "name":"Eldritch Claw Tattoo",
+            "attn":"YES (by visiting a tattoo artist)",
+            "desc":"https://www.dndbeyond.com/magic-items/eldritch-claw-tattoo-ua"
+        },
+        "154": {
+            "name":"Gloves of Thievery",
+            "attn":"NO",
+            "desc":"https://5e.tools/items/gloves-of-thievery-dmg.html"
+        },
+        "155": {
+            "name":"Hew",
+            "attn":"NO",
+            "desc":"https://5e.tools/items/hew-lmop.html"
+        },
+        "156": {
+            "name":"Rings of Shared Suffering (x2)",
+            "attn":"YES",
+            "desc":"These rings come in linked pairs. You can use a bonus action to form a link to the creature attuned to the other ring; from then on, whenever that creature suffers damage, they only suffer half of that damage and you take the rest. This effect continues until you end it as a bonus action or until you or the other creature removes their ring. This effect isn't limited by range. A creature cannot be attuned to more than one ring of shared suffering."
+        },
+        "157": {
+            "name":"Spellwrought Tattoo",
+            "attn":"YES (by visiting a tattoo artist)",
+            "desc":"https://www.dndbeyond.com/magic-items/spellwrought-tattoo-ua"
+        }
+    }
+}

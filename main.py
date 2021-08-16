@@ -1,0 +1,107 @@
+##############################################
+# Package Imports
+##############################################
+
+import discord
+import discord.ext
+import os
+
+from discord.ext import commands
+from flask import Flask
+from threading import Thread
+
+##############################################
+# Constants and Setup
+##############################################
+
+app = Flask( 'discord bot' )
+
+OWNER_ID = os.getenv( "OWNER_ID" )
+
+bot = commands.Bot( command_prefix = '!' )
+bot.remove_command( 'help' )
+
+# Import Cogs from /cogs directory
+print( '------' )
+print( "Attempting load of extension in '/cog' directory...")
+allExtensionsLoaded = True
+if __name__ == "__main__":
+  for file in os.listdir( "./cogs" ):
+    if file.endswith( ".py" ):
+      extension = file[:-3]
+      try:
+        bot.load_extension( f"cogs.{extension}" )
+        print( f"Loaded extension '{extension}'" )
+      except Exception as e:
+        exception = f"{type(e).__name__}: {e}"
+        print( f"Failed to load extension {extension}\n{exception}" )
+        allExtensionsLoaded = False 
+
+if allExtensionsLoaded:
+  print("All extensions in '/cog' directory loaded successfully!")
+else:
+  print("WARNING: One or more extensions could not be loaded. See above for error output.")
+print( '------' )
+
+##############################################
+# Events
+##############################################
+
+@bot.event 
+async def on_message( message ):
+  """
+  Defines behavior for bot on receiving message in chat
+  """
+  if message.author == bot.user or message.author.bot:
+    return
+  await bot.process_commands(message)
+
+@bot.event
+async def on_ready():
+  """
+  Defines behavior for bot when ready to execute commands
+  """
+  await bot.change_presence(
+    activity = discord.Activity(
+      type = discord.ActivityType.watching,
+      name = 'the sands of time... | !s help' ) )
+  print( '------\nLogged in as' )
+  print( bot.user.name )
+  print( bot.user.id )
+  print( 'https://discordapp.com/oauth2/authorize?client_id={}&scope=bot&permissions=0'.format('707346305080361022' ) )
+  print( '------' )
+
+@bot.event
+async def on_command_completion(ctx):
+  """
+  Defines behavior for bot whenever a command is completed successfully
+  """
+  fullCommandName = ctx.command.qualified_name
+  split = fullCommandName.split( " " )
+  executedCommand = str(split[0])
+  print( f"Executed {executedCommand} command in {ctx.guild.name} (ID: {ctx.message.guild.id}) by {ctx.message.author} (ID: {ctx.message.author.id})" )
+
+##############################################
+# Other Functions
+##############################################
+
+# Flask-related support functions to allow
+# 24/7 uptime of bot
+@app.route('/')
+def hello_world():
+  return 'Magic Appetizers not included.'
+
+def start_server():
+  app.run( host="0.0.0.0", port = 8080 )
+  
+##############################################
+# Bot Initialization
+##############################################
+
+# Starts the Flask server
+t = Thread( target = start_server )
+t.start()
+
+# Runs the bot for use on Discord
+bot.run(os.getenv("TOKEN"))
+

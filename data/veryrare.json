@@ -1,0 +1,710 @@
+{
+    "veryrare" : {
+        "1" : {
+            "name": "Armor +2",
+            "attn": "NO",
+            "desc": "You have a +2 bonus to AC while wearing this armor"
+        },
+        "2" : {
+            "name": "Ammunition +3",
+            "attn": "NO",
+            "desc": "You have a +3 bonus to attack and damage rolls made with this piece of magic ammunition. Once it hits a target, the ammunition is no longer magical"
+        },
+        "3" : {
+            "name": "Rod of the Pact Keeper +3",
+            "attn": "YES (by a warlock)",
+            "desc": "https://5e.tools/items.html#%2b3%20rod%20of%20the%20pact%20keeper_dmg"
+        },
+        "4" : {
+            "name": "Shield +3",
+            "attn": "NO",
+            "desc": "While holding this shield, you have a +3 bonus to AC. This bonus is in addition to the shield's normal bonus to AC."
+        },
+        "5" : {
+            "name": "Wand of the War Mage +3",
+            "attn": "YES (by a spellcaster)",
+            "desc": "While you are holding this wand, you gain a +3 bonus to spell attack rolls. In addition, you ignore half cover when making a spell attack."
+        },
+        "6" : {
+            "name": "Weapon +3",
+            "attn": "NO",
+            "desc": "You have a +3 bonus to attack and damage rolls made with this magic weapon."
+        },
+        "7" : {
+            "name": "Abracadabrus",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#abracadabrus_idrotf"
+        },
+        "8" : {
+            "name": "Absorbing Tattoo",
+            "attn": "YES (by visiting a tattoo artist)",
+            "desc": "https://5e.tools/items.html#absorbing%20tattoo_ua2020spellsandmagictattoos"
+        },
+        "9" : {
+            "name": "Amulet of the Black Skull",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#amulet%20of%20the%20black%20skull_toa"
+        },
+        "10" : {
+            "name": "Amulet of the Planes",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#amulet%20of%20the%20planes_dmg"
+        },
+        "11" : {
+            "name": "Animated Shield",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#animated%20shield_dmg"
+        },
+        "12" : {
+            "name": "Arcane Cannon",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#arcane%20cannon_egw"
+        },
+        "13" : {
+            "name": "Arcane Propulsion Arm",
+            "attn": "YES (by a creature missing a hand or arm)",
+            "desc": "https://5e.tools/items.html#arcane%20propulsion%20arm_erlw"
+        },
+        "14" : {
+            "name": "Ammunition of Slaying",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#arrow%20of%20slaying%20(generic)_dmg"
+        },
+        "15" : {
+            "name": "Bag of Devouring",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#bag%20of%20devouring_dmg"
+        },
+        "16" : {
+            "name": "Barrier Tattoo (Very Rare)",
+            "attn": "YES (by visiting a tattoo artist)",
+            "desc": "https://5e.tools/items.html#barrier%20tattoo%20(very%20rare)_ua2020spellsandmagictattoos"
+        },
+        "17" : {
+            "name": "Battle Standard of Infernal Power",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#battle%20standard%20of%20infernal%20power_bgdia"
+        },
+        "18" : {
+            "name": "Belt of Fire Giant Strength",
+            "attn": "YES",
+            "desc": "While wearing this belt, your Strength score changes to 25. The item has no effect on you if your Strength without the belt is equal to or greater than the belt's score."
+        },
+        "19" : {
+            "name": "Belt of Frost Giant Strength",
+            "attn": "YES",
+            "desc": "While wearing this belt, your Strength score changes to 23. The item has no effect on you if your Strength without the belt is equal to or greater than the belt's score."
+        },
+        "20" : {
+            "name": "Belt of Stone Giant Strength",
+            "attn": "YES",
+            "desc": "While wearing this belt, your Strength score changes to 23. The item has no effect on you if your Strength without the belt is equal to or greater than the belt's score."
+        },
+        "21" : {
+            "name": "Black Dragon Scale Mail",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#black%20dragon%20scale%20mail_dmg"
+        },
+        "22" : {
+            "name": "Blade of the Medusa",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#blade%20of%20the%20medusa_llk"
+        },
+        "23" : {
+            "name": "Blast Scepter",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#blast%20scepter_wdmm"
+        },
+        "24" : {
+            "name": "Bloodaxe",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#bloodaxe_egw"
+        },
+        "25" : {
+            "name": "Blue Dragon Scale Mail",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#blue%20dragon%20scale%20mail_dmg"
+        },
+        "26" : {
+            "name": "Bracelet of Rock Magic",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#bracelet%20of%20rock%20magic_tftyp"
+        },
+        "27" : {
+            "name": "Brass Dragon Scale Mail",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#brass%20dragon%20scale%20mail_dmg"
+        },
+        "28" : {
+            "name": "Bronze Dragon Scale Mail",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#bronze%20dragon%20scale%20mail_dmg"
+        },
+        "29" : {
+            "name": "Candle of Invocation",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#candle%20of%20invocation_dmg"
+        },
+        "30" : {
+            "name": "Carpet of Flying",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#carpet%20of%20flying_dmg"
+        },
+        "31" : {
+            "name": "Chronolometer",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#chronolometer_ai"
+        },
+        "32" : {
+            "name": "Cloak of Arachnida",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#cloak%20of%20arachnida_dmg"
+        },
+        "33" : {
+            "name": "Conch of Teleportation",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#conch%20of%20teleportation_skt"
+        },
+        "34" : {
+            "name": "Copper Dragon Scale Mail",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#copper%20dragon%20scale%20mail_dmg"
+        },
+        "35" : {
+            "name": "Crystal Ball",
+            "attn": "YES",
+            "desc": "This crystal ball is about 6 inches in diameter. While touching it, you can cast the scrying spell (save DC 17) with it."
+        },
+        "36" : {
+            "name": "Dancing Sword",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#dancing%20sword_dmg"
+        },
+        "37" : {
+            "name": "Demon Armor",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#demon%20armor_dmg"
+        },
+        "38" : {
+            "name": "Devastation Orb of Air",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#devastation%20orb%20of%20air_pota"
+        },
+        "39" : {
+            "name": "Devastation Orb of Earth",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#devastation%20orb%20of%20earth_pota"
+        },
+        "40" : {
+            "name": "Devastation Orb of Fire",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#devastation%20orb%20of%20fire_pota"
+        },
+        "41" : {
+            "name": "Devastation Orb of Water",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#devastation%20orb%20of%20water_pota"
+        },
+        "42" : {
+            "name": "Devlin's Staff of Striking",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#devlin's%20staff%20of%20striking_toa"
+        },
+        "43" : {
+            "name": "Dimensional Loop",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#dimensional%20loop_ai"
+        },
+        "44" : {
+            "name": "Dimir Keyrune",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#dimir%20keyrune_ggr"
+        },
+        "45" : {
+            "name": "Dispelling Stone",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#dispelling%20stone_egw"
+        },
+        "46" : {
+            "name": "Duskcrusher",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#duskcrusher_egw"
+        },
+        "47" : {
+            "name": "Dwarven Plate",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#dwarven%20plate_dmg"
+        },
+        "48" : {
+            "name": "Dwarven Thrower",
+            "attn": "YES (by a dwarf)",
+            "desc": "https://5e.tools/items.html#dwarven%20thrower_dmg"
+        },
+        "49" : {
+            "name": "Dyrrn's Tentacle Whip",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#dyrrn's%20tentacle%20whip_erlw"
+        },
+        "50" : {
+            "name": "Efreeti Bottle",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#efreeti%20bottle_dmg"
+        },
+        "51" : {
+            "name": "Far Gear",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#far%20gear_ai"
+        },
+        "52" : {
+            "name": "Figurine of Wondrous Power (Obsidian Steed)",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#figurine%20of%20wondrous%20power%2c%20obsidian%20steed_dmg"
+        },
+        "53" : {
+            "name": "Frost Brand",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#frost%20brand_dmg"
+        },
+        "54" : {
+            "name": "Gold Dragon Scale Mail",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#gold%20dragon%20scale%20mail_dmg"
+        },
+        "55" : {
+            "name": "Golgari Keyrune",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#golgari%20keyrune_ggr"
+        },
+        "56" : {
+            "name": "Green Dragon Scale Mail",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#green%20dragon%20scale%20mail_dmg"
+        },
+        "57" : {
+            "name": "Heartstone",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#heartstone_mm"
+        },
+        "58" : {
+            "name": "Helm of Brilliance",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#helm%20of%20brilliance_dmg"
+        },
+        "59" : {
+            "name": "Helm of Devil Command",
+            "attn": "YES (by a creature that can speak Infernal)",
+            "desc": "https://5e.tools/items.html#helm%20of%20devil%20command_bgdia"
+        },
+        "60" : {
+            "name": "Heward's Leathers",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#heward's%20hireling%20armor_llk"
+        },
+        "61" : {
+            "name": "Horn of Valhalla, Bronze",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#horn%20of%20valhalla%2c%20bronze_dmg"
+        },
+        "62" : {
+            "name": "Hunter's Coat",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#hunter's%20coat_egw"
+        },
+        "63" : {
+            "name": "Illusionist's Bracers",
+            "attn": "YES (by a spellcaster)",
+            "desc": "https://5e.tools/items.html#illusionist's%20bracers_ggr"
+        },
+        "64" : {
+            "name": "Ingot of the Skold Rune",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#ingot%20of%20the%20skold%20rune_skt"
+        },
+        "65" : {
+            "name": "Instrument of the Bards (Anstruth Harp)",
+            "attn": "YES (by a bard)",
+            "desc": "https://5e.tools/items.html#instrument%20of%20the%20bards%2c%20anstruth%20harp_dmg"
+        },
+        "66" : {
+            "name": "Ioun Stone (Vitality)",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#ioun%20stone%20of%20vitality_imr"
+        },
+        "67" : {
+            "name": "Ioun Stone (Absorption)",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#ioun%20stone%2c%20absorption_dmg"
+        },
+        "68" : {
+            "name": "Ioun Stone (Agility)",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#ioun%20stone%2c%20agility_dmg"
+        },
+        "69" : {
+            "name": "Ioun Stone (Fortitude)",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#ioun%20stone%20of%20fortitude_imr"
+        },
+        "70" : {
+            "name": "Ioun Stone (Insight)",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#ioun%20stone%20of%20insight_imr"
+        },
+        "71" : {
+            "name": "Ioun Stone (Intellect)",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#ioun%20stone%2c%20intellect_dmg"
+        },
+        "72" : {
+            "name": "Ioun Stone (Leadership)",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#ioun%20stone%2c%20leadership_dmg"
+        },
+        "73" : {
+            "name": "Ioun Stone (Strength)",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#ioun%20stone%2c%20strength_dmg"
+        },
+        "74" : {
+            "name": "Jakarion's Staff of Frost",
+            "attn": "YES (by a druid, sorcerer, warlock, or wizard)",
+            "desc": "https://5e.tools/items.html#jakarion's%20staff%20of%20frost_cos"
+        },
+        "75" : {
+            "name": "Javelin of Backbiting",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#javelin%20of%20backbiting_tftyp"
+        },
+        "76" : {
+            "name": "Kyrzin's Ooze",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#kyrzin's%20ooze_erlw"
+        },
+        "77" : {
+            "name": "Last Stand Armor",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#last%20stand%20armor_egw"
+        },
+        "78" : {
+            "name": "Living Armor",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#living%20armor_erlw"
+        },
+        "79" : {
+            "name": "Lord's Ensemble",
+            "attn": "YES (by a humanoid)",
+            "desc": "https://5e.tools/items.html#lord's%20ensemble_wdh"
+        },
+        "80" : {
+            "name": "Manual of Bodily Health",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#manual%20of%20bodily%20health_dmg"
+        },
+        "81" : {
+            "name": "Manual of Golems",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#manual%20of%20golems_dmg"
+        },
+        "82" : {
+            "name": "Manual of Gainful Exercise",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#manual%20of%20gainful%20exercise_dmg"
+        },
+        "83" : {
+            "name": "Manual of Quickness of Action",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#manual%20of%20quickness%20of%20action_dmg"
+        },
+        "84" : {
+            "name": "Nine Lives Stealer",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#nine%20lives%20stealer_dmg"
+        },
+        "85" : {
+            "name": "Nolzur's Marvelous Pigments",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#nolzur's%20marvelous%20pigments_dmg"
+        },
+        "86" : {
+            "name": "Oathbow",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#oathbow_dmg"
+        },
+        "87" : {
+            "name": "Oil of Sharpness",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#oil%20of%20sharpness_dmg"
+        },
+        "88" : {
+            "name": "Orb of the Veil",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#orb%20of%20the%20veil_egw"
+        },
+        "89" : {
+            "name": "Pennant of the Vind Rune",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#pennant%20of%20the%20vind%20rune_skt"
+        },
+        "90" : {
+            "name": "Peregrine Mask",
+            "attn": "YES",
+            "desc": "While wearing this winged helm, you have a flying speed of 60 feet. In addition, you have advantage on initiative rolls."
+        },
+        "91" : {
+            "name": "Polymorph Blade",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#polymorph%20blade_llk"
+        },
+        "92" : {
+            "name": "Potion of Cloud Giant Strength",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#potion%20of%20cloud%20giant%20strength_dmg"
+        },
+        "93" : {
+            "name": "Potion of Flying",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#potion%20of%20flying_dmg"
+        },
+        "94" : {
+            "name": "Potion of Invisibility",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#potion%20of%20invisibility_dmg"
+        },
+        "95" : {
+            "name": "Potion of Longevity",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#potion%20of%20longevity_dmg"
+        },
+        "96" : {
+            "name": "Potion of Mind Control (monster)",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#potion%20of%20mind%20control%20(monster)_tftyp"
+        },
+        "97" : {
+            "name": "Potion of Possibility",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#potion%20of%20possibility_egw"
+        },
+        "98" : {
+            "name": "Potion of Speed",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#potion%20of%20speed_dmg"
+        },
+        "99" : {
+            "name": "Potion of Supreme Healing",
+            "attn": "NO",
+            "desc": "You regain 10d4 + 20 hit points when you drink this potion. The potion's red liquid glimmers when agitated."
+        },
+        "100" : {
+            "name": "Potion of Vitality",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#potion%20of%20vitality_dmg"
+        },
+        "101" : {
+            "name": "Red Dragon Scale Mail",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#red%20dragon%20scale%20mail_dmg"
+        },
+        "102" : {
+            "name": "Reincarnation Dust",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#reincarnation%20dust_egw"
+        },
+        "103" : {
+            "name": "Ring of Regeneration",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#ring%20of%20regeneration_dmg"
+        },
+        "104" : {
+            "name": "Ring of Shooting Stars",
+            "attn": "YES (outdoors at night)",
+            "desc": "https://5e.tools/items.html#ring%20of%20shooting%20stars_dmg"
+        },
+        "105" : {
+            "name": "Ring of Telekinesis",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#ring%20of%20telekinesis_dmg"
+        },
+        "106" : {
+            "name": "Robe of Scintillating Colors",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#robe%20of%20scintillating%20colors_dmg"
+        },
+        "107" : {
+            "name": "Robe of Stars",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#robe%20of%20stars_dmg"
+        },
+        "108" : {
+            "name": "Rod of Absorption",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#rod%20of%20absorption_dmg"
+        },
+        "109" : {
+            "name": "Rod of Alertness",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#rod%20of%20alertness_dmg"
+        },
+        "110" : {
+            "name": "Rod of Security",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#rod%20of%20security_dmg"
+        },
+        "111" : {
+            "name": "Rotor of Return",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#rotor%20of%20return_ai"
+        },
+        "113" : {
+            "name": "Scimitar of Speed",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#scimitar%20of%20speed_dmg"
+        },
+        "114" : {
+            "name": "Shadowfell Brand Tattoo",
+            "attn": "YES (by visiting a tattoo artist)",
+            "desc": "https://5e.tools/items.html#shadowfell%20brand%20tattoo_ua2020spellsandmagictattoos"
+        },
+        "115" : {
+            "name": "Shard of the Ise Rune",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#shard%20of%20the%20ise%20rune_skt"
+        },
+        "116" : {
+            "name": "Shield of the Uven Rune",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#shield%20of%20the%20uven%20rune_wdmm"
+        },
+        "117" : {
+            "name": "Silver Dragon Scale Mail",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#silver%20dragon%20scale%20mail_dmg"
+        },
+        "118" : {
+            "name": "Sling Bullets of Althemone",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#sling%20bullets%20of%20althemone_mot"
+        },
+        "119" : {
+            "name": "Spear of Backbiting",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#spear%20of%20backbiting_tftyp"
+        },
+        "120" : {
+            "name": "Spell Gem (Amber)",
+            "attn": "MAYBE",
+            "desc": "https://5e.tools/items.html#spell%20gem%20(amber)_oota"
+        },
+        "121" : {
+            "name": "Spell Gem (Jade)",
+            "attn": "MAYBE",
+            "desc": "https://5e.tools/items.html#spell%20gem%20(jade)_oota"
+        },
+        "122" : {
+            "name": "Spell Gem (Topaz)",
+            "attn": "MAYBE",
+            "desc": "https://5e.tools/items.html#spell%20gem%20(topaz)_oota"
+        },
+        "123" : {
+            "name": "Spell Scroll (6th-Level",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#spell%20scroll%20(6th%20level)_dmg"
+        },
+        "124" : {
+            "name": "Spell Scroll (7th-Level",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#spell%20scroll%20(7th%20level)_dmg"
+        },
+        "125" : {
+            "name": "Spell Scroll (8th-Level",
+            "attn": "NO",
+            "desc": "https://5e.tools/items.html#spell%20scroll%20(8th%20level)_dmg"
+        },
+        "126" : {
+            "name": "Spellguard Shield",
+            "attn": "YES",
+            "desc": "While holding this shield, you have advantage on saving throws against spells and other magical effects, and spell attacks have disadvantage against you."
+        },
+        "127" : {
+            "name": "Staff of Dunamancy",
+            "attn": "YES (by a wizard)",
+            "desc": "https://5e.tools/items.html#staff%20of%20dunamancy_egw"
+        },
+        "128" : {
+            "name": "Staff of Fire",
+            "attn": "YES (by a druid, sorcerer, warlock, or wizard)",
+            "desc": "https://5e.tools/items.html#staff%20of%20fire_dmg"
+        },
+        "129" : {
+            "name": "Staff of Frost",
+            "attn": "YES (by a druid, sorcerer, warlock, or wizard)",
+            "desc": "https://5e.tools/items.html#staff%20of%20frost_dmg"
+        },
+        "130" : {
+            "name": "Staff of Power",
+            "attn": "YES (by a druid, sorcerer, warlock, or wizard)",
+            "desc": "https://5e.tools/items.html#staff%20of%20power_dmg"
+        },
+        "131" : {
+            "name": "Staff of Striking",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#staff%20of%20striking_dmg"
+        },
+        "132" : {
+            "name": "Staff of Thunder and Lightning",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#staff%20of%20thunder%20and%20lightning_dmg"
+        },
+        "133" : {
+            "name": "Sword of Sharpness",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#sword%20of%20sharpness_dmg"
+        },
+        "134" : {
+            "name": "Sword of the Paruns",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#sword%20of%20the%20paruns_ggr"
+        },
+        "135" : {
+            "name": "Timepiece of Travel",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#timepiece%20of%20travel_ai"
+        },
+        "136" : {
+            "name": "Tome of Clear Thought",
+            "attn": "NO",
+            "desc": "This book contains memory and logic exercises, and its words are charged with magic. If you spend 48 hours over a period of 6 days or fewer studying the book's contents and practicing its guidelines, your Intelligence score increases by 2, as does your maximum for that score. The manual then loses its magic, but regains it in a century."
+        },
+        "137" : {
+            "name": "Tome of Leadership and Influence",
+            "attn": "NO",
+            "desc": "This book contains guidelines for influencing and charming others, and its words are charged with magic. If you spend 48 hours over a period of 6 days or fewer studying the book's contents and practicing its guidelines, your Charisma score increases by 2, as does your maximum for that score. The manual then loses its magic, but regains it in a century."
+        },
+        "138" : {
+            "name": "Tome of Understanding",
+            "attn": "NO",
+            "desc": "This book contains intuition and insight exercises, and its words are charged with magic. If you spend 48 hours over a period of 6 days or fewer studying the book's contents and practicing its guidelines, your Wisdom score increases by 2, as does your maximum for that score. The manual then loses its magic, but regains it in a century."
+        },
+        "139" : {
+            "name": "Voyager Staff",
+            "attn": "YES (by a spellcaster)",
+            "desc": "https://5e.tools/items.html#voyager%20staff_ggr"
+        },
+        "140" : {
+            "name": "Wand of Polymorph",
+            "attn": "YES (by a spellcaster)",
+            "desc": "https://5e.tools/items.html#wand%20of%20polymorph_dmg"
+        },
+        "141" : {
+            "name": "Wheel of Stars",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#wheel%20of%20stars_ai"
+        },
+        "142" : {
+            "name": "White Dragon Scale Mail",
+            "attn": "YES",
+            "desc": "https://5e.tools/items.html#white%20dragon%20scale%20mail_dmg"
+        }
+
+    }
+}
