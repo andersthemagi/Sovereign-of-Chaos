@@ -159,7 +159,7 @@ class Initiative( commands.Cog, name = "Initiative" ):
         if msg == "nvm":
           await ctx.send("Alright. I'll be on the lookout for when you do want to remove a creature. Carry on!")
           return
-        creature, getInput = self.findCreatureInList( msg )
+        creature, getInput = self.findCreatureinList( msg )
         
       await ctx.send(f"This is the creature I found:\n**('{creature.initCount}') -{creature.name}**")
 
@@ -222,7 +222,7 @@ class Initiative( commands.Cog, name = "Initiative" ):
         if msg == "nvm":
           await ctx.send("Alright. I'll be on the lookout for when you do want to remove a creature. Carry on!")
           return
-        creature, getInput = self.findCreatureInList( msg )
+        creature, getInput = self.findCreatureinList( msg )
         
       await ctx.send(f"This is the creature I found:\n**('{creature.initCount}') -{creature.name}**")
 
@@ -237,8 +237,6 @@ class Initiative( commands.Cog, name = "Initiative" ):
         elif msg.content == "n":
           await ctx.send("Sure. We can go back to make sure you can remove the right creature.")
           awaitingConfirmation = False
-    
-    return 
 
     # Remove character from the initiative order
     self.initOrder.remove(creature)

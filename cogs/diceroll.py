@@ -8,9 +8,11 @@ https://d20.readthedocs.io/en/latest/start.html
 """
 import d20
 from discord.ext import commands
+
 ##############################################
 # Constants and Setup
 ##############################################
+
 class DiceRoll( commands.Cog, name = "DiceRoll" ):
 
   def __init__( self, bot ):

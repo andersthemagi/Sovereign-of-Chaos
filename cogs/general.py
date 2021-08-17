@@ -33,7 +33,7 @@ answers = [
   'Very doubtful.'
 ]
 
-HELP_LINK = "https://magicalmusings.github.io/sovereign/"
+HELP_LINK = "https://andresgsepulveda.github.io/magicalmusings.github.io/sovereign/"
 
 class General(commands.Cog, name = "General"):
 
