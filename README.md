@@ -43,10 +43,10 @@
 A small-scale bot made in Python, capable of handling several D&amp;D related tasks on Discord. Built using Discord.py and hosted on repl.it
 
 Features include:
-* Advice Giving - Essentially an 8-ball, you ask the Traveler a question and he will do his best to answer.
-* Dice Rolling -  Using the d20 package for Python, a custom dice roll interpreter is available for users to type in the roll they want, and the Traveler will provide!
-* Initiative Tracking - The Traveler allows DMs to grab initiative for combat without needing to worry about everyone yelling it at the same time. Upon initialization, the Traveler listens for every valid creature input on the channel until the DM determines the order is complete. Can add, edit, remove, and shuffle the initiative order while it is online.
-* Magic Item Generator - Players (or users) can use the Traveler to determine a random magical item. When rolling, rarity can be set for the following settings currently: Uncommon (UC), Rare (R), and Very Rare (VR)
+* ***Advice Giving*** - Essentially an 8-ball, you ask the Traveler a question and he will do his best to answer.
+* ***Dice Rolling*** -  Using the d20 package for Python, a custom dice roll interpreter is available for users to type in the roll they want, and the Traveler will provide!
+* ***Initiative Tracking*** - The Traveler allows DMs to grab initiative for combat without needing to worry about everyone yelling it at the same time. Upon initialization, the Traveler listens for every valid creature input on the channel until the DM determines the order is complete. Can add, edit, remove, and shuffle the initiative order while it is online.
+* ***Magic Item Generator*** - Players (or users) can use the Traveler to determine a random magical item. When rolling, rarity can be set for the following settings currently: Uncommon (UC), Rare (R), and Very Rare (VR)
 
 ### Built With
 
