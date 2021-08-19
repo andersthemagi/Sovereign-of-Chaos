@@ -2,6 +2,7 @@
 # Package Imports
 ##############################################
 import enum
+import math
 import random
 
 from discord.ext import commands
@@ -167,29 +168,86 @@ class SkillChallenge(
 
   @skillchallenge.command( name = "start" )
   async def startSC( self, ctx ):
+    """
+    Must not already have an active skill challenge.
 
-    # TODO: Implement !sc start command
-
+    Allows the creation of a skill challenge. The Traveler will walk you
+    through 
+    """
     await self.bot.wait_until_ready()
 
     if self.activeSC:
       await self.displayNoActiveSCError( ctx )
       return 
 
-    self.tierData = SC_TIER1_D1
-    self.successLimit = self.tierData.successLimit
+    self.initChannel = ctx.message.channel
+
+    async def checkForValidTier( ctx, msg ):
+      collectingTier = None
+      tier = 0
+      try:
+        tier = int( msg.content )
+        if tier < 1 or tier > 4:
+          await ctx.send("Sorry, that number is outside of the given range. Please try a number between 1-4.")
+          collectingTier = True
+        else:
+          collectingTier = False 
+      except:
+        await ctx.send("Wait a second, that's not a valid number. Try taking a look at the list of possible options and try again.")
+        collectingTier = True 
+      return collectingTier, tier
 
     # Choose a tier of play
-    # collectingTier = True 
-    # while collectingTier:
-      # pass
+    displayStr = f"```md\n1. {TIER_1_STR}\n2. {TIER_2_STR}\n"
+    displayStr += f"3. {TIER_3_STR}\n4. {TIER_4_STR}\n```"
+    await ctx.send(displayStr)
+    await ctx.send("Which tier of play would you like to use (1-4)?")
+    collectingTier = True 
+    while collectingTier:
+      msg = await self.bot.wait_for("message")
+      collectingTier, tier = await checkForValidTier( ctx, msg )
+
+    async def checkForValidDifficulty( ctx, msg ):
+      collectingDifficulty = None
+      difficulty = 0
+      try:
+        difficulty = int( msg.content )
+        if difficulty < 1 or difficulty > 3:
+          await ctx.send("Sorry, that number is outside of the given range. Please try a number between 1-3.")
+          collectingDifficulty = True 
+        else:
+          collectingDifficulty = False
+      except:
+        await ctx.send("Wait a second, that's not a valid number. Try taking a look at the list of possible options and try again.")
+        collectingDifficulty = True 
+      return collectingDifficulty, difficulty
 
     # Choose a difficulty setting
-    # collectingDifficulty = True 
-    # while collectingDifficulty:
-      # pass
+    displayStr = f"```md\n1. Easy\n2. Medium\n3. Hard\n```"
+    await ctx.send(displayStr)
+    await ctx.send("What difficulty will this challenge be (1-3)?")
+    collectingDifficulty = True 
+    while collectingDifficulty:
+      msg = await self.bot.wait_for("message")
+      collectingDifficulty, difficulty = await checkForValidDifficulty( ctx, msg )
 
-    # Collect initiative order 
+    presetStr = f"SC_TIER{tier}_D{difficulty}"
+    self.tierData = globals()[presetStr]
+    self.successLimit = self.tierData.successLimit
+
+    # Collect initiative order
+    await ctx.send("----------")
+    await ctx.send("Accepting input for characters!\n\nPlease type in '<name> <roll>' into the chat and I'll make a note of it. Example ```'Flint 13' OR\n'13 Flint' OR\n'Diva 13 Thiccums'```")
+    await ctx.send("----------")
+    await self.getInitOrder( ctx )
+
+    self.sortInitOrder()
+    await self.checkDuplicateCounts( ctx )
+
+    await ctx.send("----------")
+    await ctx.send("Skill Challenge initiated!")
+
+    await self.displaySCStats( ctx )
 
     # Display order + used skills to the users
     self.activeSC = True 
@@ -288,15 +346,21 @@ class SkillChallenge(
 
   @skillchallenge.command( name = "end" )
   async def endSC( self, ctx ):
+    """
+    Must have a skill challenge already active.
 
-    # TODO: Implement !sc end command
-
+    Ends the current skill challenge tracking, outputting the current
+    status back to the user and reseting internal variables.
+    """
     await self.bot.wait_until_ready()
 
     if not self.activeSC: 
       await self.displayNoActiveSCError( ctx )
       return 
 
+    await ctx.send("The skill challenge has been ended abruptly!")
+
+    await self.displaySCStats()
     
     self.resetSCVars()
 
@@ -305,6 +369,73 @@ class SkillChallenge(
   ##############################################
   # Support Functions 
   ##############################################
+  async def checkDuplicateCounts( self, ctx ):
+    """
+    Checks the initiative count list to ensure there 
+    are no duplicates, and handles duplicates by creating
+    'decimal initiative'. 
+    """
+    # Support function to make sure input is correct 
+    def check(msg):
+      return msg.content == "1" or msg.content == "2"
+
+    noConflicts = False 
+    conflict = False
+    # While there are stil lconflicts in the list 
+    while not noConflicts:
+      totalCreatures = len(self.initOrder)
+
+      conflict = False # used to make sure we need to check again
+      # Loop through the whole list 
+      for i in range(0, totalCreatures):
+        # if we're not at the end
+        if i != totalCreatures - 1:
+
+          creature = self.initOrder[i]
+          nextCreature = self.initOrder[i+1]
+          # if these creatures have the same initiative count
+          if creature.initCount == nextCreature.initCount:
+            conflict = True
+
+            # Display the conflicting creatures
+            messageStr = f"WARNING: One or more creatures has the same initiative count '{creature.initCount}':\n"
+            messageStr += f"1. {creature.name}\n"
+            messageStr += f"2. {nextCreature.name}\n"
+            messageStr += "Which creature would you like to go first (1 or 2)?"
+
+            # check for user input that is within given constraints
+            await ctx.send(messageStr)
+            msg = await self.bot.wait_for("message", check=check)
+
+            # turn the creature's initiative count into a string
+            initStr = str(math.floor(creature.initCount))
+            # add the string to the conflicts list
+            if initStr in self.conflicts:
+              self.conflicts[initStr] += 1
+            else:
+              self.conflicts[initStr] = 1
+
+            # Calculate the new count based on how many conflicts:
+            # 1 conflict = 0.5, 2 = 0.25, etc. The decimal is added to the initiative count
+            # in order to resolve the conflict while still maintaining order
+            newCount = creature.initCount + 1 / (2 * self.conflicts[initStr])
+            newCount = round(newCount, 3)
+
+            if msg.content == "1":
+              creature.initCount = newCount
+              await ctx.send(f"Alright! Creature '{creature.name}' has been updated with an initiative count of '{creature.initCount}'.")
+            elif msg.content == "2":
+              nextCreature.initCount = newCount
+              await ctx.send(f"Alright! Creature '{nextCreature.name}' has been updated with an initiative count of '{nextCreature.initCount}'.")
+            break
+          # We keep looping until there are guaranteed no conflicts
+          elif i + 1 == totalCreatures - 1 and not conflict:
+            noConflicts = True
+      # re-sort the initiative order to make sure everything is correct
+      self.sortInitOrder()
+
+    return
+  
   async def displayActiveSCError( self, ctx):
     """
     Shows an error regarding already having a current active skill challenge.
@@ -416,7 +547,8 @@ class SkillChallenge(
     # else:
       # displayStr += "NONE\n"
 
-    displayStr += "\n"
+    if not self.checkActionListsEmpty():
+      displayStr += "\n"
 
     # Show initiative order
     if len(self.initOrder) > 0:
@@ -435,6 +567,88 @@ class SkillChallenge(
     displayStr +="```"
 
     return await ctx.send( displayStr )
+
+  async def getInitOrder( self , ctx ):
+    """
+    Helper Function for '!sc start' command.
+    Handles the collecting of initiative until the typing
+    of done is completed.
+    """
+    async def checkMsg( ctx, msg ):
+      """
+      Helper function for '!s init start' command.
+
+      Assists with determining whether or not message is 
+      properly formatted / has relevant data to add to the initiative order.
+      """
+      content = msg.content
+      channel = msg.channel
+      try:
+
+        # If the channel is different than the starting channel for initiative
+        if channel != self.initChannel:
+          return True
+        # If someone indicates we're finished
+        elif content == "done":
+          return False
+
+        # if creature is designated an ally
+        if "ALLY" in content:
+          content = content.replace("ALLY", "")
+          ctype = SC_CreatureType.ALLY
+        # if creature is designated an enemy
+        elif "ENEMY" in content:
+          content = content.replace("ENEMY", "")
+          ctype = SC_CreatureType.ENEMY
+        # otherwise, it must be a player
+        elif "COMPLICATION" in content:
+          content = content.replace("COMPLICATION", "")
+          ctype = SC_CreatureType.COMPLICATION
+        else:
+          ctype = SC_CreatureType.PLAYER
+          
+        # parse the number from the message
+        numbers = [int(word) for word in content.split() if word.isdigit()]
+        # get the rest of the message
+        words = [word for word in content.split() if not word.isdigit()]
+        
+        # Combine the words together into the creature's name
+        name = ""
+        wordCount = 0
+        for word in words:
+          if wordCount > 0:
+            name += " "
+          name += word
+          wordCount += 1
+          
+        # get the initiative count from numbers
+        initCount = numbers[0]
+        # Add the creature to the initiative count
+        newCreature = SC_Creature( name, initCount , ctype )
+        self.initOrder.append( newCreature )
+        # let the user know the creature was successfully added
+        await ctx.send(f"Creature '{name}' with initiative count '{initCount}' added!")
+        return True  
+      # Something was not right about the creature
+      except:
+        await ctx.send("Huh. That doesn't look right. Try sending it again in the following format. ```<name> <roll> OR <roll> <name>\nExample: 'Flint 13' OR '13 Flint'```")
+        return True
+
+    # Collect initiative 
+    collectInitiative = True 
+    while collectInitiative:
+      msg = await self.bot.wait_for("message")
+      collectInitiative = await checkMsg( ctx, msg )
+
+    # Sort the list
+    self.sortInitOrder()
+    # Check if there are duplicate initiative counts
+    await self.checkDuplicateCounts( ctx )
+
+    await ctx.send("----------")
+    await ctx.send("Initiative Order collected!")
+
+    return 
 
   def addActionToLst( self, action ):
     """
@@ -473,7 +687,6 @@ class SkillChallenge(
       return False 
     return True
 
-
   def resetSCVars( self ):
     """
     Resets all challenge-specific variables to their default
@@ -482,6 +695,8 @@ class SkillChallenge(
     self.activeSC = False 
     self.fails = 0
     self.successes = 0
+    self.successLimit = 0
+    self.initChannel = None
     self.initOrder = []
     self.lockedAttacks = []
     self.lockedItems = []
@@ -489,6 +704,10 @@ class SkillChallenge(
     self.lockedSpells = []
     self.lockedOther = []
     return
+
+  def sortInitOrder( self ):
+    self.initOrder.sort( key = lambda x: x.initCount, reverse = True )
+    return 
 
 ##############################################
 # Setup Function for SkillChallenge Cog
