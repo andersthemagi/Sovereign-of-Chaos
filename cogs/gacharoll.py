@@ -38,7 +38,7 @@ class GachaRoll( commands.Cog, name = "gacharoll"):
   @commands.group( name = "gacharoll", aliases = ["gr"] )
   async def gacharoll( self, ctx ): 
     if ctx.invoked_subcommand is None:
-      await ctx.send("ERROR: GachaRoll command(s) improperly invoked. Please see '!s help' for a list of commands and usage examples.")
+      await ctx.send("ERROR: GachaRoll command(s) improperly invoked. Please see '!help' for a list of commands and usage examples.")
     return
 
   @gacharoll.command( name = "uncommon", aliases = ["UC", "uc"])

@@ -45,7 +45,7 @@ class Initiative( commands.Cog, name = "Initiative" ):
   @commands.group( name = "initiative", aliases = ["init", "i"] )
   async def initiative( self, ctx ):
     if ctx.invoked_subcommand is None:
-      await ctx.send( "ERROR: Initiative command(s) improperly invoked. Please see '!s help' for a list of commands and usage examples." )
+      await ctx.send( "ERROR: Initiative command(s) improperly invoked. Please see '!help' for a list of commands and usage examples." )
     return
 
   @initiative.command( name = "start")
