@@ -59,12 +59,12 @@ Features include:
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-_For examples and a list of commands, please refer to the [Documentation](https://magicalmusings.github.io/sovereign/)_
+_For examples and a list of commands, please refer to the [Documentation](https://andresgsepulveda.github.io/magicalmusings.github.io/sovereign/).
 
 <!-- ROADMAP -->
 ## Roadmap
 
-See the [open issues](https://github.com/andresgsepulveda/Sovereign-of-Chaos/issues) for a list of proposed features (and known issues).
+See the [open issues](https://github.com/andresgsepulveda/Sovereign-of-Chaos/issues) for a list of proposed features (and known issues). Feel free to suggest new functionality, potential bug fixes, or errata in the documentation if you find them!
 
 <!-- CONTRIBUTING -->
 ## Contributing
