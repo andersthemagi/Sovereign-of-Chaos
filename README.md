@@ -59,7 +59,7 @@ Features include:
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-_For examples and a list of commands, please refer to the [Documentation](https://andresgsepulveda.github.io/magicalmusings.github.io/sovereign/).
+For examples and a list of commands, please refer to the [Documentation](https://andresgsepulveda.github.io/magicalmusings.github.io/sovereign/).
 
 <!-- ROADMAP -->
 ## Roadmap
