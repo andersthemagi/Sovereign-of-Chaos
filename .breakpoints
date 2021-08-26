@@ -1,11 +1,19 @@
 {
   "files": {
+    "cogs/initiative.py": [
+      {
+        "id": "e87143a7-4633-4070-bf9d-d872f21a2a79",
+        "line": 219,
+        "version": 20057,
+        "index": 7332
+      }
+    ],
     "cogs/skillchallenge.py": [
       {
         "id": "36b6d86e-9f21-4c11-8047-ff6e04d236c5",
-        "line": 547,
-        "version": 11957,
-        "index": 16976
+        "line": 336,
+        "version": 13946,
+        "index": 10559
       }
     ]
   }
