@@ -168,9 +168,7 @@ SC_TIER4_D1 = SC_TierData( "Masters of the World (15-20th+ level) - Easy Difficu
 SC_TIER4_D2 = SC_TierData( "Masters of the World (15-20th+ level) - Medium Difficulty", COMPLICATION_MOD_DAUNTING, 4, 2)
 SC_TIER4_D3 = SC_TierData( "Masters of the World (15-20th+ level) - Hard Difficulty", COMPLICATION_MOD_FORMIDABLE, 4, 3)
 
-class SkillChallenge(
-  commands.Cog,
-  name = "Skill Challenge" ):
+class SkillChallenge( commands.Cog, name = "Skill Challenge" ):
 
   ##############################################
   # SkillChallenge Cog Initialization
@@ -195,7 +193,7 @@ class SkillChallenge(
     Must not already have an active skill challenge.
 
     Allows the creation of a skill challenge. The Traveler will walk you
-    through 
+    through how to do that through questions and example input. 
     """
     await self.bot.wait_until_ready()
 
@@ -203,9 +201,13 @@ class SkillChallenge(
       await self.displayNoActiveSCError( ctx )
       return 
 
+    # Set channel 
     self.initChannel = ctx.message.channel
 
     async def checkForValidTier( ctx, msg ):
+      """
+      Support function for '!sc start' command. Checks whether a given integer represents a valid tier of gameplay.
+      """
       collectingTier = None
       tier = 0
       try:
@@ -231,6 +233,9 @@ class SkillChallenge(
       collectingTier, tier = await checkForValidTier( ctx, msg )
 
     async def checkForValidDifficulty( ctx, msg ):
+      """
+      Support function for '!sc start' command. Checks whether a given integer represents a valid difficulty setting. 
+      """
       collectingDifficulty = None
       difficulty = 0
       try:
@@ -276,9 +281,11 @@ class SkillChallenge(
 
   @skillchallenge.command( name = "add" )
   async def addSCAction( self, ctx ):
+    """
+    Must have an active skill challenge to use.
 
-    # TODO: Implement !sc add command
-
+    Allows the user to add an action of different types (attack, item, skill, spell, or other) and determine success/failure.
+    """
     await self.bot.wait_until_ready()
 
     if not self.activeSC:
@@ -290,6 +297,9 @@ class SkillChallenge(
     ]
 
     async def checkMsgForActionType( ctx, msg ):
+      """
+      Support function for '!sc add' command. Checks whether a given string contains a valid option for action collection.
+      """
       actionType = None
       content = msg.content.lower()
       if content in validActions:
@@ -331,226 +341,9 @@ class SkillChallenge(
     # Display current status to the party
     await self.displaySCStats( ctx )
 
-    pass
-
-  def checkForStartVowel( self, inStr ):
-    checkStr = inStr.lower()
-    vowels = ["a", "e", "i", "o", "u"]
-
-    for vowel in vowels:
-      if checkStr.startswith(vowel):
-        return True 
-
-    return False 
-
-  async def resolveSCAttack( self, ctx ):
-
-    # Who made the roll?
-    await ctx.send("Ah an attack was made. Who made said attack?")
-    msg = await self.bot.wait_for("message")
-    creatureName = msg.content
-
-    # Name of attack
-    await ctx.send(f"So {creatureName} made an attack? With what, exactly?")
-    msg = await self.bot.wait_for("message")
-    tool = msg.content
-      
-    if self.checkForStartVowel( tool ):
-      indefArticle = "an"
-    else:
-      indefArticle = "a"
-
-    # Add skill to the list
-    skillName = f"{tool}[{creatureName}]"
-    newAction = SC_LockableSkill( skillName, SC_ActionType.ATTACK )
-    self.addActionToLst( newAction )
-
-    await ctx.send(f"{creatureName} attacked with {indefArticle} {tool}, then. Did they manage to hit?")
-
-    # Output success / failure
-    collectingResponse = True
-    while collectingResponse:
-      msg = await self.bot.wait_for("message")
-      content = msg.content.lower()
-      collectingResponse = await self.checkValidYNResponse( ctx , content )
-
     return 
 
-  async def checkValidYNResponse( self , ctx , inStr ):
-
-    if inStr in AFFIRMATIVES:
-      await ctx.send("Wonderful! I've added a success to your count then.")
-      self.successes += 1
-      return False 
-    elif inStr in NEGATIVES:
-      await ctx.send("I see. There's always next time, I suppose. A failure has been added to your count.")
-      self.fails += 1
-      return False 
-    else:
-      await ctx.send("I couldn't recognize whether that was an affirmative or negative response. Try using one of the examples below:")
-      displayStr = "```md\nAffirmatives: "
-      for word in AFFIRMATIVES:
-        displayStr += f"{word}, "
-      displayStr = displayStr[:-2] + "\n"
-      displayStr += "Negatives: "
-      for word in NEGATIVES:
-        displayStr += f"{word}, "
-      displayStr = displayStr[:-2]
-      displayStr += "\n```"
-      await ctx.send(displayStr)
-      return True 
-
-  async def resolveSCItem( self, ctx ):
-
-    # Name of item?
-    await ctx.send("Okay an item was used, I can work with that. Who used that item?")
-    msg = await self.bot.wait_for("message")
-    creatureName = msg.content
-
-    await ctx.send(f"So {creatureName} used an item? What was it?")
-    msg = await self.bot.wait_for("message")
-    item = msg.content
-
-    skillName = f"{item}[{creatureName}]"
-    newAction = SC_LockableSkill( skillName, SC_ActionType.ITEM )
-    self.addActionToLst( newAction )
-
-    if self.checkForStartVowel( item ):
-      indefArticle = "an"
-    else:
-      indefArticle = "a"
-
-    # Did it succeed?
-    await ctx.send(f"{creatureName} used {indefArticle} {item}, got it. Did the item work?")
-
-    # Output success / failure
-    collectingResponse = True
-    while collectingResponse:
-      msg = await self.bot.wait_for("message")
-      content = msg.content.lower()
-      collectingResponse = await self.checkValidYNResponse( ctx, content )
-
-    return 
-
-  async def resolveSCOther( self, ctx ):
-
-    # Name of creature
-    await ctx.send("So you don't really have an idea what ***kind*** of thing just happened. Fair enough, to be honest with you. Who performed the action?")
-    msg = await self.bot.wait_for("message")
-    creatureName = msg.content
-
-    # Name of action
-    await ctx.send(f"Okay, so {creatureName} did it. What did they do?")
-    msg = await self.bot.wait_for("message")
-    actionName = msg.content 
-
-    skillName = f"{actionName}[{creatureName}]"
-    newAction = SC_LockableSkill( skillName, SC_ActionType.OTHER )
-    self.addActionToLst( newAction )
-
-    await ctx.send(f"{creatureName} did '{actionName}'. Interesting. Did it succeed even?")
-
-    collectingResponse = True
-    while collectingResponse:
-      msg = await self.bot.wait_for("message")
-      content = msg.content.lower()
-      collectingResponse = await self.checkValidYNResponse( ctx, content )
-
-    return
-
-  async def resolveSCSkill( self, ctx ):
-
-    # Who used the skill?
-    await ctx.send("A skill was used! Who used it?")
-    msg = await self.bot.wait_for("message")
-    creatureName = msg.content 
-
-    # Name of skill?
-    await ctx.send(f"Which skill did {creatureName} use?")
-    msg = await self.bot.wait_for("message")
-    skillName = msg.content 
-
-    lockableName = f"{skillName}[{creatureName}]"
-    newAction = SC_LockableSkill( lockableName, SC_ActionType.SKILL )
-    self.addActionToLst( newAction )
-
-    # Roll?
-    await ctx.send(f"What did {creatureName} roll for '{skillName}'?")
-    collectingRoll = True 
-    while collectingRoll:
-      try:
-        msg = await self.bot.wait_for("message")
-        roll = int(msg.content)
-        collectingRoll = False 
-      except:
-        await ctx.send("I don't think that was something I could use as a number. Try to type in a number like `1` or `-200` or something.")
-
-    # Check roll against DC
-    if roll < self.skillDC:
-      await ctx.send(f"A **{roll}** does not succeed on a **DC {self.skillDC}** check. One (1) failure for the party with debatable morals!")
-      self.successes += 1
-    else:
-      await ctx.send(f"A **{roll}** beats or meets a **{self.skillDC}**! I'll add a success to your current challenge.")
-      self.fails += 1
-
-    return 
-
-  async def resolveSCSpell( self, ctx ):
-
-    # Who cast the spell?
-    await ctx.send("Might ***AND*** Magic! Who used that spell?")
-    msg = await self.bot.wait_for("message")
-    creatureName = msg.content
-
-    # Name of spell?
-    await ctx.send(f"What spell did {creatureName} use?")
-    msg = await self.bot.wait_for("message")
-    spellName = msg.content
-
-    # Level of spell?
-    collectingLvl = True
-    await ctx.send(f"What level spell is {spellName}?")
-    while collectingLvl:
-      try:
-        msg = await self.bot.wait_for("message")
-        spellLvl = int(msg.content)
-        collectingLvl = False
-      except:
-        await ctx.send("I don't think that was a number. Please try with a valid number. ")
-
-    lockableName = f"{spellName}({spellLvl})[{creatureName}]"
-    newAction = SC_LockableSkill( lockableName, SC_ActionType.SPELL )
-    self.addActionToLst( newAction )
-
-    if spellLvl == 0:
-      suffix = "th"
-    if spellLvl == 1:
-      suffix = "st"
-    elif spellLvl == 2:
-      suffix = "nd"
-    elif spellLvl == 3:
-      suffix = "rd"
-    else:
-      suffix = "th"
-
-    # Did it succeed?
-    displayStr = f"Great! So {creatureName} cast {spellName} at {spellLvl}{suffix}-lvl "
-    if spellLvl == 0:
-      displayStr += "(cantrip)"
-    displayStr += f". Did it succeed?"
-    await ctx.send(displayStr)
-    
-    collectingResponse = True
-    while collectingResponse:
-      msg = await self.bot.wait_for("message")
-      content = msg.content.lower()
-      collectingResponse = await self.checkValidYNResponse( ctx, content )
-
-    # output success / failure
-
-    return
-
-  @skillchallenge.command( name = "display" )
+  @skillchallenge.command( name = "display" , aliases = ["d","dis"] )
   async def displaySC( self, ctx ):
     """
     Must have an active skill challenge to use.
@@ -584,11 +377,15 @@ class SkillChallenge(
 
     await ctx.send("The skill challenge has been ended abruptly!")
 
-    await self.displaySCStats()
+    await self.displaySCStats( ctx )
     
     self.resetSCVars()
 
     return
+
+  ##############################################
+  # Initiative Sub Commands
+  ##############################################
 
   @skillchallenge.group( name = "init" )
   async def initiative( self, ctx ):
@@ -596,7 +393,7 @@ class SkillChallenge(
       await ctx.send( "ERROR: Skill Challenge command(s) improperly invoked. Please see '!help' for a list of commands and usage examples." )
     return
 
-  @initiative.command( name = "add")
+  @initiative.command( name = "add" )
   async def addSCInitCreature( self, ctx ):
     """
     Must have a skill challenge active in order to use. 
@@ -627,7 +424,6 @@ class SkillChallenge(
     Must have an active skill challenge to use.
     Allows the editing of initiative count for a creature in the order.
     """
-
     await self.bot.wait_until_ready()
 
     if not self.activeSC:
@@ -778,6 +574,9 @@ class SkillChallenge(
   ##############################################
   # Support Functions 
   ##############################################
+
+  # ASYNC SUPPORT FUNCTIONS 
+
   async def checkDuplicateCounts( self, ctx ):
     """
     Checks the initiative count list to ensure there 
@@ -845,8 +644,36 @@ class SkillChallenge(
 
     return
 
+  async def checkValidYNResponse( self , ctx , inStr ):
+    """
+    Support function for '!sc add' command. Used to check whether a valid yes/no response has been received. 
+    """
+    if inStr in AFFIRMATIVES:
+      await ctx.send("Wonderful! I've added a success to your count then.")
+      self.successes += 1
+      return False 
+    elif inStr in NEGATIVES:
+      await ctx.send("I see. There's always next time, I suppose. A failure has been added to your count.")
+      self.fails += 1
+      return False 
+    else:
+      await ctx.send("I couldn't recognize whether that was an affirmative or negative response. Try using one of the examples below:")
+      displayStr = "```md\nAffirmatives: "
+      for word in AFFIRMATIVES:
+        displayStr += f"{word}, "
+      displayStr = displayStr[:-2] + "\n"
+      displayStr += "Negatives: "
+      for word in NEGATIVES:
+        displayStr += f"{word}, "
+      displayStr = displayStr[:-2]
+      displayStr += "\n```"
+      await ctx.send(displayStr)
+      return True 
+
   async def checkWinCon( self, ctx ):
-    
+    """
+    Support function for '!sc add' function. Checks whether a win condition has been met for the skill challenge.
+    """
     if self.successes >= self.successLimit:
       await ctx.send("Great success! You've won this skill challenge, this time around.")
       await self.endSC( ctx )
@@ -856,6 +683,8 @@ class SkillChallenge(
       await ctx.send("You have failed this skill challenge. Sad!")
       await self.endSC( ctx )
       return 
+
+    return    
   
   async def displayActiveSCError( self, ctx):
     """
@@ -1091,6 +920,201 @@ class SkillChallenge(
 
     return 
 
+  async def resolveSCAttack( self, ctx ):
+    """
+    Support function for '!sc add' command. Resolves the addition of an executed attack to the skill challenge
+    """
+    # Who made the roll?
+    await ctx.send("Ah an attack was made. Who made said attack?")
+    msg = await self.bot.wait_for("message")
+    creatureName = msg.content
+
+    # Name of attack
+    await ctx.send(f"So {creatureName} made an attack? With what, exactly?")
+    msg = await self.bot.wait_for("message")
+    tool = msg.content
+      
+    if self.checkForStartVowel( tool ):
+      indefArticle = "an"
+    else:
+      indefArticle = "a"
+
+    # Add skill to the list
+    skillName = f"{tool}[{creatureName}]"
+    newAction = SC_LockableSkill( skillName, SC_ActionType.ATTACK )
+    self.addActionToLst( newAction )
+
+    await ctx.send(f"{creatureName} attacked with {indefArticle} {tool}, then. Did they manage to hit?")
+
+    # Output success / failure
+    collectingResponse = True
+    while collectingResponse:
+      msg = await self.bot.wait_for("message")
+      content = msg.content.lower()
+      collectingResponse = await self.checkValidYNResponse( ctx , content )
+
+    return
+
+  async def resolveSCItem( self, ctx ):
+    """
+    Support function for '!sc add' command. Resolves the addition of a used item to the skill challenge
+    """
+    # Name of item?
+    await ctx.send("Okay an item was used, I can work with that. Who used that item?")
+    msg = await self.bot.wait_for("message")
+    creatureName = msg.content
+
+    await ctx.send(f"So {creatureName} used an item? What was it?")
+    msg = await self.bot.wait_for("message")
+    item = msg.content
+
+    skillName = f"{item}[{creatureName}]"
+    newAction = SC_LockableSkill( skillName, SC_ActionType.ITEM )
+    self.addActionToLst( newAction )
+
+    if self.checkForStartVowel( item ):
+      indefArticle = "an"
+    else:
+      indefArticle = "a"
+
+    # Did it succeed?
+    await ctx.send(f"{creatureName} used {indefArticle} {item}, got it. Did the item work?")
+
+    # Output success / failure
+    collectingResponse = True
+    while collectingResponse:
+      msg = await self.bot.wait_for("message")
+      content = msg.content.lower()
+      collectingResponse = await self.checkValidYNResponse( ctx, content )
+
+    return 
+
+  async def resolveSCOther( self, ctx ):
+    """
+    Support function for '!sc add' command. Resolves the addition of an action to the skill challenge that doesn't already have a category.
+    """
+    # Name of creature
+    await ctx.send("So you don't really have an idea what ***kind*** of thing just happened. Fair enough, to be honest with you. Who performed the action?")
+    msg = await self.bot.wait_for("message")
+    creatureName = msg.content
+
+    # Name of action
+    await ctx.send(f"Okay, so {creatureName} did it. What did they do?")
+    msg = await self.bot.wait_for("message")
+    actionName = msg.content 
+
+    skillName = f"{actionName}[{creatureName}]"
+    newAction = SC_LockableSkill( skillName, SC_ActionType.OTHER )
+    self.addActionToLst( newAction )
+
+    await ctx.send(f"{creatureName} did '{actionName}'. Interesting. Did it succeed even?")
+
+    collectingResponse = True
+    while collectingResponse:
+      msg = await self.bot.wait_for("message")
+      content = msg.content.lower()
+      collectingResponse = await self.checkValidYNResponse( ctx, content )
+
+    return
+
+  async def resolveSCSkill( self, ctx ):
+    """
+    Support function for '!sc add' command. Resolves the addition of a used skill to the skill challenge
+    """
+    # Who used the skill?
+    await ctx.send("A skill was used! Who used it?")
+    msg = await self.bot.wait_for("message")
+    creatureName = msg.content 
+
+    # Name of skill?
+    await ctx.send(f"Which skill did {creatureName} use?")
+    msg = await self.bot.wait_for("message")
+    skillName = msg.content 
+
+    lockableName = f"{skillName}[{creatureName}]"
+    newAction = SC_LockableSkill( lockableName, SC_ActionType.SKILL )
+    self.addActionToLst( newAction )
+
+    # Roll?
+    await ctx.send(f"What did {creatureName} roll for '{skillName}'?")
+    collectingRoll = True 
+    while collectingRoll:
+      try:
+        msg = await self.bot.wait_for("message")
+        roll = int(msg.content)
+        collectingRoll = False 
+      except:
+        await ctx.send("I don't think that was something I could use as a number. Try to type in a number like `1` or `-200` or something.")
+
+    # Check roll against DC
+    if roll < self.skillDC:
+      await ctx.send(f"A **{roll}** does not succeed on a **DC {self.skillDC}** check. One (1) failure for the party with debatable morals!")
+      self.successes += 1
+    else:
+      await ctx.send(f"A **{roll}** beats or meets a **{self.skillDC}**! I'll add a success to your current challenge.")
+      self.fails += 1
+
+    return 
+
+  async def resolveSCSpell( self, ctx ):
+    """
+    Support function for '!sc add' command. Resolves the addition of a cast spell to the skill challenge
+    """
+    # Who cast the spell?
+    await ctx.send("Might ***AND*** Magic! Who used that spell?")
+    msg = await self.bot.wait_for("message")
+    creatureName = msg.content
+
+    # Name of spell?
+    await ctx.send(f"What spell did {creatureName} use?")
+    msg = await self.bot.wait_for("message")
+    spellName = msg.content
+
+    # Level of spell?
+    collectingLvl = True
+    await ctx.send(f"What level spell is {spellName}?")
+    while collectingLvl:
+      try:
+        msg = await self.bot.wait_for("message")
+        spellLvl = int(msg.content)
+        collectingLvl = False
+      except:
+        await ctx.send("I don't think that was a number. Please try with a valid number. ")
+
+    lockableName = f"{spellName}({spellLvl})[{creatureName}]"
+    newAction = SC_LockableSkill( lockableName, SC_ActionType.SPELL )
+    self.addActionToLst( newAction )
+
+    if spellLvl == 0:
+      suffix = "th"
+    if spellLvl == 1:
+      suffix = "st"
+    elif spellLvl == 2:
+      suffix = "nd"
+    elif spellLvl == 3:
+      suffix = "rd"
+    else:
+      suffix = "th"
+
+    # Did it succeed?
+    displayStr = f"Great! So {creatureName} cast {spellName} at {spellLvl}{suffix}-lvl "
+    if spellLvl == 0:
+      displayStr += "(cantrip)"
+    displayStr += f". Did it succeed?"
+    await ctx.send(displayStr)
+    
+    collectingResponse = True
+    while collectingResponse:
+      msg = await self.bot.wait_for("message")
+      content = msg.content.lower()
+      collectingResponse = await self.checkValidYNResponse( ctx, content )
+
+    # output success / failure
+
+    return
+
+  # SYNCHRONOUS SUPPORT FUNCTIONS
+
   def addActionToLst( self, action ):
     """
     Adds a given SC_LockableSkill type object to the list containing objects of its type. 
@@ -1127,6 +1151,19 @@ class SkillChallenge(
     elif len(self.lockedOther) > 0:
       return False 
     return True
+
+  def checkForStartVowel( self, inStr ):
+    """
+    Checks whether a given string starts with a vowel. 
+    """
+    checkStr = inStr.lower()
+    vowels = ["a", "e", "i", "o", "u"]
+
+    for vowel in vowels:
+      if checkStr.startswith(vowel):
+        return True 
+
+    return False
 
   def findCreatureInList( self , msg ):
     """
@@ -1169,8 +1206,13 @@ class SkillChallenge(
     return
 
   def sortInitOrder( self ):
+    """
+    Sorts the initiative order list by initiative count, with the highest value being at the front of the list.
+    """
     self.initOrder.sort( key = lambda x: x.initCount, reverse = True )
     return 
+
+  # End of SkillChallenge Cog
 
 ##############################################
 # Setup Function for SkillChallenge Cog

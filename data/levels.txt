@@ -1,0 +1,22 @@
+Level 1 -       0 XP
+Level 2 -      16 XP
+Level 3 -      81 XP
+Level 4 -     256 XP
+Level 5 -     625 XP
+Level 6 -    1296 XP
+Level 7 -    2401 XP 
+Level 8 -    4096 XP 
+Level 9 -    6561 XP
+Level 10 -  10000 XP
+Level 11 -  14641 XP
+Level 12 -  20736 XP
+Level 13 -  28561 XP
+Level 14 -  38416 XP
+Level 15 -  50625 XP
+Level 16 -  65536 XP
+Level 17 -  83521 XP
+Level 18 - 104976 XP
+Level 19 - 130321 XP
+Level 20 - 160000 XP
+
+exp levels = floor( experience ** 1/4 )

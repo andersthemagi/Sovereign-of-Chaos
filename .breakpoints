@@ -10,10 +10,16 @@
     ],
     "cogs/skillchallenge.py": [
       {
+        "id": "65080c4d-1ae0-4698-b013-21a715d8cd9a",
+        "line": 231,
+        "version": 23543,
+        "index": 7058
+      },
+      {
         "id": "36b6d86e-9f21-4c11-8047-ff6e04d236c5",
-        "line": 336,
-        "version": 13946,
-        "index": 10559
+        "line": 422,
+        "version": 23543,
+        "index": 13424
       }
     ]
   }

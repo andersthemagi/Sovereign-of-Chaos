@@ -10,6 +10,8 @@ discord = "^1.0.1"
 replit = "^3.2.4"
 Flask = "^2.0.1"
 d20 = "^1.1.2"
+repl = "^1.0"
+mysql-connector = "^2.2.9"
 
 [tool.poetry.dev-dependencies]
 

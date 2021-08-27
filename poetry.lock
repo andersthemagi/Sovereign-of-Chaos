@@ -207,6 +207,25 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
+name = "mysql-connector"
+version = "2.2.9"
+description = "MySQL driver written in Python"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "repl"
+version = "1.0"
+description = "Run command as REPL-environment (useful for git!)."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+click = "*"
+
+[[package]]
 name = "replit"
 version = "3.2.4"
 description = "A library for interacting with features of repl.it"
@@ -286,7 +305,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "5514130dc6cae549c89e49c842bccc93ccbca780c16d0f5b2f90e1b8fb60cfd3"
+content-hash = "fc68287e1b1c3cd84a9e0fb2e444295dd1fd7817da9c0580784dafee179a48a5"
 
 [metadata.files]
 aiohttp = [
@@ -485,6 +504,12 @@ multidict = [
     {file = "multidict-5.1.0-cp39-cp39-win32.whl", hash = "sha256:fc13a9524bc18b6fb6e0dbec3533ba0496bbed167c56d0aabefd965584557d80"},
     {file = "multidict-5.1.0-cp39-cp39-win_amd64.whl", hash = "sha256:7df80d07818b385f3129180369079bd6934cf70469f99daaebfac89dca288359"},
     {file = "multidict-5.1.0.tar.gz", hash = "sha256:25b4e5f22d3a37ddf3effc0710ba692cfc792c2b9edfb9c05aefe823256e84d5"},
+]
+mysql-connector = [
+    {file = "mysql-connector-2.2.9.tar.gz", hash = "sha256:1733e6ce52a049243de3264f1fbc22a852cb35458c4ad739ba88189285efdf32"},
+]
+repl = [
+    {file = "repl-1.0.tar.gz", hash = "sha256:1fb1b30605383b8b868fde14faf92dc7f654d9c2612fa02e0102dfa55104bc11"},
 ]
 replit = [
     {file = "replit-3.2.4-py3-none-any.whl", hash = "sha256:4fa5895e1e090ba23c179641bc88ab0486d1bea696515aa3147fce55733e29e1"},
