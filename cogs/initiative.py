@@ -4,6 +4,7 @@
 import enum
 import math
 import random
+import re
 from discord.ext import commands
 
 ##############################################
@@ -404,7 +405,10 @@ class Initiative( commands.Cog, name = "Initiative" ):
         ctype = CreatureType.PLAYER
         
       # parse the number from the message
-      numbers = [int(word) for word in content.split() if word.isdigit()]
+      numbers = [int(word) for word in re.findall(r'-?\d+', content)]
+      for word in re.findall(r'-?\d+', content):
+        content = content.replace(word, "")
+      # numbers = [int(word) for word in content.split() if word.isdigit()]
       # get the rest of the message
       words = [word for word in content.split() if not word.isdigit()]
       

@@ -1,54 +1,36 @@
-
-import database
+##############################################
+# Package Imports
+##############################################
 import discord 
 import time
 
 from discord.ext import commands
 from replit import db
 
-USE_REPL = True
-
-ADD_USER_SCRIPT = """
-INSERT INTO server_list
-(server_id, user_id, experience, lvl , last_message )
-VALUES (%s, %s, %s, %s, %s);
-"""
-ADD_XP_SCRIPT = """
-UPDATE server_list SET experience = experience + %s WHERE server_id = %s AND user_id = %s;
-"""
-CHECK_USER_LAST_MSG_EXISTS_SCRIPT = """
-SELECT last_message FROM server_list WHERE server_id = %s AND user_id = %s;
-"""
-CHECK_USER_EXISTS_SCRIPT = """
-SELECT * FROM server_list WHERE server_id = %s AND user_id = %s;
-"""
-GET_USER_STATS_SCRIPT = """
-SELECT experience, lvl FROM server_list WHERE server_id = %s AND
-user_id = %s
-"""
-GET_XP_SCRIPT = """
-SELECT experience FROM server_list WHERE server_id = %s AND user_id = %s;
-"""
-UPDATE_LAST_MSG_SCRIPT = """
-UPDATE server_list SET last_message = %s WHERE server_id = %s AND user_id = %s;
-"""
-UPDATE_LVL_SCRIPT = """
-UPDATE server_list SET lvl = %s WHERE server_id = %s AND user_id = %s
-"""
+##############################################
+# EXP Cog
+##############################################
 
 class Exp( commands.Cog, name = "Exp" ):
 
   def __init__( self, bot ):
     self.bot = bot 
-    self.db = database.DB()
+
+  ##############################################
+  # EXP Cog Events
+  ##############################################
 
   @commands.Cog.listener()
   async def on_message( self, message ):
     """
-    Defines new behavior for the bot on message
+    Defines new behavior for the bot on message.
+    The EXP Cog listens for each message on the server to award 
+    experience to, as long as the user is not a bot. There is a 
+    5 second delay between XP awards to discourage spamming.
     """
     await self.bot.wait_until_ready()
 
+    # If the user is a bot
     if message.author == self.bot.user or message.author.bot:
       return
 
@@ -59,104 +41,75 @@ class Exp( commands.Cog, name = "Exp" ):
     self.guild = message.guild
     self.user = message.author
 
-    if USE_REPL:
-
-      server = db[guildID]
-      
-      if userID not in server.keys():
-        print(f"{self.user.display_name} not found in database. Creating entry...")
-        self.addUser( guildID, userID )
-
-      role = discord.utils.find( lambda r: r.name == "Server Booster", message.guild.roles )
-
-      if role in self.user.roles:
-        awardedXP = 10
-      else:
-        awardedXP = 5
-
-      self.addExperience( guildID, userID, awardedXP )
-      await self.levelUp( guildID, userID, channel )
-
-      self.db.stop()
-
-      print( '------' )
-
-      return
-
-    self.db.start()
-
-    vals = (guildID, userID)
-    self.db.executeScript(CHECK_USER_EXISTS_SCRIPT, vals)
-    result = self.db.cursor.fetchone()
-
-    if result is None:
-      print(f"{self.user.display_name} not found in database. Creating entry...")
-      self.addUser( guildID, userID )
-
     currTime = time.time()
 
-    self.db.executeScript(CHECK_USER_LAST_MSG_EXISTS_SCRIPT, vals)
-    result = self.db.cursor.fetchone()
+    server = db[guildID]
+    
+    # Check if the user is registered on this server yet. 
+    if userID not in server.keys():
+      print(f"{self.getTimeStr()}{self.user.display_name} not found in database. Creating entry...")
+      self.addUser( guildID, userID )
 
-    if result[0] is None:
-      lastTime = time.time()
-      vals = (lastTime, guildID, userID)
-      self.db.executeScript(UPDATE_LAST_MSG_SCRIPT, vals )
-    else:
-      lastTime = result[0]
-      diff = currTime - float(lastTime)
-      print(diff)
-      if int(diff) < 5:
-        print("User has messaged too fast! Needs to wait at least 5 seconds for XP gain.")
-        self.db.stop()
-        print( '------' )
-        return
-      vals = (currTime, guildID, userID)
-      self.db.executeScript(UPDATE_LAST_MSG_SCRIPT, vals )
+    # Check if the user has sent a message in the last 5 seconds
+    userdata = server[userID]
+    lastTime = userdata["last_message"]
+    diff = currTime - float(lastTime)
+    if int(diff) < 5:
+      # If so, don't award XP
+      print(f"{self.getTimeStr()}User {self.user.display_name} has messaged too fast! Needs to wait at least 5 seconds for XP gain.")
+      print( '------' )
+      return
 
+    # Set the last message time to our current time
+    userdata["last_message"] = currTime
+
+    # Check if the user is a booster on the server.
     role = discord.utils.find( lambda r: r.name == "Server Booster", message.guild.roles )
-
     if role in self.user.roles:
       awardedXP = 10
     else:
       awardedXP = 5
 
+    # Award XP to the user
     self.addExperience( guildID, userID, awardedXP )
+    # Check if the user has leveled up.
     await self.levelUp( guildID, userID, channel )
-
-    self.db.stop()
 
     print( '------' )
 
     return
 
+  ##############################################
+  # EXP Cog Commands
+  ##############################################
+
   @commands.command( name = "rank" )
   async def checkRank( self, ctx ):
+    """
+    Allows a user to see their own rank on the server. 
+    Rank includes:
+    - Experience Total
+    - Level
+    - Server Booster Status
+    """
     message = ctx.message
     guildID = str(message.guild.id)
     userID = str(message.author.id)
 
-    if USE_REPL:
-      userdata = db[guildID][userID]
-      experience = userdata["experience"]
-      lvl = userdata["lvl"]
-    else:
-      vals = (guildID, userID)
-
-      self.db.start()
-      self.db.executeScript(GET_USER_STATS_SCRIPT, vals)
-      result = self.db.cursor.fetchone()
-      experience = result[0]
-      lvl = result[1]
+    userdata = db[guildID][userID]
+    experience = userdata["experience"]
+    lvl = userdata["lvl"]
 
     userNickname = message.author.display_name
     userPicURL = str(message.author.avatar_url)
 
+    # if the users name ends with s or x, change the possesive string
     if userNickname.endswith("s") or userNickname.endswith("x"):
       possesive = "'"
     else:
       possesive = "'s"
 
+    # Check if the user is a server booster or not
     role = discord.utils.find( lambda r: r.name == "Server Booster", message.guild.roles )
 
     if role in message.author.roles:
@@ -164,10 +117,13 @@ class Exp( commands.Cog, name = "Exp" ):
     else:
       boosterStr = "NO"
 
+    # Create the embed for rank 
     embed = discord.Embed(
       title = f"{userNickname}{possesive} Stats",
+      description = f"Server: {message.guild.name}",
       color = discord.Colour.random()
     )
+    embed.set_footer( text = f"UID: {message.author.id}" )
     embed.set_thumbnail( url = userPicURL )
     embed.add_field(
       name = "Level:",
@@ -185,140 +141,114 @@ class Exp( commands.Cog, name = "Exp" ):
       value = boosterStr
     )
 
+    # Send the embed to the chat
     await ctx.send(embed = embed)
-
-    if not USE_REPL:
-      self.db.stop()
-
     return 
 
   @commands.command( name = "leaderboard" , aliases = ["lb"])
   async def checkLeaderboard( self, ctx ):
-    
+    """
+    Allows users to check who has the most experience on the server.
+    Uses a 'asciidoc' code block to display info neatly.
+    """
     message = ctx.message 
     guildID = str(message.guild.id)
 
-    if USE_REPL:
-      serverdata = db[guildID]
-      serverdata = list(serverdata.items())
+    serverdata = db[guildID]
+    serverdata = list(serverdata.items())
 
-      users = []
-      for item in serverdata:
-        foundID = item[0]
-        experience = int(item[1]["experience"])
-        lvl = int(item[1]["lvl"])
-        users.append( (foundID, experience, lvl) )
+    users = []
+    # Get all the users in the server
+    for item in serverdata:
+      foundID = item[0]
+      experience = int(item[1]["experience"])
+      lvl = int(item[1]["lvl"])
+      users.append( (foundID, experience, lvl) )
 
-      length = len(users)
-      for i in range( 0, length ):
-        for j in range( 0, length - i - 1 ):
-          if (users[j][1] < users[j + 1][1]):
-            temp = users[j]
-            users[j] = users[j + 1] 
-            users[j + 1] = temp
+    # Sort the users by experience
+    users.sort( key= lambda x: x[1] , reverse = True )
 
-      if len(users) >= 10:
-        lbLength = 10
-      else:
-        lbLength = len(users)
-
-      guildName = message.guild.name
-      leaderboardStr = f"```md\nLeaderboard - {guildName}\n==============================\n"
-      for i in range( 0, lbLength ):
-        userdata = users[i]
-        user = await message.guild.fetch_member(int(userdata[0]))
-        leaderboardStr += f"{i+1}. {user.display_name:<20} | Level {userdata[2] } | {userdata[1]} Total XP\n"
-      leaderboardStr += "```"
-        
-      
+    # Check if we have 10 users to make a leaderboard with
+    if len(users) >= 10:
+      lbLength = 10
+    # Otherwise, only grab the length of the list
     else:
-      GET_LEADERBOARD_SCRIPT = f"""
-      SELECT user_id, experience, lvl FROM server_list WHERE server_id = {guildID} ORDER BY experience DESC, lvl DESC LIMIT 10;
-      """
+      lbLength = len(users)
 
-      self.db.start()
-      self.db.executeScript(GET_LEADERBOARD_SCRIPT)
-      result = self.db.cursor.fetchall()
-
-      guildName = message.guild.name
-      leaderboardStr = f"```md\nLeaderboard - {guildName}\n==============================\n"
-      place = 1
-      for row in result:
-        userID = row[0]
-        experience = row[1]
-        lvl = row[2]
-        user = await message.guild.fetch_member(int(userID))
-        leaderboardStr += f"{place}. {user.display_name : <20} | Level {lvl} | {experience} Total XP\n"
-        place += 1
-      leaderboardStr += "```"
+    guildName = message.guild.name
+    leaderboardStr = f"```asciidoc\nLeaderboard - {guildName}\n==============================\n"
+    # For each user, Format data and add to leaderboard string to send
+    for i in range( 0, lbLength ):
+      userdata = users[i]
+      user = await message.guild.fetch_member(int(userdata[0]))
+      userNickname = user.display_name
+      leaderboardStr += f"{i+1}. {userNickname:<25} | Level {userdata[2] } | {userdata[1]} Total XP\n"
+    leaderboardStr += "```"
+        
+    # Send leaderboard string out
     await ctx.send(leaderboardStr)
-    self.db.stop()
-    return 
-
-  def addUser( self, guild_id: str, user_id: str ):
-    if USE_REPL:
-      currTime = time.time()
-      db[guild_id][user_id] = {
-        "experience" : 0,
-        "lvl" : 1,
-        "last_message" : currTime,
-      }
-      print(f"Added user '{self.user.display_name}' to database.")
-      return 
-    currTime = time.time()
-    vals = (guild_id, user_id, 0, 1, currTime)
-    self.db.executeScript(ADD_USER_SCRIPT, vals )
-    print(f"Added user '{self.user.display_name}' to database.")
-    return 
-
-  def addExperience( self, guild_id : str, user_id : str, exp : int ):
-
-    if USE_REPL:
-      db[guild_id][user_id]["experience"] += exp
-      totalXP = db[guild_id][user_id]["experience"]
-      print(f"{self.user.display_name} has earned {exp} XP. Current total: {totalXP} XP." )
-      return
-
-    vals = (exp, guild_id, user_id)
-    self.db.executeScript( ADD_XP_SCRIPT , vals )
-    vals = (guild_id, user_id)
-    self.db.executeScript( GET_XP_SCRIPT , vals )
-    result = self.db.cursor.fetchone()
-    totalXP = int(result[0])
-
-    print(f"{self.user.display_name} has earned {exp} XP. Current total: {totalXP} XP." )
     return
+
+  ##############################################
+  # Support Functions 
+  ############################################## 
+
+  # Async Support Functions
 
   async def levelUp( self, guild_id: str, user_id: str, channel: discord.TextChannel ):
+    """
+    Support function for 'on_message' event.
+    Determines whether or not the given user has leveled up. If so,
+    displays that in chat for the user and updates their db. 
+    """
 
-    if USE_REPL:
-      userdata = db[guild_id][user_id]
-      experience = userdata["experience"]
-      lvlStart = userdata["lvl"]
-      lvlEnd = int(experience ** (1/4))
+    userdata = db[guild_id][user_id]
+    experience = userdata["experience"]
+    lvlStart = userdata["lvl"]
 
-      if lvlStart < lvlEnd:
-        userdata["lvl"] = lvlEnd
-        await channel.send( f"{self.user.mention} has leveled up to Level {lvlEnd}!")
-        print( f"{self.user.display_name} has leveled up to Level {lvlEnd}!")
-      
-      return
-
-    vals = (guild_id, user_id)
-    self.db.executeScript(GET_USER_STATS_SCRIPT, vals)
-    result = self.db.cursor.fetchone()
-
-    experience = int(result[0])
-    lvlStart = int(result[1])
+    # This will round down to the nearest whole number
     lvlEnd = int(experience ** (1/4))
 
+    # EX: If our curr lvl is 4 and our calc level is 5
     if lvlStart < lvlEnd:
-      vals = (lvlEnd, guild_id, user_id)
-      self.db.executeScript(UPDATE_LVL_SCRIPT, vals)
+      userdata["lvl"] = lvlEnd
       await channel.send( f"{self.user.mention} has leveled up to Level {lvlEnd}!")
       print( f"{self.user.display_name} has leveled up to Level {lvlEnd}!")
-
+    
     return
+
+  # Synchronous Support Functions
+
+  def addExperience( self, guild_id : str, user_id : str, exp : int ):
+    """
+    Support function for 'on_message' event.
+    Increments experience for the given user on the given server.
+    """
+    db[guild_id][user_id]["experience"] += exp
+    totalXP = db[guild_id][user_id]["experience"]
+    print(f"{self.getTimeStr()}{self.user.display_name} has earned {exp} XP. Current total: {totalXP} XP." )
+    return
+
+  def addUser( self, guild_id: str, user_id: str ):
+    """
+    Support function for 'on_message' event. 
+    Adds a user on a given server to the replit database.
+    """
+    currTime = time.time()
+    # Adds the user's data dictionary to the Replit DB
+    db[guild_id][user_id] = {
+      "experience" : 5,
+      "lvl" : 1,
+      "last_message" : currTime,
+    }
+    print(f"{self.getTimeStr()}Added user '{self.user.display_name}' to database.")
+    return 
+
+  def getTimeStr( self ):
+    """
+    Returns a formatted string with the current time for logging events.
+    """
+    return time.strftime("[%Y-%m-%d %H:%M:%S] ", time.localtime())
 
   # End of Exp Cog
 

@@ -6,10 +6,8 @@ import discord
 import discord.ext
 import os
 import sys
-import time
 sys.path.insert(1, './cogs/support')
 
-import database
 from timer import Timer
 
 from discord.ext import commands
@@ -43,36 +41,6 @@ db.start()
 db.executeScriptFromFile(DB_SETUP_PATH)
 db.stop()
 """
-keys = db.keys()
-if "703015465076785263" not in keys:
-  print("Adding the Backrooms to the db")
-  db["703015465076785263"] = {}
-
-currTime = time.time()
-
-db["703015465076785263"]["197158011469299713"] = {
-  "experience" : 810,
-  "lvl" : 5,
-  "last_message" : currTime,
-}
-
-db["703015465076785263"]["237364149447819279"] = {
-  "experience" : 1400,
-  "lvl" : 6,
-  "last_message" : currTime,
-}
-
-db["703015465076785263"]["192806642683871232"] = {
-  "experience" : 10,
-  "lvl" : 1,
-  "last_message" : currTime,
-}
-
-db["703015465076785263"]["224607219633750030"] = {
-  "experience" : 10,
-  "lvl" : 1,
-  "last_message" : currTime,
-}
 
 # Import Cogs from /cogs directory
 
