@@ -1,10 +1,12 @@
 ##############################################
 # Package Imports
 ##############################################
+import asyncio
 import discord 
 import time
 
-from discord.ext import commands
+from datetime import datetime
+from discord.ext import commands, tasks
 from replit import db
 
 ##############################################
@@ -15,6 +17,45 @@ class Exp( commands.Cog, name = "Exp" ):
 
   def __init__( self, bot ):
     self.bot = bot 
+    self.doubleXP = False
+
+  ##############################################
+  # EXP Cog Async Tasks
+  ##############################################
+
+  @tasks.loop(hours = 24)
+  async def resetDailyXPBonus( self ):
+    """
+    Resets the daily xp bonus flags to allow players to earn bonus xp again.
+    """
+    print(f"{self.getTimeStr()} Resetting daily xp flags.")
+    servers = db.keys()
+    # For each server listed
+    for server in servers:
+      users = db[server].keys()
+      # For each user in the server
+      for user in users:
+        userdata = db[server][user]
+        # Reset the daily_xp_earned flag
+        userdata["daily_xp_earned"] = False 
+        # If they haven't messaged today
+        if userdata["messaged_today"] == False:
+          # Reset their streak
+          userdata["daily_xp_streak"] = 0
+        userdata["messaged_today"] = False 
+    print(f"{self.getTimeStr()}All daily xp flags reset!")
+    return 
+
+  @resetDailyXPBonus.before_loop
+  async def beforeResetDailyXP():
+    """
+    Ensures the bot will always reset at 00:00 server time
+    """
+    hour, minute = 0, 0
+    now = datetime.now()
+    future = datetime(now.year, now.month, now.day + 1, hour, minute)
+    delta = (future - now).seconds
+    await asyncio.sleep(delta)
 
   ##############################################
   # EXP Cog Events
@@ -32,6 +73,9 @@ class Exp( commands.Cog, name = "Exp" ):
 
     # If the user is a bot
     if message.author == self.bot.user or message.author.bot:
+      return
+
+    if message.guild == None:
       return
 
     guildID = str(message.guild.id)
@@ -70,8 +114,12 @@ class Exp( commands.Cog, name = "Exp" ):
     else:
       awardedXP = 5
 
+    if self.doubleXP:
+      awardedXP *= 2
+
     # Award XP to the user
     self.addExperience( guildID, userID, awardedXP )
+    await self.dailyXPBonus( guildID, userID )
     # Check if the user has leveled up.
     await self.levelUp( guildID, userID, channel )
 
@@ -82,6 +130,52 @@ class Exp( commands.Cog, name = "Exp" ):
   ##############################################
   # EXP Cog Commands
   ##############################################
+
+  @commands.command( name = "leaderboard" , aliases = ["lb"])
+  async def checkLeaderboard( self, ctx ):
+    """
+    Allows users to check who has the most experience on the server.
+    Uses a 'asciidoc' code block to display info neatly.
+    """
+    message = ctx.message 
+    guildID = str(message.guild.id)
+
+    serverdata = db[guildID]
+    serverdata = list(serverdata.items())
+
+    users = []
+    # Get all the users in the server
+    for item in serverdata:
+      foundID = item[0]
+      experience = int(item[1]["experience"])
+      lvl = int(item[1]["lvl"])
+      users.append( (foundID, experience, lvl) )
+
+    # Sort the users by experience
+    users.sort( key= lambda x: x[1] , reverse = True )
+
+    # Check if we have 10 users to make a leaderboard with
+    if len(users) >= 10:
+      lbLength = 10
+    # Otherwise, only grab the length of the list
+    else:
+      lbLength = len(users)
+
+    guildName = message.guild.name
+    leaderboardStr = f"```asciidoc\nLeaderboard - {guildName}\n==============================\n"
+    # For each user, Format data and add to leaderboard string to send
+    lvlStrLen = len(str(users[0][2]))
+    xpStrLen = len(str(users[0][1]))
+    for i in range( 0, lbLength ):
+      userdata = users[i]
+      user = await message.guild.fetch_member(int(userdata[0]))
+      userNickname = user.display_name
+      leaderboardStr += f"{i+1}. {userNickname:<25} | Level {userdata[2]:>{lvlStrLen}} | {userdata[1]:>{xpStrLen}} Total XP\n".format()
+    leaderboardStr += "```"
+        
+    # Send leaderboard string out
+    await ctx.send(leaderboardStr)
+    return
 
   @commands.command( name = "rank" )
   async def checkRank( self, ctx ):
@@ -145,55 +239,58 @@ class Exp( commands.Cog, name = "Exp" ):
     await ctx.send(embed = embed)
     return 
 
-  @commands.command( name = "leaderboard" , aliases = ["lb"])
-  async def checkLeaderboard( self, ctx ):
+  @commands.command( name = "doublexp", aliases = ["dxp"] )
+  @commands.is_owner()
+  async def toggleDoubleXP( self, ctx ):
     """
-    Allows users to check who has the most experience on the server.
-    Uses a 'asciidoc' code block to display info neatly.
+    Allows the owner(s) of the server to toggle Double XP for the server.
     """
-    message = ctx.message 
-    guildID = str(message.guild.id)
-
-    serverdata = db[guildID]
-    serverdata = list(serverdata.items())
-
-    users = []
-    # Get all the users in the server
-    for item in serverdata:
-      foundID = item[0]
-      experience = int(item[1]["experience"])
-      lvl = int(item[1]["lvl"])
-      users.append( (foundID, experience, lvl) )
-
-    # Sort the users by experience
-    users.sort( key= lambda x: x[1] , reverse = True )
-
-    # Check if we have 10 users to make a leaderboard with
-    if len(users) >= 10:
-      lbLength = 10
-    # Otherwise, only grab the length of the list
-    else:
-      lbLength = len(users)
-
-    guildName = message.guild.name
-    leaderboardStr = f"```asciidoc\nLeaderboard - {guildName}\n==============================\n"
-    # For each user, Format data and add to leaderboard string to send
-    for i in range( 0, lbLength ):
-      userdata = users[i]
-      user = await message.guild.fetch_member(int(userdata[0]))
-      userNickname = user.display_name
-      leaderboardStr += f"{i+1}. {userNickname:<25} | Level {userdata[2] } | {userdata[1]} Total XP\n"
-    leaderboardStr += "```"
-        
-    # Send leaderboard string out
-    await ctx.send(leaderboardStr)
+    if self.doubleXP:
+      self.doubleXP = False 
+      await ctx.send("Double XP has been disabled!")
+      return 
+    self.doubleXP = True 
+    await ctx.send("Double XP has been activated!")
     return
+
 
   ##############################################
   # Support Functions 
   ############################################## 
 
   # Async Support Functions
+
+  async def dailyXPBonus( self, guild_id: str, user_id: str ):
+    try:
+      userdata = db[guild_id][user_id]
+      dailyXPEarned = userdata["daily_xp_earned"]
+      dailyXPStreak = userdata["daily_xp_streak"]
+    except:
+      print(f"{self.getTimeStr()}ERROR: User needs to be given daily XP stats. ")
+      userdata["daily_xp_earned"] = False 
+      userdata["daily_xp_streak"] = 0
+      userdata["messaged_today"] = False 
+      dailyXPEarned = userdata["daily_xp_earned"]
+      dailyXPStreak = userdata["daily_xp_streak"]
+
+    if dailyXPEarned:
+      return 
+
+    if dailyXPStreak < 7:
+      dailyXPStreak += 1
+
+    awardedXP = dailyXPStreak * 5
+
+    print(f"{self.getTimeStr()}User {self.user.display_name} has earned their daily XP bonus. {dailyXPStreak} day streak = {awardedXP} bonus XP")
+    self.addExperience( guild_id , user_id, awardedXP )
+
+    userdata["daily_xp_earned"] = True
+    userdata["daily_xp_streak"] = dailyXPStreak
+    userdata["messaged_today"] = True
+
+    await self.user.send(f"You've earned your daily XP bonus ({awardedXP}) for messaging on `The Backrooms`! You now have a {dailyXPStreak}-day streak. Keep it up!")
+
+    return
 
   async def levelUp( self, guild_id: str, user_id: str, channel: discord.TextChannel ):
     """
@@ -240,6 +337,9 @@ class Exp( commands.Cog, name = "Exp" ):
       "experience" : 5,
       "lvl" : 1,
       "last_message" : currTime,
+      "daily_xp_earned" : False,
+      "messaged_today"  : False,
+      "daily_xp_streak" : 0
     }
     print(f"{self.getTimeStr()}Added user '{self.user.display_name}' to database.")
     return 
