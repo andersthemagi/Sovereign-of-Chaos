@@ -7,7 +7,6 @@ import time
 
 from datetime import datetime
 from discord.ext import commands, tasks
-from discord.utils import get
 from replit import db
 
 ##############################################
