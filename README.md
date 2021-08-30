@@ -45,6 +45,9 @@ A small-scale bot made in Python, capable of handling several D&amp;D related ta
 Features include:
 * ***Advice Giving*** - Essentially an 8-ball, you ask the Traveler a question and he will do his best to answer.
 * ***Dice Rolling*** -  Using the d20 package for Python, a custom dice roll interpreter is available for users to type in the roll they want, and the Traveler will provide!
+* ***Leveling:*** Each time a player sends a message in the server, they gain 5 XP. **Server Boosters get 10 XP.**
+  * XP-based roles are in the works, as well as daily message bonuses.
+  * Benefits to leveling are still in the works, but for now you can brag how much XP you have.
 * ***Initiative Tracking*** - The Traveler allows DMs to grab initiative for combat without needing to worry about everyone yelling it at the same time. Upon initialization, the Traveler listens for every valid creature input on the channel until the DM determines the order is complete. Can add, edit, remove, and shuffle the initiative order while it is online.
 * ***Magic Item Generator*** - Players (or users) can use the Traveler to determine a random magical item. When rolling, rarity can be set for the following settings currently: Uncommon (UC), Rare (R), and Very Rare (VR)
 * ***Skill Challenge Tracking*** - An alternative version to handling multiple related rolls at once. The Traveler has a number of presets for easily enabling a skill challenge to be tracked in a discord server. Uses the rules and notes listed on the [Critical Hits Blog](https://critical-hits.com/blog/2016/08/16/skill-challenges-in-5th-edition-dd/)
