@@ -7,7 +7,79 @@ import time
 
 from datetime import datetime
 from discord.ext import commands, tasks
+from discord.utils import get
 from replit import db
+
+##############################################
+# Constants
+##############################################
+
+REACT_ROLE_MSG_IDS = [
+  "882013329411948606"
+]
+
+BASIC_XP_ROLES = [
+  "Level 1", "Level 2", "Level 3", "Level 4", "Level 5", 
+  "Level 6", "Level 7", "Level 8", "Level 9", "Level 10"
+]
+
+BARD_XP_ROLES = [
+  "Lyrist (LVL 1)", "Ryymer (LVL 2)", "Sonateer (LVL 3)",
+  "Skald (LVL 4)", "Racaraide (LVL 5)", "Joungleur (LVL 6)",
+  "Troubadour (LVL 7)", "Minstrel (LVL 8)", "Lorist (LVL 9)",
+  "Master Lorist (LVL 10)"
+]
+
+FIGHTER_XP_ROLES = [
+  "Warrior (LVL 1)", "Veteran (LVL 2)", "Swordmaster (LVL 3)",
+  "Crusader (LVL 4)", "Swashbuckler (LVL 5)", "Myrmidon (LVL 6)",
+  "Sentinel (LVL 7)", "Champion (LVL 8)", "Lord (LVL 9)",
+  "High Lord (LVL 10)"
+]
+
+MAGE_XP_ROLES = [
+  "Prestidigitator (LVL 1)", "Magician (LVL 2)", "Conjurer (LVL 3)",
+  "Theurgist (LVL 4)", "Evoker (LVL 5)", "Seer (LVL 6)", 
+  "Enchanter / Enchantress (LVL 7)", 
+  "Senior Enchanter / Enchantress (LVL 8)",
+  "First Enchanter / Enchantress (LVL 9)",
+  "Grand Enchanter / Enchantress (LVL 10)"
+]
+
+PALADIN_XP_ROLES = [
+  "Recruit (LVL 1)", "Templar (LVL 2)", "Knight-Private (LVL 3)",
+  "Knight-Corporal (LVL 4)", "Knight-Sergeant (LVL 5)",
+  "Knight-Lieutenant (LVL 6)", "Knight-Captain (LVL 7)",
+  "Knight-Commander (LVL 8)", "Knight-Vigilant (LVL 9)",
+  "Knight-Divine (LVL 10)"
+]
+
+RANGER_XP_ROLES = [
+  "Runner (LVL 1)", "Strider (LVL 2)", "Scout (LVL 3)",
+  "Courser (LVL 4)", "Tracker (LVL 5)", "Hinterlander (LVL 6)",
+  "Pathfinder (LVL 7)", "Ranger (LVL 8)", "Senior Ranger (LVL 9)",
+  "Master Ranger (LVL 10)"
+]
+
+ROGUE_XP_ROLES = [
+  "Apprentice (LVL 1)", "Footpad (LVL 2)", "Burglar (LVL 3)",
+  "Thug (LVL 4)", "Sharper (LVL 5)", "Pilferer (LVL 6)",
+  "Swindler (LVL 7)", "Trickster (LVL 8)", "Thief (LVL 9)",
+  "Master Thief (LVL 10)"
+]
+
+WARLOCK_XP_ROLES = [
+  "Neophyte (LVL 1)", "Occultist (LVL 2)", "Invoker (LVL 3)",
+  "Mystic (LVL 4)", "Hexer (LVL 5)", "Warlock / Witch (LVL 6)",
+  "Pact Master (LVL 7)" , "Soulbinder (LVL 8)", "Magister (LVL 9)",
+  "Archon (LVL 10)"
+]
+
+ROLE_LISTS = [
+  BASIC_XP_ROLES, BARD_XP_ROLES, FIGHTER_XP_ROLES, MAGE_XP_ROLES,
+  PALADIN_XP_ROLES, RANGER_XP_ROLES, ROGUE_XP_ROLES, WARLOCK_XP_ROLES
+]
+
 
 ##############################################
 # EXP Cog
@@ -122,14 +194,94 @@ class Exp( commands.Cog, name = "Exp" ):
     await self.dailyXPBonus( guildID, userID )
     # Check if the user has leveled up.
     await self.levelUp( guildID, userID, channel )
-
     print( '------' )
 
     return
 
+  @commands.Cog.listener()
+  async def on_raw_reaction_add( self, RawReactionActionEvent ):
+
+    reaction = RawReactionActionEvent
+    channelID = str(reaction.channel_id)
+    channel = await self.bot.fetch_channel(channelID)
+    messageID = str(reaction.message_id)
+    message = await channel.fetch_message(messageID)
+    guildID = str(reaction.guild_id)
+    userID = str(reaction.user_id)
+    user = await message.guild.fetch_member(userID)
+    emoji = str(reaction.emoji)
+
+    if messageID not in REACT_ROLE_MSG_IDS:
+      return
+    if user == self.bot.user or user.bot:
+      return
+
+    # Check which message they reacted to in the list
+    if emoji == "🎶":
+      classStr = "BARD"
+    elif emoji == "⚔️":
+      classStr = "FIGHTER"
+    elif emoji == "🪄":
+      classStr = "MAGE"
+    elif emoji == "🛡️": 
+      classStr = "PALADIN"
+    elif emoji == "🏹":
+      classStr = "RANGER"
+    elif emoji == "🗡️":
+      classStr = "ROGUE"
+    elif emoji == "☠️":
+      classStr = "WARLOCK"
+
+    db[guildID][userID]["class"] = classStr
+
+    # Remove reaction from the message
+    await message.remove_reaction( emoji, user )
+
+    # Handle output accordingly
+    await user.send(f"You've been switched to the '{classStr}' class on `The Backrooms`!")
+    print(f"{self.getTimeStr()} User '{user.display_name}' has been given '{classStr}' class")
+
+    await self.assignXPRole( guildID, userID, db[guildID][userID]["lvl"], True )
+
+    return 
+
   ##############################################
   # EXP Cog Commands
   ##############################################
+
+  @commands.command( name = "assign" )
+  @commands.is_owner()
+  async def assignRolesCommand( self, ctx ):
+    print(f"{self.getTimeStr()} Assigning xp roles...")
+    servers = db.keys()
+
+    # For each server listed
+    for server in servers:
+      users = db[server].keys()
+      # For each user in the server
+      for user in users:
+        userdata = db[server][user]
+        await self.assignXPRole( server, user , userdata["lvl"] , False )
+        
+    print(f"{self.getTimeStr()} All users assigned xp roles!")
+    return
+
+  @commands.command( name = "adjustlvl" )
+  @commands.is_owner()
+  async def adjustLevels( self, ctx ):
+    print(f"{self.getTimeStr()} Adjusting levels...")
+    servers = db.keys()
+    for server in servers:
+      users = db[server].keys()
+      for user in users:
+        userdata = db[server][user]
+        experience = userdata["experience"]
+        lvl = userdata["lvl"]
+        newLvl = int(experience ** (1/5))
+        userdata["lvl"] = newLvl
+        print(f"{self.getTimeStr()} User '{user}' adjusted from Lvl {lvl} to Lvl {newLvl}")
+        await self.assignXPRole( server, user, newLvl, False )
+    print(f"{self.getTimeStr()} All users on server adjusted!")
 
   @commands.command( name = "leaderboard" , aliases = ["lb"])
   async def checkLeaderboard( self, ctx ):
@@ -260,6 +412,60 @@ class Exp( commands.Cog, name = "Exp" ):
 
   # Async Support Functions
 
+  async def assignXPRole( self, guild_id: str, user_id: str , lvl : int, notify_user: bool ):
+
+    userdata = db[guild_id][user_id]
+    guild = await self.bot.fetch_guild( guild_id )
+    user = await guild.fetch_member( user_id )
+    
+    keys = userdata.keys()
+    # Check if the user has a category
+    # ERROR CASE: If the user is pre-XP roles implementation
+    if "class" not in keys:
+      print(f"{self.getTimeStr} User {user.display_name} has no class variable. Creating one for them.")
+      userdata["class"] = None
+    
+    await self.removeOldRoles( guild, user )
+
+    # Assign Basic Role
+    basicRoleStr = BASIC_XP_ROLES[lvl-1]
+    role = discord.utils.get( guild.roles , name = basicRoleStr )
+    await user.add_roles( role )
+
+
+    userClass = userdata["class"]
+
+    # Get the role category 
+    if userClass is None:
+      roleList = BASIC_XP_ROLES
+    elif userClass == "BARD":
+      roleList = BARD_XP_ROLES
+    elif userClass == "FIGHTER":
+      roleList = FIGHTER_XP_ROLES
+    elif userClass == "MAGE":
+      roleList = MAGE_XP_ROLES
+    elif userClass == "PALADIN":
+      roleList = PALADIN_XP_ROLES
+    elif userClass == "RANGER":
+      roleList = RANGER_XP_ROLES
+    elif userClass == "ROGUE":
+      roleList = ROGUE_XP_ROLES
+    elif userClass == "WARLOCK":
+      roleList = WARLOCK_XP_ROLES
+
+    # Get the role in discord
+    roleStr = roleList[lvl-1]
+    role = discord.utils.get( guild.roles, name = roleStr )
+
+    # Assign the role to the user
+    await user.add_roles( role )
+
+    # Let the user know they earned a new role through DM.
+    if notify_user:
+      await user.send(f"Congrats! You've been assigned the '{roleStr}' role on `The Backrooms`!!")
+
+    return
+
   async def dailyXPBonus( self, guild_id: str, user_id: str ):
     try:
       userdata = db[guild_id][user_id]
@@ -304,15 +510,25 @@ class Exp( commands.Cog, name = "Exp" ):
     lvlStart = userdata["lvl"]
 
     # This will round down to the nearest whole number
-    lvlEnd = int(experience ** (1/4))
+    lvlEnd = int(experience ** (1/5))
 
     # EX: If our curr lvl is 4 and our calc level is 5
     if lvlStart < lvlEnd:
       userdata["lvl"] = lvlEnd
       await channel.send( f"{self.user.mention} has leveled up to Level {lvlEnd}!")
       print( f"{self.user.display_name} has leveled up to Level {lvlEnd}!")
+      await self.assignXPRole( guild_id, user_id, lvlEnd )
     
     return
+
+  async def removeOldRoles( self, guild, user ):
+    for roleList in ROLE_LISTS:
+      for roleStr in roleList:
+        role = discord.utils.get( guild.roles, name = roleStr )
+        if role in user.roles:
+          await user.remove_roles( role )
+          print(f"Removed Role {role.name} from User {user.display_name}")
+    return 
 
   # Synchronous Support Functions
 
@@ -336,10 +552,11 @@ class Exp( commands.Cog, name = "Exp" ):
     db[guild_id][user_id] = {
       "experience" : 5,
       "lvl" : 1,
-      "last_message" : currTime,
+      "class": None,
       "daily_xp_earned" : False,
+      "daily_xp_streak" : 0,
+      "last_message" : currTime,
       "messaged_today"  : False,
-      "daily_xp_streak" : 0
     }
     print(f"{self.getTimeStr()}Added user '{self.user.display_name}' to database.")
     return 
