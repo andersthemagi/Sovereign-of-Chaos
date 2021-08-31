@@ -4,6 +4,7 @@
 import asyncio
 import discord 
 import time
+import re
 
 from datetime import datetime, timedelta
 from discord.ext import commands, tasks
@@ -22,11 +23,22 @@ BASIC_XP_ROLES = [
   "Level 6", "Level 7", "Level 8", "Level 9", "Level 10"
 ]
 
+CLASS_ROLES = [
+  "Bard", "Cleric", "Fighter", "Mage",
+  "Paladin", "Ranger", "Rogue", "Warlock"
+]
+
 BARD_XP_ROLES = [
   "Lyrist (LVL 1)", "Ryymer (LVL 2)", "Sonateer (LVL 3)",
   "Skald (LVL 4)", "Racaraide (LVL 5)", "Joungleur (LVL 6)",
   "Troubadour (LVL 7)", "Minstrel (LVL 8)", "Lorist (LVL 9)",
   "Master Lorist (LVL 10)"
+]
+
+CLERIC_XP_ROLES = [
+  "Aspirant (LVL 1)", "Acolyte (LVL 2)", "Adept (LVL 3)", "Vicar (LVL 4)",
+  "Curate (LVL 5)", "Deacon (LVL 6)", "Priest (LVL 7)", "Abbot (LVL 8)",
+  "Bishop (LVL 9)", "Archbishop (LVL 10)"
 ]
 
 FIGHTER_XP_ROLES = [
@@ -75,8 +87,9 @@ WARLOCK_XP_ROLES = [
 ]
 
 ROLE_LISTS = [
-  BASIC_XP_ROLES, BARD_XP_ROLES, FIGHTER_XP_ROLES, MAGE_XP_ROLES,
-  PALADIN_XP_ROLES, RANGER_XP_ROLES, ROGUE_XP_ROLES, WARLOCK_XP_ROLES
+  BASIC_XP_ROLES, CLASS_ROLES, BARD_XP_ROLES, CLERIC_XP_ROLES, 
+  FIGHTER_XP_ROLES, MAGE_XP_ROLES, PALADIN_XP_ROLES, RANGER_XP_ROLES, 
+  ROGUE_XP_ROLES, WARLOCK_XP_ROLES
 ]
 
 
@@ -140,6 +153,17 @@ class Exp( commands.Cog, name = "Exp" ):
 
   @commands.Cog.listener()
   async def on_ready( self ):
+    """
+    channel = await self.bot.fetch_channel("881919775922606142")
+    message = await channel.fetch_message("882013329411948606")
+    CLASS_EMOJI = [
+      "🎶", "🛐", "⚔️", "🪄", "🛡️",
+      "🏹", "🗡️", "☠️"
+    ]
+    await message.clear_reactions()
+    for emoji in CLASS_EMOJI:
+      await message.add_reaction(emoji)
+    """
     await self.resetDailyXPBonus.start()
 
   @commands.Cog.listener()
@@ -228,6 +252,8 @@ class Exp( commands.Cog, name = "Exp" ):
     # Check which message they reacted to in the list
     if emoji == "🎶":
       classStr = "BARD"
+    elif emoji == "🛐":
+      classStr = "CLERIC"
     elif emoji == "⚔️":
       classStr = "FIGHTER"
     elif emoji == "🪄":
@@ -258,23 +284,6 @@ class Exp( commands.Cog, name = "Exp" ):
   # EXP Cog Commands
   ##############################################
 
-  @commands.command( name = "assign" )
-  @commands.is_owner()
-  async def assignRolesCommand( self, ctx ):
-    print(f"{self.getTimeStr()} Assigning xp roles...")
-    servers = db.keys()
-
-    # For each server listed
-    for server in servers:
-      users = db[server].keys()
-      # For each user in the server
-      for user in users:
-        userdata = db[server][user]
-        await self.assignXPRole( server, user , userdata["lvl"] , False )
-        
-    print(f"{self.getTimeStr()} All users assigned xp roles!")
-    return
-
   @commands.command( name = "adjustlvl" )
   @commands.is_owner()
   async def adjustLevels( self, ctx ):
@@ -291,6 +300,23 @@ class Exp( commands.Cog, name = "Exp" ):
         print(f"{self.getTimeStr()} User '{user}' adjusted from Lvl {lvl} to Lvl {newLvl}")
         await self.assignXPRole( server, user, newLvl, False )
     print(f"{self.getTimeStr()} All users on server adjusted!")
+
+  @commands.command( name = "assign" )
+  @commands.is_owner()
+  async def assignRolesCommand( self, ctx ):
+    print(f"{self.getTimeStr()} Assigning xp roles...")
+    servers = db.keys()
+
+    # For each server listed
+    for server in servers:
+      users = db[server].keys()
+      # For each user in the server
+      for user in users:
+        userdata = db[server][user]
+        await self.assignXPRole( server, user , userdata["lvl"] , False )
+        
+    print(f"{self.getTimeStr()} All users assigned xp roles!")
+    return
 
   @commands.command( name = "leaderboard" , aliases = ["lb"])
   async def checkLeaderboard( self, ctx ):
@@ -337,6 +363,73 @@ class Exp( commands.Cog, name = "Exp" ):
     # Send leaderboard string out
     await ctx.send(leaderboardStr)
     return
+  
+  @commands.command( name = "progression" , aliases = ["prog"])
+  async def checkProgression( self, ctx , *args ):
+    
+    await self.bot.wait_until_ready()
+
+    message = ctx.message
+    guildID = str(message.guild.id)
+    userID = str(message.author.id)
+
+    userdata = db[guildID][userID]
+
+    # Get Rank List for user's class
+    exp = userdata["experience"]
+    lvl = userdata["lvl"]
+    userClass = userdata["class"]
+
+    if userClass is None:
+      userClass = "NONE"
+      rankList = BASIC_XP_ROLES
+    elif userClass == "BARD":
+      rankList = BARD_XP_ROLES
+    elif userClass == "CLERIC":
+      rankList = CLERIC_XP_ROLES
+    elif userClass == "FIGHTER":
+      rankList = FIGHTER_XP_ROLES
+    elif userClass == "MAGE":
+      rankList = MAGE_XP_ROLES
+    elif userClass == "PALADIN":
+      rankList = PALADIN_XP_ROLES
+    elif userClass == "RANGER":
+      rankList = RANGER_XP_ROLES
+    elif userClass == "ROGUE":
+      rankList = ROGUE_XP_ROLES
+    elif userClass == "WARLOCK":
+      rankList = WARLOCK_XP_ROLES
+
+    progList = rankList.copy()
+    progList.reverse()
+
+    progressStr = f"```asciidoc\nClass Progression - {userClass} - {message.author}\n==============================\n"
+    i = 10
+    for rank in progList:
+      rankStr = re.sub(r"\([^()]*\)", "", rank).strip()
+      if i < 10:
+        space = "  "
+      else:
+        space = " "
+      progressStr += f"{i}.{space} {rankStr:<30}"
+      xpLimit = i ** 5
+      progressStr += f" | {xpLimit:>6} XP"
+      if i == lvl:
+        progressStr += " :: [X]\n"
+      else:
+        progressStr += "\n"
+      i -= 1
+    progressStr += "\n"
+    if lvl < 10:
+      xpLimit = (lvl + 1) ** 5
+      percent = (exp / xpLimit) * 100
+      progressStr += f"[PROGRESS TO NEXT RANK: {exp:>6} / {xpLimit:>6} ({percent:.2f}%)]\n"
+    else:
+      progressStr += f"[MAX RANK ACHIEVED: {exp:>6} TOTAL XP]\n"
+    progressStr += "```"
+
+    await ctx.send(progressStr)
+    return
 
   @commands.command( name = "rank" )
   async def checkRank( self, ctx ):
@@ -347,6 +440,8 @@ class Exp( commands.Cog, name = "Exp" ):
     - Level
     - Server Booster Status
     """
+    await self.bot.wait_until_ready()
+
     message = ctx.message
     guildID = str(message.guild.id)
     userID = str(message.author.id)
@@ -354,6 +449,13 @@ class Exp( commands.Cog, name = "Exp" ):
     userdata = db[guildID][userID]
     experience = userdata["experience"]
     lvl = userdata["lvl"]
+    classStr = userdata["class"]
+    stats = userdata.keys()
+    if "rank" not in stats:
+      await self.assignXPRole( guildID, userID, lvl, False )
+      rankStr = userdata["rank"]
+    else:
+      rankStr = userdata["rank"]
 
     userNickname = message.author.display_name
     userPicURL = str(message.author.avatar_url)
@@ -375,15 +477,24 @@ class Exp( commands.Cog, name = "Exp" ):
     # Create the embed for rank 
     embed = discord.Embed(
       title = f"{userNickname}{possesive} Stats",
-      description = f"Server: {message.guild.name}",
       color = discord.Colour.random()
     )
     embed.set_footer( text = f"UID: {message.author.id}" )
     embed.set_thumbnail( url = userPicURL )
     embed.add_field(
+      name = "Class:",
+      inline = True,
+      value = classStr
+    )
+    embed.add_field(
       name = "Level:",
       inline = True,
       value = lvl
+    )
+    embed.add_field(
+      name = "Rank:",
+      inline = True, 
+      value = rankStr
     )
     embed.add_field(
       name = "Total XP:",
@@ -392,7 +503,7 @@ class Exp( commands.Cog, name = "Exp" ):
     )
     embed.add_field(
       name = "Server Booster?",
-      inline = False,
+      inline = True,
       value = boosterStr
     )
 
@@ -440,8 +551,7 @@ class Exp( commands.Cog, name = "Exp" ):
     basicRoleStr = BASIC_XP_ROLES[lvl-1]
     role = discord.utils.get( guild.roles , name = basicRoleStr )
     await user.add_roles( role )
-
-
+    
     userClass = userdata["class"]
 
     # Get the role category 
@@ -449,6 +559,8 @@ class Exp( commands.Cog, name = "Exp" ):
       roleList = BASIC_XP_ROLES
     elif userClass == "BARD":
       roleList = BARD_XP_ROLES
+    elif userClass == "CLERIC":
+      roleList = CLERIC_XP_ROLES
     elif userClass == "FIGHTER":
       roleList = FIGHTER_XP_ROLES
     elif userClass == "MAGE":
@@ -468,6 +580,8 @@ class Exp( commands.Cog, name = "Exp" ):
 
     # Assign the role to the user
     await user.add_roles( role )
+    roleStr = re.sub(r"\([^()]*\)", "", roleStr).strip()
+    userdata["rank"] = roleStr
 
     # Let the user know they earned a new role through DM.
     if notify_user:
@@ -521,12 +635,15 @@ class Exp( commands.Cog, name = "Exp" ):
     # This will round down to the nearest whole number
     lvlEnd = int(experience ** (1/5))
 
+    if lvlEnd > 10:
+      return 
+
     # EX: If our curr lvl is 4 and our calc level is 5
     if lvlStart < lvlEnd:
       userdata["lvl"] = lvlEnd
       await channel.send( f"{self.user.mention} has leveled up to Level {lvlEnd}!")
       print( f"{self.user.display_name} has leveled up to Level {lvlEnd}!")
-      await self.assignXPRole( guild_id, user_id, lvlEnd )
+      await self.assignXPRole( guild_id, user_id, lvlEnd, True )
     
     return
 
@@ -562,6 +679,7 @@ class Exp( commands.Cog, name = "Exp" ):
       "experience" : 5,
       "lvl" : 1,
       "class": None,
+      "rank" : None,
       "daily_xp_earned" : False,
       "daily_xp_streak" : 0,
       "last_message" : currTime,
