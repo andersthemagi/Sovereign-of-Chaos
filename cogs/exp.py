@@ -5,7 +5,7 @@ import asyncio
 import discord 
 import time
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from discord.ext import commands, tasks
 from replit import db
 
@@ -118,19 +118,29 @@ class Exp( commands.Cog, name = "Exp" ):
     return 
 
   @resetDailyXPBonus.before_loop
-  async def beforeResetDailyXP():
+  async def beforeResetDailyXP( self ):
     """
     Ensures the bot will always reset at 00:00 server time
+    Server midnight is 18:00 Mountain or 20:00 EST
     """
     hour, minute = 0, 0
     now = datetime.now()
-    future = datetime(now.year, now.month, now.day + 1, hour, minute)
+    future = datetime(now.year, now.month, now.day, hour, minute)
+    if now.hour >= hour and now.minute > minute:
+        future += timedelta(days=1)
     delta = (future - now).seconds
+    hour, minute = delta // 3600, (delta % 3600) // 60
+    print(f"{hour}:{minute} until daily XP reset...")
+    print( '------' )
     await asyncio.sleep(delta)
 
   ##############################################
   # EXP Cog Events
   ##############################################
+
+  @commands.Cog.listener()
+  async def on_ready( self ):
+    await self.resetDailyXPBonus.start()
 
   @commands.Cog.listener()
   async def on_message( self, message ):
