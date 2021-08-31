@@ -154,15 +154,15 @@ class Exp( commands.Cog, name = "Exp" ):
   @commands.Cog.listener()
   async def on_ready( self ):
     """
-    channel = await self.bot.fetch_channel("881919775922606142")
-    message = await channel.fetch_message("882013329411948606")
+    channel = await self.bot.fetch_channel("881918716454002749")
+    message = await channel.fetch_message("882309606611767326")
     CLASS_EMOJI = [
       "🎶", "🛐", "⚔️", "🪄", "🛡️",
       "🏹", "🗡️", "☠️"
     ]
+    MEMBER_EMOJI = "✅"
     await message.clear_reactions()
-    for emoji in CLASS_EMOJI:
-      await message.add_reaction(emoji)
+    await message.add_reaction(MEMBER_EMOJI)
     """
     await self.resetDailyXPBonus.start()
 
@@ -551,7 +551,7 @@ class Exp( commands.Cog, name = "Exp" ):
     basicRoleStr = BASIC_XP_ROLES[lvl-1]
     role = discord.utils.get( guild.roles , name = basicRoleStr )
     await user.add_roles( role )
-    
+
     userClass = userdata["class"]
 
     # Get the role category 

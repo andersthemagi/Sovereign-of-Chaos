@@ -10,26 +10,26 @@ from replit import db
 # Constants
 ##############################################
 
+MEMBER_EMOJI = "✅"
+MEMBER_ROLE = "Member"
 PRONOUN_EMOJI = [
   "☀️", "🌙", "✨", "🪐"
 ]
-
 PRONOUN_ROLES = [
   "He/Him", "She/Her", "They/Them", "Any/All Pronouns"
 ]
-
 REGION_EMOJI = [
   "🟢", "🟣", "⚪", "🔵", "🟤", "🟠", "🔴"
 ]
-
 REGION_ROLES = [
   "Europe", "North America", "South America", "Oceanic", 
   "Russia", "Asia", "Africa"
 ]
 
 REACT_ROLE_MSG_IDS = [
-  "882041917154656307",
-  "882042443527225384"
+  "882041917154656307", # Pronouns
+  "882042443527225384", # Region
+  "882309606611767326"  # Memeber Confirmation
 ]
 
 ##############################################
@@ -40,6 +40,7 @@ class ReactRoles( commands.Cog, name = "reactroles" ):
 
   def __init__( self, bot ):
     self.bot = bot 
+
 
   ##############################################
   # ReactRoles Events
@@ -61,6 +62,9 @@ class ReactRoles( commands.Cog, name = "reactroles" ):
     if user == self.bot.user or user.bot:
       return
 
+    if emoji == MEMBER_EMOJI:
+      await self.assignMemberRole(
+        message.guild, user )
     if emoji in PRONOUN_EMOJI:
       await self.assignPronounRole( message.guild, user , emoji )
     elif emoji in REGION_EMOJI:
@@ -75,6 +79,18 @@ class ReactRoles( commands.Cog, name = "reactroles" ):
   ##############################################
 
   # ASYNC SUPPORT FUNCTIONS
+
+  async def assignMemberRole( self, guild, user ):
+    print("Attempting to assign 'Member' role")
+    role = discord.utils.get( guild.roles , name = MEMBER_ROLE )
+    if role not in user.roles:
+      await user.add_roles( role )
+      await user.send("Thank you for reading and agreeing to our rules! You've been given member privileges on `The Backrooms`~")
+      await user.send("Feel free to introduce yourself in `#introductions` and/or grab a role or two in `#self-roles`!")
+      print(f"'Member' role assigned to {user}!")
+    else:
+      print(f"User '{user}' already has role 'Member':")
+    return 
 
   async def assignPronounRole( self, guild, user , emoji ):
 
