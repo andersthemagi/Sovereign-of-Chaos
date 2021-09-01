@@ -6,6 +6,9 @@ import sys
 
 import discord 
 from discord.ext import commands
+from discord.ext.commands import Bot, Context
+
+from log import ConsoleLog
 
 ##############################################
 # Constants and Setup
@@ -35,12 +38,14 @@ answers = [
 
 HELP_LINK = "https://andresgsepulveda.github.io/magicalmusings.github.io/sovereign/"
 
-class General(commands.Cog, name = "General"):
+MODULE = "GENERAL"
+
+class General( commands.Cog, name = "General" ):
 
   ##############################################
   # General Cog Initialization
   ##############################################
-  def __init__( self, bot ):
+  def __init__( self, bot: Bot ):
     self.bot = bot
 
   ##############################################
@@ -48,9 +53,8 @@ class General(commands.Cog, name = "General"):
   ##############################################
 
   # ADVICE COMMAND
-  @commands.command( name = "advice" , 
-    aliases = ['a'])
-  async def advice( self, ctx, *, question ):
+  @commands.command( name = "advice" , aliases = ['a'] )
+  async def advice( self, ctx: Context, *, question: str ) -> None:
     """
     Ask any question to the bot
     """
@@ -70,11 +74,12 @@ class General(commands.Cog, name = "General"):
     return
 
   # HELP COMMAND
-  @commands.command( name = "help", aliases = ["h"])
-  async def help( self, ctx ):
+  @commands.command( name = "help", aliases = ["h"] )
+  async def help( self, ctx: Context ) -> None:
     """
     Sends a link to the documentation of the bot
     """
+    await self.bot.wait_until_ready()
 
     await ctx.send("Looks like you need some help getting around. Take a look at this link for how to use my powers to your benefit.")
     await ctx.send( HELP_LINK )
@@ -83,7 +88,7 @@ class General(commands.Cog, name = "General"):
 
   # PING COMMAND
   @commands.command( name = "ping" )
-  async def ping( self, ctx ):
+  async def ping( self, ctx: Context) -> None:
     """
     Diagnostic command to check latency on Bot Commands
     """
@@ -96,7 +101,7 @@ class General(commands.Cog, name = "General"):
 
   # STATS COMMAND
   @commands.command( name = "stats" )
-  async def stats( self, ctx ):
+  async def stats( self, ctx: Context ) -> None:
     """
       Diagnostic command to check version of python and discord.py
     """
@@ -111,6 +116,7 @@ class General(commands.Cog, name = "General"):
 ##############################################
 # Setup Command for Bot
 ##############################################
-def setup(bot):
-  print("Attempting load of 'general' extension...")
+def setup( bot : Bot ) -> None:
+  logging = ConsoleLog()
+  logging.send( MODULE, f"Attempting load of '{MODULE}' extension...")
   bot.add_cog( General( bot ) )

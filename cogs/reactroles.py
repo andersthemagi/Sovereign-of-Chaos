@@ -3,15 +3,23 @@
 ##############################################
 import discord 
 
+from discord import Guild, Member, RawReactionActionEvent
 from discord.ext import commands
-from replit import db
+from discord.ext.commands import Bot
+
+from log import ConsoleLog
 
 ##############################################
 # Constants
 ##############################################
 
+GENERAL_CHANNEL_ID = "703015465567518802"
+
 MEMBER_EMOJI = "✅"
 MEMBER_ROLE = "Member"
+
+MODULE = "REACTROLES"
+
 PRONOUN_EMOJI = [
   "☀️", "🌙", "✨", "🪐"
 ]
@@ -38,17 +46,18 @@ REACT_ROLE_MSG_IDS = [
 
 class ReactRoles( commands.Cog, name = "reactroles" ):
 
-  def __init__( self, bot ):
+  def __init__( self, bot: Bot ):
     self.bot = bot 
+    self.logging = ConsoleLog()
 
 
   ##############################################
   # ReactRoles Events
   ##############################################
   @commands.Cog.listener()
-  async def on_raw_reaction_add( self, RawReactionActionEvent ):
+  async def on_raw_reaction_add( self, payload: RawReactionActionEvent ) -> None:
 
-    reaction = RawReactionActionEvent
+    reaction = payload
     channelID = str(reaction.channel_id)
     channel = await self.bot.fetch_channel(channelID)
     messageID = str(reaction.message_id)
@@ -80,53 +89,69 @@ class ReactRoles( commands.Cog, name = "reactroles" ):
 
   # ASYNC SUPPORT FUNCTIONS
 
-  async def assignMemberRole( self, guild, user ):
-    print("Attempting to assign 'Member' role")
+  async def assignMemberRole( self, guild: Guild, member: Member ) -> None:
+    """
+    Assigns the member role to a given user in a given guild.
+    """
+    self.logging.send( MODULE , f"Attempting to assign 'Member' role to user '{member}'" )
+
     role = discord.utils.get( guild.roles , name = MEMBER_ROLE )
-    if role not in user.roles:
-      await user.add_roles( role )
-      await user.send("Thank you for reading and agreeing to our rules! You've been given member privileges on `The Backrooms`~")
-      await user.send("Feel free to introduce yourself in `#introductions` and/or grab a role or two in `#self-roles`!")
-      print(f"'Member' role assigned to {user}!")
+    if role not in member.roles:
+      # Notify user that they are now a member
+      await member.add_roles( role )
+      await member.send("Thank you for reading and agreeing to our rules! You've been given member privileges on `The Backrooms`~")
+      await member.send("Feel free to introduce yourself in `#introductions` and/or grab a role or two in `#self-roles`!")
+
+      # Output to console
+      self.logging.send( MODULE, f"'Member' role assigned to {member}!" )
+
+      # Send Message to General Chat
+      channel = await guild.fetch_channel(GENERAL_CHANNEL_ID)
+      await channel.send(f"Howdy {member.mention}! Welcome to The Backrooms discord server!! Take a look at {channel.mention} if you want to choose a class, pronouns, or show off what region you're from. Feel free to message this channel if you are unsure about anything or if you have any questions.")
     else:
-      print(f"User '{user}' already has role 'Member':")
+      self.logging.send( MODULE, f"User '{member}' already has role 'Member'." )
     return 
 
-  async def assignPronounRole( self, guild, user , emoji ):
-
+  async def assignPronounRole( self, guild: Guild, member: Member, emoji: str ) -> None :
+    """
+    Assigns a specific pronoun role to a given user in a given server, depending on given emoji string.
+    """
     for roleStr in PRONOUN_ROLES:
       role = discord.utils.get( guild.roles, name = roleStr)
-      if role in user.roles:
-        await user.remove_roles( role )
+      if role in member.roles:
+        await member.remove_roles( role )
 
     roleStr = PRONOUN_ROLES[PRONOUN_EMOJI.index(emoji)]
     role = discord.utils.get( guild.roles, name = roleStr )
-    await user.add_roles( role )
+    await member.add_roles( role )
 
-    await user.send(f"Awesome! Your selected pronouns `{roleStr}` have been added to your list of roles on `The Backrooms`.")
-    print(f"User '{user.display_name}' assigned role '{roleStr}'")
+    await member.send(f"Awesome! Your selected pronouns `{roleStr}` have been added to your list of roles on `The Backrooms`.")
+    self.logging.send( MODULE, f"User '{member.display_name}' assigned role '{roleStr}'")
 
     return
 
-  async def assignRegionRole( self, guild, user, emoji ):
-
+  async def assignRegionRole( self, guild: Guild, member: Member, emoji: str ) -> None:
+    """
+    Assigns a specific region role to a given user on a given server, depending on given emoji string.
+    """
     for roleStr in REGION_ROLES:
-      role = discord.utils.get( guild.roles, name = roleStr)
-      if role in user.roles:
-        await user.remove_roles( role )
+      role = discord.utils.get( guild.roles, name = roleStr )
+      if role in member.roles:
+        await member.remove_roles( role )
 
     roleStr = REGION_ROLES[REGION_EMOJI.index(emoji)]
     role = discord.utils.get( guild.roles, name = roleStr )
-    await user.add_roles( role )
+    await member.add_roles( role )
 
-    await user.send(f"Great! Your selected region `{roleStr}` have been added to your list of roles on `The Backrooms`.")
-    print(f"User '{user.display_name}' assigned role '{roleStr}'")
+    await member.send(f"Great! Your selected region `{roleStr}` have been added to your list of roles on `The Backrooms`.")
+    self.logging.send( MODULE, f"User '{member.display_name}' assigned role '{roleStr}'")
 
     return
 
 ##############################################
 # Setup Command for Bot
 ##############################################
-def setup(bot):
-  print("Attempting load of 'reactroles' extension...")
+def setup( bot: Bot ) -> None:
+  logging = ConsoleLog()
+  logging.send( MODULE, f"Attempting load of '{MODULE}' extension...")
   bot.add_cog( ReactRoles( bot ) )

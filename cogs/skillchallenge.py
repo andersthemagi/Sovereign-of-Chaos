@@ -9,9 +9,13 @@ import re
 
 from discord.ext import commands
 
+from log import ConsoleLog
+
 ##############################################
 # Constants and Setup
 ##############################################
+
+MODULE = "SKILLCHALLENGE"
 
 # Complication Modifiers
 # As a 'complication' in a skill challenge, the creature
@@ -1221,5 +1225,6 @@ class SkillChallenge( commands.Cog, name = "Skill Challenge" ):
 # Setup Function for SkillChallenge Cog
 ##############################################
 def setup( bot ):
-  print("Attempting load of 'skillchallenge' extension...")
+  logging = ConsoleLog()
+  logging.send( MODULE, f"Attempting load of '{MODULE}' extension...")
   bot.add_cog( SkillChallenge( bot ) )

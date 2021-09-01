@@ -7,12 +7,18 @@ import time
 import re
 
 from datetime import datetime, timedelta
+from discord import Guild, Message, Member, RawReactionActionEvent
 from discord.ext import commands, tasks
+from discord.ext.commands import Bot, Context
 from replit import db
+
+from log import ConsoleLog
 
 ##############################################
 # Constants
 ##############################################
+
+MODULE = "EXP"
 
 REACT_ROLE_MSG_IDS = [
   "882013329411948606"
@@ -99,20 +105,21 @@ ROLE_LISTS = [
 
 class Exp( commands.Cog, name = "Exp" ):
 
-  def __init__( self, bot ):
+  def __init__( self, bot: Bot ):
     self.bot = bot 
     self.doubleXP = False
+    self.logging = ConsoleLog()
 
   ##############################################
   # EXP Cog Async Tasks
   ##############################################
 
-  @tasks.loop(hours = 24)
-  async def resetDailyXPBonus( self ):
+  @tasks.loop( hours = 24 ) 
+  async def resetDailyXPBonus( self ) -> None:
     """
     Resets the daily xp bonus flags to allow players to earn bonus xp again.
     """
-    print(f"{self.getTimeStr()} Resetting daily xp flags.")
+    self.logging.send( MODULE, "Resetting daily xp flags." )
     servers = db.keys()
     # For each server listed
     for server in servers:
@@ -127,11 +134,11 @@ class Exp( commands.Cog, name = "Exp" ):
           # Reset their streak
           userdata["daily_xp_streak"] = 0
         userdata["messaged_today"] = False 
-    print(f"{self.getTimeStr()}All daily xp flags reset!")
+    self.logging.send( MODULE, "All daily xp flags reset!" )
     return 
 
   @resetDailyXPBonus.before_loop
-  async def beforeResetDailyXP( self ):
+  async def beforeResetDailyXP( self ) -> None:
     """
     Ensures the bot will always reset at 00:00 server time
     Server midnight is 18:00 Mountain or 20:00 EST
@@ -143,8 +150,10 @@ class Exp( commands.Cog, name = "Exp" ):
         future += timedelta(days=1)
     delta = (future - now).seconds
     hour, minute = delta // 3600, (delta % 3600) // 60
-    print(f"{hour}:{minute} until daily XP reset...")
-    print( '------' )
+
+    self.logging.send( MODULE, f"{hour}:{minute} until daily XP reset..." )
+    self.logging.printSpacer()
+
     await asyncio.sleep(delta)
 
   ##############################################
@@ -152,7 +161,7 @@ class Exp( commands.Cog, name = "Exp" ):
   ##############################################
 
   @commands.Cog.listener()
-  async def on_ready( self ):
+  async def on_ready( self ) -> None:
     """
     channel = await self.bot.fetch_channel("881918716454002749")
     message = await channel.fetch_message("882309606611767326")
@@ -167,7 +176,7 @@ class Exp( commands.Cog, name = "Exp" ):
     await self.resetDailyXPBonus.start()
 
   @commands.Cog.listener()
-  async def on_message( self, message ):
+  async def on_message( self, message: Message ) -> None:
     """
     Defines new behavior for the bot on message.
     The EXP Cog listens for each message on the server to award 
@@ -196,7 +205,7 @@ class Exp( commands.Cog, name = "Exp" ):
     
     # Check if the user is registered on this server yet. 
     if userID not in server.keys():
-      print(f"{self.getTimeStr()}{self.user.display_name} not found in database. Creating entry...")
+      self.logging.send( MODULE, f"{self.user.display_name} not found in database. Creating entry...")
       self.addUser( guildID, userID )
 
     # Check if the user has sent a message in the last 5 seconds
@@ -205,8 +214,8 @@ class Exp( commands.Cog, name = "Exp" ):
     diff = currTime - float(lastTime)
     if int(diff) < 5:
       # If so, don't award XP
-      print(f"{self.getTimeStr()}User {self.user.display_name} has messaged too fast! Needs to wait at least 5 seconds for XP gain.")
-      print( '------' )
+      self.logging.send( MODULE, f"User {self.user.display_name} has messaged too fast! Needs to wait at least 5 seconds for XP gain.")
+      self.logging.printSpacer()
       return
 
     # Set the last message time to our current time
@@ -227,14 +236,15 @@ class Exp( commands.Cog, name = "Exp" ):
     await self.dailyXPBonus( guildID, userID )
     # Check if the user has leveled up.
     await self.levelUp( guildID, userID, channel )
-    print( '------' )
+
+    self.logging.printSpacer()
 
     return
 
   @commands.Cog.listener()
-  async def on_raw_reaction_add( self, RawReactionActionEvent ):
+  async def on_raw_reaction_add( self, payload: RawReactionActionEvent ) -> None:
 
-    reaction = RawReactionActionEvent
+    reaction = payload
     channelID = str(reaction.channel_id)
     channel = await self.bot.fetch_channel(channelID)
     messageID = str(reaction.message_id)
@@ -274,7 +284,7 @@ class Exp( commands.Cog, name = "Exp" ):
 
     # Handle output accordingly
     await user.send(f"You've been switched to the '{classStr}' class on `The Backrooms`!")
-    print(f"{self.getTimeStr()} User '{user.display_name}' has been given '{classStr}' class")
+    self.logging.send( MODULE, f"User '{user.display_name}' has been given '{classStr}' class")
 
     await self.assignXPRole( guildID, userID, db[guildID][userID]["lvl"], True )
 
@@ -286,27 +296,40 @@ class Exp( commands.Cog, name = "Exp" ):
 
   @commands.command( name = "adjustlvl" )
   @commands.is_owner()
-  async def adjustLevels( self, ctx ):
-    print(f"{self.getTimeStr()} Adjusting levels...")
+  async def adjustLevels( self, ctx: Context ) -> None :
+
+    await self.bot.wait_until_ready()
+
+    self.logging.send( MODULE, "Adjusting levels...")
+
     servers = db.keys()
     for server in servers:
       users = db[server].keys()
       for user in users:
+        # Get user data
         userdata = db[server][user]
         experience = userdata["experience"]
         lvl = userdata["lvl"]
+        # Calc new level 
         newLvl = int(experience ** (1/5))
         userdata["lvl"] = newLvl
-        print(f"{self.getTimeStr()} User '{user}' adjusted from Lvl {lvl} to Lvl {newLvl}")
+        # Output results
+        self.logging.send( MODULE, f"User '{user}' adjusted from Lvl {lvl} to Lvl {newLvl}")
         await self.assignXPRole( server, user, newLvl, False )
-    print(f"{self.getTimeStr()} All users on server adjusted!")
+
+    self.logging.send( MODULE, "All users on server adjusted!")
+
+    return 
 
   @commands.command( name = "assign" )
   @commands.is_owner()
-  async def assignRolesCommand( self, ctx ):
-    print(f"{self.getTimeStr()} Assigning xp roles...")
-    servers = db.keys()
+  async def assignRolesCommand( self, ctx: Context ) -> None:
 
+    await self.bot.wait_until_ready()
+
+    self.logging.send( MODULE, "Assigning xp roles...")
+
+    servers = db.keys()
     # For each server listed
     for server in servers:
       users = db[server].keys()
@@ -315,11 +338,12 @@ class Exp( commands.Cog, name = "Exp" ):
         userdata = db[server][user]
         await self.assignXPRole( server, user , userdata["lvl"] , False )
         
-    print(f"{self.getTimeStr()} All users assigned xp roles!")
+    self.logging.send( MODULE, "All users assigned xp roles!")
+
     return
 
   @commands.command( name = "leaderboard" , aliases = ["lb"])
-  async def checkLeaderboard( self, ctx ):
+  async def checkLeaderboard( self, ctx: Context ) -> None:
     """
     Allows users to check who has the most experience on the server.
     Uses a 'asciidoc' code block to display info neatly.
@@ -365,7 +389,7 @@ class Exp( commands.Cog, name = "Exp" ):
     return
   
   @commands.command( name = "progression" , aliases = ["prog"])
-  async def checkProgression( self, ctx , *args ):
+  async def checkProgression( self, ctx: None , *args ) -> None :
     
     await self.bot.wait_until_ready()
 
@@ -432,7 +456,7 @@ class Exp( commands.Cog, name = "Exp" ):
     return
 
   @commands.command( name = "rank" )
-  async def checkRank( self, ctx ):
+  async def checkRank( self, ctx: Context ) -> None:
     """
     Allows a user to see their own rank on the server. 
     Rank includes:
@@ -513,7 +537,7 @@ class Exp( commands.Cog, name = "Exp" ):
 
   @commands.command( name = "doublexp", aliases = ["dxp"] )
   @commands.is_owner()
-  async def toggleDoubleXP( self, ctx ):
+  async def toggleDoubleXP( self, ctx: Context ) -> None:
     """
     Allows the owner(s) of the server to toggle Double XP for the server.
     """
@@ -532,8 +556,11 @@ class Exp( commands.Cog, name = "Exp" ):
 
   # Async Support Functions
 
-  async def assignXPRole( self, guild_id: str, user_id: str , lvl : int, notify_user: bool ):
-
+  async def assignXPRole( self, guild_id: str, user_id: str , lvl : int, notify_user: bool ) -> None:
+    """
+    Assigns the XP role to user based on given user_id, guild_id, level. Depending on input, will / will not notify
+    the user that their XP has been adjusted or changed.
+    """
     userdata = db[guild_id][user_id]
     guild = await self.bot.fetch_guild( guild_id )
     user = await guild.fetch_member( user_id )
@@ -542,7 +569,7 @@ class Exp( commands.Cog, name = "Exp" ):
     # Check if the user has a category
     # ERROR CASE: If the user is pre-XP roles implementation
     if "class" not in keys:
-      print(f"{self.getTimeStr} User {user.display_name} has no class variable. Creating one for them.")
+      self.logging.send( MODULE, f"User {user.display_name} has no class variable. Creating one for them.")
       userdata["class"] = None
     
     await self.removeOldRoles( guild, user )
@@ -589,39 +616,47 @@ class Exp( commands.Cog, name = "Exp" ):
 
     return
 
-  async def dailyXPBonus( self, guild_id: str, user_id: str ):
+  async def dailyXPBonus( self, guild_id: str, user_id: str ) -> None:
+    """
+    Determines whether or not the user has earned their daily xp. Calculates daily xp if so and awards it to the user.
+    """
+    # Try to find user in db
     try:
       userdata = db[guild_id][user_id]
       dailyXPEarned = userdata["daily_xp_earned"]
       dailyXPStreak = userdata["daily_xp_streak"]
     except:
-      print(f"{self.getTimeStr()}ERROR: User needs to be given daily XP stats. ")
+      # If not, we need to add the user's stats
+      self.logging.send( MODULE, "ERROR: User needs to be given daily XP stats.")
       userdata["daily_xp_earned"] = False 
       userdata["daily_xp_streak"] = 0
       userdata["messaged_today"] = False 
       dailyXPEarned = userdata["daily_xp_earned"]
       dailyXPStreak = userdata["daily_xp_streak"]
 
+    # If the user has already gotten their daily xp bonus
     if dailyXPEarned:
       return 
 
+    # If the users daily xp bonus is less than 7
     if dailyXPStreak < 7:
       dailyXPStreak += 1
 
+    # Award XP and update db
     awardedXP = dailyXPStreak * 5
-
-    print(f"{self.getTimeStr()}User {self.user.display_name} has earned their daily XP bonus. {dailyXPStreak} day streak = {awardedXP} bonus XP")
     self.addExperience( guild_id , user_id, awardedXP )
 
     userdata["daily_xp_earned"] = True
     userdata["daily_xp_streak"] = dailyXPStreak
     userdata["messaged_today"] = True
 
+    # Notify user and console
     await self.user.send(f"You've earned your daily XP bonus ({awardedXP}) for messaging on `The Backrooms`! You now have a {dailyXPStreak}-day streak. Keep it up!")
+    self.logging.send( MODULE, f"User {self.user.display_name} has earned their daily XP bonus. {dailyXPStreak} day streak = {awardedXP} bonus XP")
 
     return
 
-  async def levelUp( self, guild_id: str, user_id: str, channel: discord.TextChannel ):
+  async def levelUp( self, guild_id: str, user_id: str, channel: discord.TextChannel ) -> None:
     """
     Support function for 'on_message' event.
     Determines whether or not the given user has leveled up. If so,
@@ -635,6 +670,7 @@ class Exp( commands.Cog, name = "Exp" ):
     # This will round down to the nearest whole number
     lvlEnd = int(experience ** (1/5))
 
+    # if our level is already at the cap
     if lvlEnd > 10:
       return 
 
@@ -642,33 +678,33 @@ class Exp( commands.Cog, name = "Exp" ):
     if lvlStart < lvlEnd:
       userdata["lvl"] = lvlEnd
       await channel.send( f"{self.user.mention} has leveled up to Level {lvlEnd}!")
-      print( f"{self.user.display_name} has leveled up to Level {lvlEnd}!")
+      self.logging.send( MODULE, f"{self.user.display_name} has leveled up to Level {lvlEnd}!")
       await self.assignXPRole( guild_id, user_id, lvlEnd, True )
     
     return
 
-  async def removeOldRoles( self, guild, user ):
+  async def removeOldRoles( self, guild: Guild, member: Member ) -> None:
     for roleList in ROLE_LISTS:
       for roleStr in roleList:
         role = discord.utils.get( guild.roles, name = roleStr )
-        if role in user.roles:
-          await user.remove_roles( role )
-          print(f"Removed Role {role.name} from User {user.display_name}")
+        if role in member.roles:
+          await member.remove_roles( role )
+          self.logging.send( MODULE, f"Removed Role {role.name} from User {member.display_name}" )
     return 
 
   # Synchronous Support Functions
 
-  def addExperience( self, guild_id : str, user_id : str, exp : int ):
+  def addExperience( self, guild_id : str, user_id : str, exp : int ) -> None:
     """
     Support function for 'on_message' event.
     Increments experience for the given user on the given server.
     """
     db[guild_id][user_id]["experience"] += exp
     totalXP = db[guild_id][user_id]["experience"]
-    print(f"{self.getTimeStr()}{self.user.display_name} has earned {exp} XP. Current total: {totalXP} XP." )
+    self.logging.send( MODULE, f"{self.user.display_name} has earned {exp} XP. Current total: {totalXP} XP." )
     return
 
-  def addUser( self, guild_id: str, user_id: str ):
+  def addUser( self, guild_id: str, user_id: str ) -> None:
     """
     Support function for 'on_message' event. 
     Adds a user on a given server to the replit database.
@@ -685,17 +721,15 @@ class Exp( commands.Cog, name = "Exp" ):
       "last_message" : currTime,
       "messaged_today"  : False,
     }
-    print(f"{self.getTimeStr()}Added user '{self.user.display_name}' to database.")
-    return 
-
-  def getTimeStr( self ):
-    """
-    Returns a formatted string with the current time for logging events.
-    """
-    return time.strftime("[%Y-%m-%d %H:%M:%S] ", time.localtime())
+    self.logging.send( MODULE, f"Added user '{self.user.display_name}' to database.")
+    return
 
   # End of Exp Cog
 
-def setup(bot):
-  print("Attempting load of 'Exp' extension...")
+##############################################
+# Setup Command for Bot
+##############################################
+def setup( bot: Bot ) -> None:
+  logging = ConsoleLog()
+  logging.send( MODULE, f"Attempting load of '{MODULE}' extension...")
   bot.add_cog( Exp( bot ) )

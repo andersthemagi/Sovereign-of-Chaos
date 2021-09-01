@@ -6,20 +6,37 @@ d20 Package: Open-Source dice engine for d20 systems.
 
 https://d20.readthedocs.io/en/latest/start.html
 """
+##############################################
+# Package Imports
+##############################################
 import d20
 from discord.ext import commands
+from discord.ext.commands import Context
+
+from log import ConsoleLog
 
 ##############################################
 # Constants and Setup
+##############################################
+
+MODULE = "DICEROLL"
+
+##############################################
+# DiceRoll Cog
 ##############################################
 
 class DiceRoll( commands.Cog, name = "DiceRoll" ):
 
   def __init__( self, bot ):
     self.bot = bot
+    self.logging = ConsoleLog
+
+  ##############################################
+  # DiceRoll Commands
+  ##############################################
 
   @commands.command( name = "roll", aliases = ["r"])
-  async def rollDice( self, ctx, *, rollStr: str = '1d20'):
+  async def rollDice( self, ctx: Context, *, rollStr: str = '1d20') -> None:
     """
     Allows the user to roll dice in the discord chat, similar to Avrae.
 
@@ -50,11 +67,14 @@ class DiceRoll( commands.Cog, name = "DiceRoll" ):
     messageStr += str(roll)
 
     # Send message
-    return await ctx.send(messageStr)
+    await ctx.send(messageStr)
+
+    return 
 
 ##############################################
 # Setup Command for Bot
 ##############################################
-def setup( bot ):
-  print("Attempting load of 'diceroll' extension...")
+def setup( bot ) -> None:
+  logging = ConsoleLog()
+  logging.send( MODULE, f"Attempting load of '{MODULE}' extension...")
   bot.add_cog( DiceRoll( bot ) )

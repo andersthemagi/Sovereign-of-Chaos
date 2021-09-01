@@ -1,5 +1,25 @@
+"""
+Support class used to handle database interactions.
+
+Will not be useful at the moment, but later when changing from
+remote to local hosting, a local mysql db will be imperative to
+ensure bot is running at top speed when possible.
+"""
+##############################################
+# Package Imports
+##############################################
+
 import mysql.connector
 import os
+
+from log import ConsoleLog
+from typing import Iterable
+
+##############################################
+# Constants and Setup
+##############################################
+
+MODULE = "DATABASE"
 
 DB_HOST = os.getenv( "DB_HOST" )
 DB_NAME = os.getenv( "DB_NAME" )
@@ -8,15 +28,31 @@ DB_USER = os.getenv( "DB_USER" )
 READ_TAG = "r"
 SEMICOLON = ";"
 
+##############################################
+# DB Class
+##############################################
+
 class DB:
 
-  def __init__(self):
+  def __init__( self ):
     self.openDB = False
     self.db = None 
     self.cursor = None 
+    self.logging = ConsoleLog()
     return 
 
-  def start(self):
+  ##############################################
+  # DB External Functions
+  ##############################################
+
+  def start( self ) -> None:
+    """
+    Allows the user to create a connection to the database
+    """
+    if self.checkOpenDB():
+      self.openDBError()
+      return 
+
     try:
       self.db = mysql.connector.connect(
         host = DB_HOST,
@@ -26,31 +62,27 @@ class DB:
       )
       self.cursor = self.db.cursor(buffered = True )
       self.openDB = True
-      print(f"{DB_NAME} at {DB_HOST} connected to successfully!")
+      self.logging.send( MODULE, f"{DB_NAME} at {DB_HOST} connected to successfully!")
     except Exception as e:
       self.throwException(e)
 
-  def stop(self):
+  def stop( self ) -> None :
+    """
+    Allows the user to close the connection to the database
+    """
     if not self.checkOpenDB():
+      self.notOpenDBError()
       return
     self.db.close()
     self.cursor.close()
     self.openDB = False 
-    print(f"{DB_NAME} at {DB_HOST} closed.")
+    self.logging.send( MODULE, f"{DB_NAME} at {DB_HOST} closed." )
     return
 
-  def checkOpenDB( self ):
-    if self.openDB:
-      return True
-    return False
-
-  def throwException( self, exception ):
-    exceptionStr = f"{type(exception).__name__}: {exception}"
-    print( f"Something went wrong executing a .sql script from string: \n{exceptionStr}" )
-
-  def executeScript( self, scriptStr, vals = None ):
+  def executeScript( self, scriptStr : str, vals : Iterable[list] = None ) -> None :
 
     if not self.checkOpenDB():
+      self.notOpenDBError()
       return
 
     commandSuccessful = True
@@ -65,15 +97,16 @@ class DB:
       commandSuccessful = False 
 
     if commandSuccessful:
-      print("SQL command from string executed successfully!")
+      self.logging.send( MODULE, "SQL command from string executed successfully!" )
     else:
-      print("ERROR: SQL command from string had trouble executing.")
+      self.logging.send( MODULE, "ERROR: SQL command from string had trouble executing." )
 
     return
 
-  def executeScriptFromFile( self, filename ):
+  def executeScriptFromFile( self, filename: str ) -> None:
 
     if not self.checkOpenDB():
+      self.notOpenDBError()
       return
 
     file = open(filename, READ_TAG )
@@ -86,14 +119,52 @@ class DB:
     for command in sqlCommands:
       try:
         self.cursor.execute(command)
-        print(f"SQL command in '{filename}' executed successfully!")
+        self.logging.send( MODULE, f"SQL command in '{filename}' executed successfully!" )
       except Exception as e:
         self.throwException(e)
         allCommandsSuccessful = False 
 
     if allCommandsSuccessful:
-      print(f"All SQL commands in '{filename}' executed!")
+      self.logging.send( MODULE, f"All SQL commands in '{filename}' executed!" )
     else:
-      print(f"ERROR: One or more SQL commands in '{filename}' did not execute successfully.")
+      self.logging.send( MODULE, f"ERROR: One or more SQL commands in '{filename}' did not execute successfully." )
 
     return
+
+  ##############################################
+  # DB Internal / Support Functions
+  ##############################################
+
+  def checkOpenDB( self ) -> bool :
+    """
+    Returns a boolean determining whether or not a connection
+    has been established
+    """
+    if self.openDB:
+      return True
+    return False
+
+  def openDBError( self ) -> None :
+    """
+    Sends an error on the console about a db connection already
+    having been established.
+    """
+    self.logging.send( MODULE, "ERROR: Connection to DB has already been established. Use '.stop()' to close the connection before attempting again." )
+    return 
+
+  def notOpenDBError( self ) -> None :
+    """
+    Sends an error on the console about a db connection not yet
+    being established.
+    """
+    self.logging.send( MODULE, "ERROR: Connection to DB has not yet been established. Use '.start()' to start a connection before attempting again." )
+    return
+
+  def throwException( self, exception: Exception ) -> None:
+    exceptionStr = f"{type(exception).__name__}: {exception}"
+    self.logging.send( MODULE, f"ERROR: Something went wrong executing a .sql script from string: \n{exceptionStr}")
+    return
+
+  # End of DB Class
+
+# End of File

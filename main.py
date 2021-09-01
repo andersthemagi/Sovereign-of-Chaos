@@ -8,12 +8,15 @@ import os
 import sys
 sys.path.insert(1, './cogs/support')
 
-from timer import Timer
-
+from discord import Guild, Message
 from discord.ext import commands
+from discord.ext.commands import Context
 from flask import Flask
 from replit import db
 from threading import Thread
+
+from log import ConsoleLog
+from timer import Timer
 
 ##############################################
 # Constants and Setup
@@ -22,6 +25,7 @@ from threading import Thread
 app = Flask( 'discord bot' )
 
 OWNER_ID = os.getenv( "OWNER_ID" )
+MODULE = "MAIN"
 
 # Initialize Bot with cmd prefix
 bot = commands.Bot( 
@@ -42,10 +46,16 @@ db.executeScriptFromFile(DB_SETUP_PATH)
 db.stop()
 """
 
+logging = ConsoleLog()
+
+logging.printSpacer()
+logging.send( MODULE, "Starting up the bot!")
+
 # Import Cogs from /cogs directory
 
-print( '------' )
-print( "Attempting load of extensions in '/cog' directory...")
+logging.printSpacer()
+logging.send(MODULE, 
+  "Attempting load of extensions in '/cog' directory..." )
 allExtensionsLoaded = True
 if __name__ == "__main__":
   for file in os.listdir( "./cogs" ):
@@ -56,30 +66,31 @@ if __name__ == "__main__":
       # configured setup() method, need to account for that.
       try:
         bot.load_extension( f"cogs.{extension}" )
-        print( f"Loaded extension '{extension}'" )
+        logging.send( MODULE, f"Loaded extension '{extension}'" )
       except Exception as e:
         exception = f"{type(e).__name__}: {e}"
-        print( f"Failed to load extension {extension}\n{exception}" )
+        logging.send( MODULE, f"Failed to load extension {extension}\n{exception}" )
         allExtensionsLoaded = False 
 
 # Display success / failure on console
 if allExtensionsLoaded:
-  print("SUCCESS: All extensions in '/cog' directory loaded successfully!")
+  logging.send( MODULE, "SUCCESS: All extensions in '/cog' directory loaded successfully!" )
 else:
-  print("WARNING: One or more extensions could not be loaded. See above for error output.")
-print( '------' )
+  logging.send( MODULE, "WARNING: One or more extensions could not be loaded. See above for error output." )
+
+logging.printSpacer()
 
 timeStr = loadTimer.stop()
-print(f"LOAD TIME: {timeStr} seconds")
+logging.send( MODULE, f"LOAD TIME: {timeStr} seconds" )
 
-print( '------' )
+logging.printSpacer()
 
 ##############################################
 # Events
 ##############################################
 
 @bot.event
-async def on_guild_join( guild ):
+async def on_guild_join( guild: Guild ) -> None:
 
   guildID = str(guild.id)
 
@@ -90,7 +101,7 @@ async def on_guild_join( guild ):
   return
 
 @bot.event 
-async def on_message( message ):
+async def on_message( message: Message ) -> None:
   """
   Defines behavior for bot on receiving message in chat
   """
@@ -98,6 +109,7 @@ async def on_message( message ):
   if message.author == bot.user or message.author.bot:
     return
   await bot.process_commands(message)
+  return
 
 @bot.event
 async def on_ready():
@@ -110,20 +122,15 @@ async def on_ready():
       type = discord.ActivityType.watching,
       name = 'the sands of time... | !s help' ) )
   # Console output for debugging
-  print( '------\nLogged in as' )
-  print( bot.user.name )
-  print( bot.user.id )
-  print( 'https://discordapp.com/oauth2/authorize?client_id={}&scope=bot&permissions=0'.format('707346305080361022' ) )
-  print( '------' )
-  PRONOUN_EMOJI = [
-  "☀️", "🌙", "✨", "🪐"
-  ]
-  REGION_EMOJI = [
-    "🟢", "🟣", "⚪", "🔵", "🟤", "🟠", "🔴"
-  ]
+  logging.printSpacer()
+  logging.send( MODULE, "Logged in as" )
+  logging.send( MODULE, bot.user.name )
+  logging.send( MODULE, bot.user.id )
+  logging.printSpacer()
+  return
 
 @bot.event
-async def on_command_completion(ctx):
+async def on_command_completion( ctx: Context ) -> None:
   """
   Defines behavior for bot whenever a command is completed successfully
   """
@@ -132,7 +139,9 @@ async def on_command_completion(ctx):
   fullCommandName = ctx.command.qualified_name
   split = fullCommandName.split( " " )
   executedCommand = str(split[0])
-  print( f"Executed {executedCommand} command in {ctx.guild.name} (ID: {ctx.message.guild.id}) by {ctx.message.author} (ID: {ctx.message.author.id})" )
+  logging.send( MODULE, 
+    f"Executed {executedCommand} command in {ctx.guild.name} (ID: {ctx.message.guild.id}) by {ctx.message.author} (ID: {ctx.message.author.id})" )
+  return
 
 ##############################################
 # Other Functions
