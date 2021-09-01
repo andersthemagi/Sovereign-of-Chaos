@@ -25,7 +25,7 @@ class Creature:
 READ_TAG = "r"
 START_MSG_PATH = "data/startmessage.txt"
 
-class InitiativeInstance:
+class InitInstance:
 
   def __init__( self , bot: Bot ):
     self.bot = bot

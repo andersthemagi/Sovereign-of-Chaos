@@ -4,7 +4,7 @@
 from discord.ext import commands
 from discord.ext.commands import Context
 
-from initiativeclasses import InitiativeInstance
+from init_classes import InitInstance
 from log import ConsoleLog
 
 ##############################################
@@ -41,7 +41,7 @@ class Initiative( commands.Cog, name = "Initiative" ):
 
     channel = str(ctx.channel.id)
     if not self.checkIfActiveInstance( channel ):
-      self.instances[channel] = InitiativeInstance( self.bot )
+      self.instances[channel] = InitInstance( self.bot )
     else:
       await ctx.send("ERROR: There is not a current initiative order set. Please use `!init start` and set an initiative order before using this command.")
       return
