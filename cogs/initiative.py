@@ -2,7 +2,7 @@
 # Package Imports
 ##############################################
 from discord.ext import commands
-from discord.ext.commands import Context
+from discord.ext.commands import Bot, Context
 
 from init_classes import InitInstance
 from log import ConsoleLog
@@ -17,7 +17,7 @@ class Initiative( commands.Cog, name = "Initiative" ):
   ##############################################
   # Initiative Cog Initialization
   ##############################################
-  def __init__( self, bot ):
+  def __init__( self, bot: Bot ):
     self.bot = bot
     self.logging = ConsoleLog()
     self.instances = {}
@@ -135,7 +135,7 @@ class Initiative( commands.Cog, name = "Initiative" ):
     return
 
   @initiative.command( name = "shuffle" )
-  async def shuffleCreatures( self, ctx ):
+  async def shuffleCreatures( self, ctx: Context ) -> None: 
     """
     Allows the shuffling of creature in the initiative order. Less of a necessary functionality and more of a fun option in case it's needed 
     """
@@ -153,7 +153,7 @@ class Initiative( commands.Cog, name = "Initiative" ):
     return
 
   @initiative.command( name = "end" )
-  async def endEncounter( self, ctx ):
+  async def endEncounter( self, ctx: Context ) -> None:
     """
     Ends the initiative tracking, allowing for another
     encounter to start if need be.
@@ -173,25 +173,33 @@ class Initiative( commands.Cog, name = "Initiative" ):
     del self.instances[channel]
 
     return
+  
+  ##############################################
+  # Initiative Cog Support Functions
+  ##############################################
 
-  def checkIfActiveInstance( self , channel: str):
+  async def displayActiveInitError( self, ctx: Context ) -> None:
+    """
+    Displays an error message when initiative is not set.
+    """
+    await ctx.send("ERROR: There is not a current initiative order set. Please use `!init start` and set an initiative order before using this command.") 
+    return
+
+  def checkIfActiveInstance( self , channel: str) -> bool:
+    """
+    Checks if there is already an instance in the channel.
+    """
     keys = self.instances.keys()
     if channel not in keys:
       return False 
     return True
 
-  async def displayActiveInitError( self, ctx):
-    """
-    Displays an error message when initiative is not set.
-    """
-    await ctx.send("ERROR: There is not a current initiative order set. Please use `!init start` and set an initiative order before using this command.") 
-    return 
+  # End of Initiative Cog 
 
-  
 ##############################################
 # Setup Function for Cog
 ##############################################
-def setup( bot ):
+def setup( bot: Bot ) -> None:
   logging = ConsoleLog()
   logging.send( MODULE, f"Attempting load of '{MODULE}' extension...")
   bot.add_cog( Initiative( bot ) )

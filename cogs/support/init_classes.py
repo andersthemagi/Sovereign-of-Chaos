@@ -1,9 +1,17 @@
+##############################################
+# Package Imports
+##############################################
 import enum
 import math
 import random
 import re
 
+from discord import Message
 from discord.ext.commands import Bot, Context
+
+##############################################
+# Constants, Classes, and Setup
+##############################################
 
 # Creature Type Enumerable
 # - used to enumerate the different creature types
@@ -25,6 +33,10 @@ class Creature:
 READ_TAG = "r"
 START_MSG_PATH = "data/startmessage.txt"
 
+##############################################
+# InitInstance Class
+##############################################
+
 class InitInstance:
 
   def __init__( self , bot: Bot ):
@@ -33,17 +45,28 @@ class InitInstance:
     self.reset()
     return 
 
+  ##############################################
+  # InitInstance External Commands
+  ##############################################
+
   def active( self ) -> bool:
+    """
+    External check to see if active = True or False
+    """
     if self.activeInitiative:
       return True
     return False 
 
   async def start( self, ctx: Context ) -> None :
-
-    # Save initialization channel for later use
+    """
+    Starts a round of initiative. Walks the user through what they
+    need to do in order to start tracking initiative.
+    """
     if self.activeInitiative:
       await ctx.send("ERROR: There is already a current initiative order set. Please use `!init end` and set an initiative order before using this command.")
       return 
+
+    # Save initialization channel for later use
 
     self.initChannel = ctx.message.channel
 
@@ -67,12 +90,13 @@ class InitInstance:
 
     # Display initiative order 
     await self.displayInitOrder( ctx )
-    
-
+  
     return 
 
   async def end( self, ctx: Context ) -> None:
-
+    """
+    Ends the current initiative order.
+    """
     if not self.activeInitiative:
       await self.displayActiveInitError( ctx )
       return
@@ -86,7 +110,9 @@ class InitInstance:
     return
 
   async def addCreatures( self, ctx: Context ) -> None: 
-
+    """
+    Adds a creature to the initiative order
+    """
     if not self.activeInitiative:
       await self.displayActiveInitError( ctx )
       return 
@@ -137,7 +163,9 @@ class InitInstance:
     return 
 
   async def editCreatures( self, ctx: Context ) -> None:
-
+    """
+    Allows the user to edit the initiative count of a creature
+    """
     if not self.activeInitiative:
       await self.displayActiveInitError( ctx )
       return 
@@ -190,7 +218,9 @@ class InitInstance:
     return 
 
   async def removeCreatures( self, ctx: Context ) -> None:
-
+    """
+    Allows a user to remove a creature from the initiative order
+    """
     if not self.activeInitiative:
       await self.displayActiveInitError( ctx )
       return 
@@ -237,7 +267,9 @@ class InitInstance:
     return
 
   async def shuffleInitOrder( self, ctx: Context ) -> None:
-
+    """
+    Allows users to shuffle the initiative order.
+    """
     if not self.activeInitiative:
       await self.displayActiveInitError( ctx )
       return 
@@ -266,8 +298,13 @@ class InitInstance:
 
     return 
 
+  ##############################################
+  # InitInstance Internal Functions
+  ##############################################
+
   # ASYNC SUPPORT FUNCTIONS
-  async def checkDuplicateCounts( self, ctx ):
+
+  async def checkDuplicateCounts( self, ctx: Context ) -> None:
     """
     Checks the initiative count list to ensure there 
     are no duplicates, and handles duplicates by creating
@@ -334,7 +371,7 @@ class InitInstance:
 
     return
 
-  async def checkMsg(self, ctx, msg):
+  async def checkMsg(self, ctx: Context, msg: Message) -> bool:
     """
     Helper function for '!s init start' command.
 
@@ -395,7 +432,7 @@ class InitInstance:
       await ctx.send("Huh. That doesn't look right. Try sending it again in the following format. ```<name> <roll> OR <roll> <name>\nExample: 'Flint 13' OR '13 Flint'```")
       return True
 
-  async def displayActiveInitError( self, ctx):
+  async def displayActiveInitError( self, ctx: Context ) -> None:
     """
     Displays an error message when initiative is not set.
     """
@@ -419,7 +456,7 @@ class InitInstance:
     await ctx.send(quip)
     return
 
-  async def getInitOrder( self , ctx: Context ):
+  async def getInitOrder( self , ctx: Context ) -> None:
     """
     Helper Function for '!s init start' command.
     Handles the collecting of initiative until the typing
@@ -440,6 +477,8 @@ class InitInstance:
     await ctx.send("Initiative Order collected!")
 
     return
+
+  # Synchronous Support Functions
 
   def findCreatureinList( self, msgStr: str ) -> (Creature, bool):
     """

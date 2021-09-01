@@ -1,3 +1,7 @@
+##############################################
+# Package Imports
+##############################################
+
 import enum
 import re
 
@@ -5,6 +9,10 @@ from discord import Message
 from discord.ext.commands import Bot, Context
 
 from init_classes import InitInstance
+
+##############################################
+# Constants, Classes, and Setup
+##############################################
 
 # Complication Modifiers
 # As a 'complication' in a skill challenge, the creature
@@ -101,6 +109,7 @@ tierData = {
   }
 }
 
+# SC_CreatureType class
 # Used as a method of comparing / confirming creature type
 class SC_CreatureType(enum.Enum):
   ALLY = 1,
@@ -108,6 +117,7 @@ class SC_CreatureType(enum.Enum):
   ENEMY = 3,
   PLAYER = 4
 
+# SC_Creature class
 # Represents a creature in the skill challenge
 class SC_Creature:
 
@@ -117,6 +127,7 @@ class SC_Creature:
     self.creatureType = creatureType
     return 
 
+# SC_ActionType class
 # Classifies skills into one of five types
 class SC_ActionType(enum.Enum):
   ATTACK = 1,
@@ -125,6 +136,7 @@ class SC_ActionType(enum.Enum):
   SPELL = 4,
   OTHER = 5
 
+# SC_LockableSkill class
 # Represents a skill used by a creature in the skill challenge
 class SC_LockableSkill:
 
@@ -133,6 +145,7 @@ class SC_LockableSkill:
     self.actionType = action_type
     return
 
+# SC_TierData
 # Template class for allowing easy building of skill challenges
 class SC_TierData:
 
@@ -164,6 +177,14 @@ SC_TIER4_D1 = SC_TierData( "Masters of the World (15-20th+ level) - Easy Difficu
 SC_TIER4_D2 = SC_TierData( "Masters of the World (15-20th+ level) - Medium Difficulty", COMPLICATION_MOD_DAUNTING, 4, 2)
 SC_TIER4_D3 = SC_TierData( "Masters of the World (15-20th+ level) - Hard Difficulty", COMPLICATION_MOD_FORMIDABLE, 4, 3)
 
+VALID_ACTIONS = [
+  "attack","item", "skill", "spell", "other"
+]
+
+##############################################
+# SC_Instance Class
+##############################################
+
 class SC_Instance( InitInstance ):
 
   def __init__( self, bot: Bot ):
@@ -172,8 +193,14 @@ class SC_Instance( InitInstance ):
     self.reset()
     return
 
-  async def start( self, ctx: Context ) -> None:
+  ##############################################
+  # SC_Instance External Commands
+  ##############################################  
 
+  async def start( self, ctx: Context ) -> None:
+    """
+    Starts a skill challenge in the given channel
+    """
     if self.activeSC:
       await self.displayActiveSCError( ctx )
       return 
@@ -223,6 +250,9 @@ class SC_Instance( InitInstance ):
     return 
 
   async def end( self, ctx: Context ) -> None:
+    """
+    Ends a skill challenge in the given channel.
+    """
     await ctx.send("----------")
     await ctx.send("Skill challenge has been ended abruptly! Here are the current results")
 
@@ -231,28 +261,14 @@ class SC_Instance( InitInstance ):
     self.reset()
     return
 
-  async def addAction( self, ctx ):
-
-    validActions = [
-      "attack","item", "skill", "spell", "other"
-    ]
-
-    async def checkMsgForActionType( ctx, msg ):
-      """
-      Support function for '!sc add' command. Checks whether a given string contains a valid option for action collection.
-      """
-      actionType = None
-      content = msg.content.lower()
-      if content in validActions:
-        actionType = content
-        return actionType, False
-      else:
-        await ctx.send("That's not a type I recognize. Take a look at the list above and choose one from there.")
-        return actionType, True 
-
-    # Ask what type of action this is
+  async def addAction( self, ctx: Context ) -> None:
+    """
+    Adds a completed skill challenge action to the order. Handles
+    win conditions and typing as well
+    """
+    
     displayStr = "```md\nAction Types:\n====================\n"
-    for action in validActions:
+    for action in VALID_ACTIONS:
       displayStr += f"- {action.capitalize()}\n"
     displayStr += "```"
 
@@ -262,7 +278,7 @@ class SC_Instance( InitInstance ):
     gettingType = True
     while gettingType:
       msg = await self.bot.wait_for("message")
-      actionType, gettingType = await checkMsgForActionType( ctx, msg )
+      actionType, gettingType = await self.checkMsgForActionType( ctx, msg )
 
     # - Resolve based on what type of action it is
     if actionType == "attack":
@@ -284,7 +300,7 @@ class SC_Instance( InitInstance ):
 
     return
 
-  async def addInitCreature( self, ctx ):
+  async def addInitCreature( self, ctx: Context ) -> None:
 
     await ctx.send("----------")
     await ctx.send("Accepting input for characters!\n\nPlease type in '<name> <roll>' into the chat and I'll make a note of it. Example ```'Flint 13' OR\n'13 Flint' OR\n'Diva 13 Thiccums'```")
@@ -295,19 +311,36 @@ class SC_Instance( InitInstance ):
 
     return 
 
-  async def editInitCreature( self, ctx ): 
+  async def editInitCreature( self, ctx: Context ) -> None: 
+    """
+    Wrapper for super class function editCreatures(). Allows the user 
+    to change the initiative order of a creature.
+    """
     await self.editCreatures( ctx )
     return
 
-  async def removeInitCreature( self, ctx ):
+  async def removeInitCreature( self, ctx: Context ) -> None:
+    """
+    Wrapper for super class function removeCreatures(). Allows the user 
+    to remove a creature from the initiative order.
+    """
     await self.removeCreatures( ctx )
     return 
 
-  async def shuffleInitCreatures( self, ctx ):
+  async def shuffleInitCreatures( self, ctx: Context ) -> None:
+    """
+    Wrapper for super class function suffleCreatures(). Allows the user to shuffle the initiative order.
+    """
     await self.shuffleInitOrder( ctx )
     return
 
-  async def checkForValidDifficulty( self, ctx, msg ):
+  ##############################################
+  # SC_Instance Internal Functions
+  ##############################################
+
+  # ASYNC SUPPORT FUNCTIONS
+
+  async def checkForValidDifficulty( self, ctx: Context, msg: Message ) -> (int, bool):
     """
     Support function for '!sc start' command. Checks whether a given integer represents a valid difficulty setting. 
     """
@@ -325,7 +358,7 @@ class SC_Instance( InitInstance ):
       collectingDifficulty = True 
     return collectingDifficulty, difficulty
 
-  async def checkForValidTier( self, ctx, msg ):
+  async def checkForValidTier( self, ctx: Context, msg: Message ) -> (int, bool):
     """
     Support function for '!sc start' command. Checks whether a given integer represents a valid tier of gameplay.
     """
@@ -405,7 +438,20 @@ class SC_Instance( InitInstance ):
       await ctx.send("Huh. That doesn't look right. Try sending it again in the following format. ```<name> <roll> OR <roll> <name>\nExample: 'Flint 13' OR '13 Flint'```")
       return True
 
-  async def checkValidYNResponse( self , ctx , inStr ):
+  async def checkMsgForActionType( self, ctx: Context, msg: Message ) -> (str, bool):
+    """
+    Support function for '!sc add' command. Checks whether a given string contains a valid option for action collection.
+    """
+    actionType = None
+    content = msg.content.lower()
+    if content in VALID_ACTIONS:
+      actionType = content
+      return actionType, False
+    else:
+      await ctx.send("That's not a type I recognize. Take a look at the list above and choose one from there.")
+      return actionType, True 
+
+  async def checkValidYNResponse( self , ctx: Context , inStr: str ) -> bool:
     """
     Support function for '!sc add' command. Used to check whether a valid yes/no response has been received. 
     """
@@ -431,7 +477,7 @@ class SC_Instance( InitInstance ):
       await ctx.send(displayStr)
       return True 
 
-  async def checkWinCon( self, ctx ):
+  async def checkWinCon( self, ctx: Context ) -> None:
     """
     Support function for '!sc add' function. Checks whether a win condition has been met for the skill challenge.
     """
@@ -447,25 +493,29 @@ class SC_Instance( InitInstance ):
 
     return    
   
-  async def displayActiveSCError( self, ctx ):
+  async def displayActiveSCError( self, ctx: Context ) -> None:
     """
     Shows an error regarding already having a current active skill challenge.
     """
     await ctx.send("ERROR: There is already an active skill challenge. Please end the active challenge by using the '!sc end' command.")
     return 
 
-  async def displayNoActiveSCError( self, ctx ):
+  async def displayNoActiveSCError( self, ctx: Context ) -> None:
     """
     Shows an error regarding not having a current active skill challenge.
     """
     await ctx.send("ERROR: There is not currently an active skill challenge. Please start a skill challenge using '!sc start' before using this command.")
     return 
 
-  async def displayInitOrder( self, ctx ):
+  async def displayInitOrder( self, ctx: Context ) -> None:
+    """
+    Rewrite of displayInitOrder in InitInstance class. Sets the display
+    to show SC stats instead of just initiative order.
+    """
     await self.displaySCStats( ctx )
     return
 
-  async def displaySCStats( self, ctx ):
+  async def displaySCStats( self, ctx: Context ) -> None:
     """
     Displays a markdown code block of all the information the Traveler is currently storing
     regarding the current skill challenge. 
@@ -604,7 +654,7 @@ class SC_Instance( InitInstance ):
     await ctx.send( displayStr )
     return 
 
-  async def resolveSCAttack( self, ctx ):
+  async def resolveSCAttack( self, ctx: Context ) -> None:
     """
     Support function for '!sc add' command. Resolves the addition of an executed attack to the skill challenge
     """
@@ -639,7 +689,7 @@ class SC_Instance( InitInstance ):
 
     return
 
-  async def resolveSCItem( self, ctx ):
+  async def resolveSCItem( self, ctx: Context ) -> None:
     """
     Support function for '!sc add' command. Resolves the addition of a used item to the skill challenge
     """
@@ -673,7 +723,7 @@ class SC_Instance( InitInstance ):
 
     return 
 
-  async def resolveSCOther( self, ctx ):
+  async def resolveSCOther( self, ctx: Context ) -> None:
     """
     Support function for '!sc add' command. Resolves the addition of an action to the skill challenge that doesn't already have a category.
     """
@@ -701,7 +751,7 @@ class SC_Instance( InitInstance ):
 
     return
 
-  async def resolveSCSkill( self, ctx ):
+  async def resolveSCSkill( self, ctx: Context ) -> None:
     """
     Support function for '!sc add' command. Resolves the addition of a used skill to the skill challenge
     """
@@ -740,7 +790,7 @@ class SC_Instance( InitInstance ):
 
     return 
 
-  async def resolveSCSpell( self, ctx ):
+  async def resolveSCSpell( self, ctx: Context ) -> None:
     """
     Support function for '!sc add' command. Resolves the addition of a cast spell to the skill challenge
     """
@@ -797,7 +847,9 @@ class SC_Instance( InitInstance ):
 
     return
 
-  def addActionToLst( self, action ):
+  # SYNCHRONOUS SUPPORT FUNCTIONS
+
+  def addActionToLst( self, action: SC_LockableSkill ) -> None:
     """
     Adds a given SC_LockableSkill type object to the list containing objects of its type. 
     """
@@ -818,7 +870,7 @@ class SC_Instance( InitInstance ):
       self.lockedOther.sort( key = lambda x: x.name, reverse = True )
     return
 
-  def checkActionListsEmpty( self ):
+  def checkActionListsEmpty( self ) -> bool:
     """
     Checks to make sure all the action lists are empty. Used to streamline display for '!sc display'
     """
@@ -837,7 +889,7 @@ class SC_Instance( InitInstance ):
   def checkActiveSC( self ) -> bool:
     return self.activeSC
 
-  def checkForStartVowel( self, inStr ):
+  def checkForStartVowel( self, inStr: str ) -> bool:
     """
     Checks whether a given string starts with a vowel. 
     """
@@ -872,3 +924,7 @@ class SC_Instance( InitInstance ):
     self.lockedOther = []
     self.removedCreatures = []
     return
+  
+  # End of SC_Instance class
+
+# End of File

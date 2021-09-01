@@ -2,9 +2,8 @@
 # Package Imports
 ##############################################
 
-import random
-
 from discord.ext import commands
+from discord.ext.commands import Bot, Context
 
 from log import ConsoleLog
 from sc_classes import SC_Instance
@@ -20,21 +19,22 @@ class SkillChallenge( commands.Cog, name = "Skill Challenge" ):
   ##############################################
   # SkillChallenge Cog Initialization
   ##############################################
-  def __init__(self, bot):
+  def __init__(self, bot: Bot ):
     self.bot = bot
     self.instances = {}
+    return
   
   ##############################################
   # SkillChallenge Cog Commands
   ##############################################
   @commands.group( name = "skillchallenge", aliases = ["sc"] )
-  async def skillchallenge( self, ctx ):
+  async def skillchallenge( self, ctx: Context ) -> None:
     if ctx.invoked_subcommand is None:
       await ctx.send( "ERROR: Skill Challenge command(s) improperly invoked. Please see '!help' for a list of commands and usage examples." )
     return
 
   @skillchallenge.command( name = "start" )
-  async def startSC( self, ctx ):
+  async def startSC( self, ctx: Context ) -> None:
     """
     Must not already have an active skill challenge.
 
@@ -57,7 +57,7 @@ class SkillChallenge( commands.Cog, name = "Skill Challenge" ):
     return
 
   @skillchallenge.command( name = "add" )
-  async def addSCAction( self, ctx ):
+  async def addSCAction( self, ctx: Context ) -> None:
     """
     Must have an active skill challenge to use.
 
@@ -78,7 +78,7 @@ class SkillChallenge( commands.Cog, name = "Skill Challenge" ):
     return 
 
   @skillchallenge.command( name = "display" , aliases = ["d","dis"] )
-  async def displaySC( self, ctx ):
+  async def displaySC( self, ctx: Context ) -> None:
     """
     Must have an active skill challenge to use.
 
@@ -100,7 +100,7 @@ class SkillChallenge( commands.Cog, name = "Skill Challenge" ):
     return
 
   @skillchallenge.command( name = "end" )
-  async def endSC( self, ctx ):
+  async def endSC( self, ctx: Context ) -> None:
     """
     Must have a skill challenge already active.
 
@@ -128,13 +128,13 @@ class SkillChallenge( commands.Cog, name = "Skill Challenge" ):
   ##############################################
 
   @skillchallenge.group( name = "init" )
-  async def initiative( self, ctx ):
+  async def initiative( self, ctx: Context ) -> None:
     if ctx.invoked_subcommand is None:
       await ctx.send( "ERROR: Skill Challenge command(s) improperly invoked. Please see '!help' for a list of commands and usage examples." )
     return
 
   @initiative.command( name = "add" )
-  async def addSCInitCreature( self, ctx ):
+  async def addSCInitCreature( self, ctx: Context ) -> None:
     """
     Must have a skill challenge active in order to use. 
     Allows the addition of creatures to the initiative order after the initiative has been set.
@@ -154,7 +154,7 @@ class SkillChallenge( commands.Cog, name = "Skill Challenge" ):
     return
 
   @initiative.command( name = "edit" )
-  async def editSCInitOrder( self, ctx ):
+  async def editSCInitOrder( self, ctx: Context ) -> None:
     """
     Must have an active skill challenge to use.
     Allows the editing of initiative count for a creature in the order.
@@ -174,7 +174,7 @@ class SkillChallenge( commands.Cog, name = "Skill Challenge" ):
     pass
 
   @initiative.command( name = "remove" )
-  async def removeCreatureFromSCInitOrder( self, ctx ):
+  async def removeCreatureFromSCInitOrder( self, ctx: Context ) -> None:
     """
     Must have an active skill challenge to use.
 
@@ -195,7 +195,7 @@ class SkillChallenge( commands.Cog, name = "Skill Challenge" ):
     return
 
   @initiative.command( name = "shuffle" )
-  async def shuffleSCOrder( self, ctx ):
+  async def shuffleSCOrder( self, ctx: Context ) -> None:
     """
     Requires an active initiative order to use.
     Allows the shuffling of the initiative order. Mostly just for 
@@ -218,37 +218,36 @@ class SkillChallenge( commands.Cog, name = "Skill Challenge" ):
   ##############################################
   # Support Functions 
   ##############################################
-  async def displayActiveSCError( self, ctx):
+  # ASYNC SUPPORT FUNCTIONS 
+
+  async def displayActiveSCError( self, ctx: Context) -> None:
     """
     Displays an error message when skill challenge is already set.
     """
     await ctx.send("ERROR: There is already a current challenge set. Please use `!sc end` before using this command.") 
     return 
 
-  async def displayNoActiveSCError( self, ctx):
+  async def displayNoActiveSCError( self, ctx: Context) -> None:
     """
     Displays an error message when skill challenge is not set.
     """
     await ctx.send("ERROR: There is not a current skill challenge set. Please use `!sc start` and set that up before using this command.") 
     return 
 
-  # ASYNC SUPPORT FUNCTIONS 
+  # SYNCHRONOUS SUPPORT FUNCTIONS
+  
   def checkActiveInstance( self, channel: str ) -> bool:
     keys = self.instances.keys()
     if channel in keys:
       return True
     return False
 
-  # SYNCHRONOUS SUPPORT FUNCTIONS
-  
-  
-
   # End of SkillChallenge Cog
 
 ##############################################
 # Setup Function for SkillChallenge Cog
 ##############################################
-def setup( bot ):
+def setup( bot: Bot ) -> None:
   logging = ConsoleLog()
   logging.send( MODULE, f"Attempting load of '{MODULE}' extension...")
   bot.add_cog( SkillChallenge( bot ) )
