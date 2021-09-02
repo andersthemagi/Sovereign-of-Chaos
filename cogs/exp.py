@@ -342,6 +342,23 @@ class Exp( commands.Cog, name = "Exp" ):
 
     return
 
+  @commands.command( name = "givexp" , aliases = ["gxp"] )
+  @commands.is_owner()
+  async def giveXP( self, ctx: Context, *args ):
+    try:
+      user_id = str(args[0])
+      xp = int(args[1])
+      guild_id = str(ctx.guild.id)
+      channel = ctx.channel
+      self.addExperience( guild_id , user_id, xp )
+      await self.levelUp( guild_id, user_id, channel )
+      userdata = db[guild_id][user_id]
+      xp_total = userdata["experience"]
+      self.logging.send( MODULE, f"Manually adjusted {user_id} XP by {xp}. New total: {xp_total} XP." )
+    except:
+      await ctx.send( "ERROR: There was something wrong with adjusting that users XP. Try again with a valid user ID and amount. ")
+    return
+
   @commands.command( name = "leaderboard" , aliases = ["lb"])
   async def checkLeaderboard( self, ctx: Context ) -> None:
     """

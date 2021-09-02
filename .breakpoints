@@ -3,23 +3,23 @@
     "cogs/initiative.py": [
       {
         "id": "e87143a7-4633-4070-bf9d-d872f21a2a79",
-        "line": 220,
-        "version": 20168,
-        "index": 7342
+        "line": 124,
+        "version": 21994,
+        "index": 3754
       }
     ],
     "cogs/skillchallenge.py": [
       {
         "id": "65080c4d-1ae0-4698-b013-21a715d8cd9a",
-        "line": 232,
-        "version": 23555,
-        "index": 7068
+        "line": 56,
+        "version": 24802,
+        "index": 1748
       },
       {
         "id": "36b6d86e-9f21-4c11-8047-ff6e04d236c5",
-        "line": 423,
-        "version": 23555,
-        "index": 13434
+        "line": 157,
+        "version": 24802,
+        "index": 4452
       }
     ]
   }
