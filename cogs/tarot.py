@@ -106,7 +106,7 @@ class Tarot( commands.Cog, name = "Tarot" ):
 
     # Create embed 
     embed = discord.Embed(
-      title = f"Tarot Spread",
+      title = f"Tarot Reading",
       description = f"**Question:** {question}",
       color = discord.Color.purple(),
       timestamp = datetime.now() )
