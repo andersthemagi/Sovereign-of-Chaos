@@ -55,7 +55,19 @@ logging.send( MODULE, "Starting up the bot!")
 
 logging.printSpacer()
 logging.send(MODULE, 
-  "Attempting load of extensions in '/cog' directory..." )
+  "Attempting load of extensions in '/cogs' directory..." )
+logging.printSpacer()
+if __name__ == "__main__":
+  extCount = 0
+  for file in os.listdir( "./cogs" ):
+    if file.endswith( ".py" ):
+      extension = file[:-3]
+      logging.send( MODULE, f"> {extension} ")
+      extCount += 1 
+
+logging.send( MODULE , f"{extCount} extensions found in '/cogs'. Now loading...")
+logging.printSpacer()
+
 allExtensionsLoaded = True
 if __name__ == "__main__":
   for file in os.listdir( "./cogs" ):
@@ -71,10 +83,11 @@ if __name__ == "__main__":
         exception = f"{type(e).__name__}: {e}"
         logging.send( MODULE, f"Failed to load extension {extension}\n{exception}" )
         allExtensionsLoaded = False 
+      logging.printSpacer()
 
 # Display success / failure on console
 if allExtensionsLoaded:
-  logging.send( MODULE, "SUCCESS: All extensions in '/cog' directory loaded successfully!" )
+  logging.send( MODULE, "SUCCESS: All extensions in '/cogs' directory loaded successfully!" )
 else:
   logging.send( MODULE, "WARNING: One or more extensions could not be loaded. See above for error output." )
 

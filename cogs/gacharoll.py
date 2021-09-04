@@ -153,7 +153,7 @@ class GachaRoll( commands.Cog, name = "gacharoll" ):
     """
     Attempts to load all .json format item lists from the /data directory
     """
-    self.logging.send( MODULE, "Loading Gacha Item Lists..." )
+    self.logging.send( MODULE, "> Loading Gacha Item Lists..." )
     allListsLoaded = True
 
     ITEM_PATHS = [
@@ -176,16 +176,16 @@ class GachaRoll( commands.Cog, name = "gacharoll" ):
             self.RARE_ITEMS = lst
           elif itemname == "VERYRARE":
             self.VERYRARE_ITEMS = lst
-        self.logging.send( MODULE, f"{itemname} Item List loaded successfully!" )
+        self.logging.send( MODULE, f" - {itemname} Item List loaded successfully!" )
       except Exception as e:
         allListsLoaded = False 
         exception = f"{type(e).__name__}: {e}"
-        self.logging.send( MODULE, f"ERROR: Failed to load '{itemname}' item list\n{exception}")
+        self.logging.send( MODULE, f" - ERROR: Failed to load '{itemname}' item list\n{exception}")
 
     if allListsLoaded:
-      self.logging.send( MODULE, "All Gacha Items Lists loaded successfully!")
+      self.logging.send( MODULE, "> All Gacha Items Lists loaded successfully!")
     else:
-      self.logging.send( MODULE, "WARNING: One or more Gacha Item Lists could not be loaded. See above for error output.")
+      self.logging.send( MODULE, "> WARNING: One or more Gacha Item Lists could not be loaded. See above for error output.")
     
     return
 

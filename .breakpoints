@@ -1,5 +1,13 @@
 {
   "files": {
+    "cogs/diceroll.py": [
+      {
+        "id": "658a06df-c360-42cf-a15d-041dd4a78b18",
+        "line": 76,
+        "version": 1735,
+        "index": 2193
+      }
+    ],
     "cogs/initiative.py": [
       {
         "id": "e87143a7-4633-4070-bf9d-d872f21a2a79",
