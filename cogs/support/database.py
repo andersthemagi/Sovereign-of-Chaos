@@ -91,10 +91,11 @@ class DB:
         self.cursor.execute(scriptStr);
       else:
         self.cursor.execute(scriptStr, vals)
-      self.db.commit()
     except Exception as e:
       self.throwException(e)
-      commandSuccessful = False 
+      commandSuccessful = False
+      
+    self.db.commit()
 
     if commandSuccessful:
       self.logging.send( MODULE, "SQL command from string executed successfully!" )
@@ -114,15 +115,20 @@ class DB:
     file.close()
 
     sqlCommands = sqlFile.split( SEMICOLON )
+    
+    sqlCommands = sqlCommands[:-1]
 
     allCommandsSuccessful = True
     for command in sqlCommands:
       try:
+        print(command)
         self.cursor.execute(command)
         self.logging.send( MODULE, f"SQL command in '{filename}' executed successfully!" )
       except Exception as e:
         self.throwException(e)
-        allCommandsSuccessful = False 
+        allCommandsSuccessful = False
+    
+    self.db.commit()
 
     if allCommandsSuccessful:
       self.logging.send( MODULE, f"All SQL commands in '{filename}' executed!" )

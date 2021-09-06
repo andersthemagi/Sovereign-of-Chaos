@@ -33,12 +33,10 @@ loadTimer = Timer()
 loadTimer.start()
 
 # Connect to MySQL DB
-"""
 db = database.DB()
 db.start()
 db.executeScriptFromFile(DB_SETUP_PATH)
 db.stop()
-"""
 
 logging = ConsoleLog()
 
@@ -100,10 +98,6 @@ logging.printSpacer()
 async def on_guild_join( guild: Guild ) -> None:
 
   guildID = str(guild.id)
-
-  # Check if Guild is registered on database
-  if guildID not in db.keys():
-    db[guildID] = {}
 
   return
 
