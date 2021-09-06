@@ -11,26 +11,20 @@ sys.path.insert(1, './cogs/support')
 from discord import Guild, Message
 from discord.ext import commands
 from discord.ext.commands import Context
-from flask import Flask
-from replit import db
-from threading import Thread
 
+import database
 from log import ConsoleLog
 from timer import Timer
 
 ##############################################
 # Constants and Setup
 ##############################################
-
-app = Flask( 'discord bot' )
-
-OWNER_ID = os.getenv( "OWNER_ID" )
 MODULE = "MAIN"
 
 # Initialize Bot with cmd prefix
 bot = commands.Bot( 
   command_prefix = '!',
-  owner = OWNER_ID )
+  owner = os.environ.get("OWNER_ID"))
 bot.remove_command( 'help' )
 
 DB_SETUP_PATH = "scripts/travelerdb-setup.sql"
@@ -156,27 +150,11 @@ async def on_command_completion( ctx: Context ) -> None:
     f"Executed {executedCommand} command in {ctx.guild.name} (ID: {ctx.message.guild.id}) by {ctx.message.author} (ID: {ctx.message.author.id})" )
   return
 
-##############################################
-# Other Functions
-##############################################
-
-# Flask-related support functions to allow
-# 24/7 uptime of bot
-@app.route('/')
-def hello_world():
-  return 'Magic Appetizers not included.'
-
-def start_server():
-  app.run( host="0.0.0.0", port = 8080 )
   
 ##############################################
 # Bot / Server Initialization
 ##############################################
 
-# Starts the Flask server
-t = Thread( target = start_server )
-t.start()
-
 # Runs the bot for use on Discord
-bot.run(os.getenv("TOKEN"))
+bot.run(os.environ.get("SOC_DISCORD_TOKEN"))
 
