@@ -16,7 +16,7 @@
   <h3 align="center">Sovereign of Chaos</h3>
 
   <p align="center">
-    A small-scale bot made in Python, capable of handling several D&D related tasks on Discord. Built using Discord.py and hosted on repl.it
+    A small-scale bot made in Python, capable of handling several D&D related tasks on Discord. Built using Discord.py and hosted on a Raspberry Pi
   </p>
 </p>
 
@@ -40,7 +40,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-A small-scale bot made in Python, capable of handling several D&amp;D related tasks on Discord. Built using Discord.py and hosted on repl.it
+A small-scale bot made in Python, capable of handling several D&D related tasks on Discord. Built using Discord.py and hosted on a Raspberry Pi
 
 Features include:
 * ***Advice Giving*** - Essentially an 8-ball, you ask the Traveler a question and he will do his best to answer.

@@ -11,30 +11,20 @@ sys.path.insert(1, './cogs/support')
 from discord import Guild, Message
 from discord.ext import commands
 from discord.ext.commands import Context
-from flask import Flask
-from replit import db
-from threading import Thread
 
+import database
 from log import ConsoleLog
 from timer import Timer
 
 ##############################################
 # Constants and Setup
 ##############################################
-
-server_data = db["703015465076785263"]
-
-for user in server_data:
-  print(user)
-  userdata = server_data[user]
-  print(userdata)
-
-"""
+MODULE = "MAIN"
 
 # Initialize Bot with cmd prefix
 bot = commands.Bot( 
   command_prefix = '!',
-  owner = OWNER_ID )
+  owner = os.environ.get("OWNER_ID"))
 bot.remove_command( 'help' )
 
 DB_SETUP_PATH = "scripts/travelerdb-setup.sql"
@@ -43,7 +33,6 @@ loadTimer = Timer()
 loadTimer.start()
 
 # Connect to MySQL DB
-
 db = database.DB()
 db.start()
 db.executeScriptFromFile(DB_SETUP_PATH)
@@ -110,10 +99,6 @@ async def on_guild_join( guild: Guild ) -> None:
 
   guildID = str(guild.id)
 
-  # Check if Guild is registered on database
-  if guildID not in db.keys():
-    db[guildID] = {}
-
   return
 
 @bot.event 
@@ -166,30 +151,12 @@ async def on_command_completion( ctx: Context ) -> None:
     f"Executed {executedCommand} command in {ctx.guild.name} (ID: {ctx.message.guild.id}) by {ctx.message.author} (ID: {ctx.message.author.id})" )
   return
 """
-
-"""
-##############################################
-# Other Functions
-##############################################
-
-# Flask-related support functions to allow
-# 24/7 uptime of bot
-@app.route('/')
-def hello_world():
-  return 'Magic Appetizers not included.'
-
-def start_server():
-  app.run( host="0.0.0.0", port = 8080 )
   
 ##############################################
 # Bot / Server Initialization
 ##############################################
 
-# Starts the Flask server
-t = Thread( target = start_server )
-t.start()
-
 # Runs the bot for use on Discord
-bot.run(os.getenv("TOKEN"))
+bot.run(os.environ.get("SOC_DISCORD_TOKEN"))
 
 """

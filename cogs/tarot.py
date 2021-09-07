@@ -14,6 +14,7 @@ from discord.ext.commands import Bot, Context
 from replit import db
 from typing import Iterable
 
+import database
 from log import ConsoleLog 
 
 ##############################################
@@ -26,8 +27,12 @@ CARD_FILE_PATH = "data/card_data.json"
 CARD_IMAGE_LINK = "https://i.ibb.co/FxCgHwK/cards-fortune-future-moon-star-tarot-tarot-card-1-512.webp"
 READ_TAG = 'r'
 
-SERVER_ID = "703015465076785263"
 
+GET_EVENTS_SCRIPT = """
+SELECT server_id, user_id, event_time
+FROM events
+WHERE category = "tarot";
+"""
 ##############################################
 # Tarot Cog
 ##############################################
@@ -37,8 +42,70 @@ class Tarot( commands.Cog, name = "Tarot" ):
   def __init__( self,  bot: Bot ):
     self.bot = bot 
     self.logging = ConsoleLog()
+    self.db = database.DB()
     self.loadCardData()
-
+    
+  @tasks.loop( hours = 24 )
+  async def dailyTarotReading( self, tarot_event: Iterable[tuple] ) -> None:
+      
+      guildID = tarot_event[0]
+      guild = await self.bot.fetch_guild(guildID)
+      userID = tarot_event[1]
+      user = await guild.fetch_member(userID)
+      eventTime = tarot_event[2]
+      
+      await self.beforeDailyTarotReading( guild, user, eventTime )
+      
+      await user.send(f"How have you been {user}? I've got your daily tarot reading ready to go! Take a look below:")
+      
+      question = ""
+      
+      numCards = 3
+      
+      deck = self.card_list.copy()
+      random.shuffle( deck )
+      cards = self.drawCardsFromList( deck, numCards )
+      
+      embed = self.createCardsEmbed( user, cards, question )
+      
+      await user.send( embed = embed )
+      
+      return
+    
+  async def beforeDailyTarotReading( self, guild: Guild, user: User, event_time: str )  -> None:
+      
+      hour = int(event_time[0:1])
+      minute = int(event_time[3:4])
+      
+      now = datetime.now()
+      future = datetime(now.year, now.month, now.day, hour, minute)
+      if now.hour >= hour and now.minute > minute:
+          future += timedelta(days=1)
+          
+      delta = (future - now).seconds
+      self.logging.send( MODULE, f"Scheduled daily tarot reading for '{user}' at {event_time} server time" )
+      
+      await asyncio.sleep(delta)
+      
+      return
+    
+  ##############################################
+  # Tarot Cog Events
+  ##############################################
+  @commands.Cog.listener()
+  async def on_ready( self ) -> None:
+      
+      self.db.start()
+      self.db.executeScript(GET_EVENTS_SCRIPT)
+      results = self.db.cursor.fetchall()
+      
+      for tarotEvent in results:
+        self.dailyTarotReading.start(tarotEvent)
+                                          
+      self.db.stop()
+      return
+          
+    
   ##############################################
   # Tarot Cog Events 
   ##############################################
@@ -298,3 +365,4 @@ def setup( bot: Bot ) -> None:
   logging = ConsoleLog()
   logging.send( MODULE, f"Attempting load of '{MODULE}' extension...")
   bot.add_cog( Tarot( bot ) )
+
