@@ -103,32 +103,30 @@ SELECT user_id, xp, lvl FROM users;
 """
 
 ADJUST_LVLS_SET_SCRIPT = """
-UPDATE users SET lvl = ? WHERE user_id = ?;
+UPDATE users SET lvl = %s WHERE user_id = %s;
 """
 
 ASSIGN_XP_GET_SCRIPT = """
-SELECT class_name FROM users WHERE user_id = ?;
+SELECT class_name FROM users WHERE user_id = %s;
 """
 
 ASSIGN_XP_SET_SCRIPT = """
-UPDATE users SET rank_name = ? WHERE user_id = ?;
+UPDATE users SET rank_name = %s WHERE user_id = %s;
 """
 
 LEADERBOARD_SCRIPT = """
-SELECT user_id, xp, lvl FROM users ORDER BY xp LIMIT 10;
+SELECT user_id, xp, lvl FROM users ORDER BY xp DESC LIMIT 10;
 """
 
 CHECK_PROG_SCRIPT = """
-SELECT class_name, xp, lvl FROM users WHERE user_id = ?;
+SELECT class_name, xp, lvl FROM users WHERE user_id = %s;
 """
 
 CHECK_RANK_SCRIPT = """
-SELECT user_id, xp, lvl, class_name, rank_name FROM users WHERE user_id = ?;
+SELECT user_id, xp, lvl, class_name, rank_name FROM users WHERE user_id = %s;
 """
 
-CHECK_USER_EXISTS_SCRIPT = """
-SELECT * FROM users WHERE user_id = ?;
-"""
+CHECK_USER_EXISTS_SCRIPT = """SELECT * FROM users WHERE user_id = %s;"""
 
 RESET_DAILY_STREAK_SCRIPT = """
 UPDATE users SET daily_xp_streak = 0 WHERE messaged_today = False;
@@ -143,7 +141,7 @@ UPDATE users SET messaged_today = False;
 """
 
 UPDATE_USER_CLASS_SCRIPT = """
-UPDATE users SET class_name = ? WHERE user_id = ?;
+UPDATE users SET class_name = %s WHERE user_id = %s;
 """
 
 ##############################################
@@ -240,9 +238,10 @@ class Exp( commands.Cog, name = "Exp" ):
 
     currTime = time.time()
 
-    self.db.start()
-    self.db.executeScript( CHECK_USER_EXISTS_SCRIPT , userID )
-    result = self.db.fetchone()
+    self.connectToDB()
+    vals = (userID,)
+    self.db.executeScript( CHECK_USER_EXISTS_SCRIPT , vals )
+    result = self.db.cursor.fetchone()
     
     # Check if the user is registered on this server yet. 
     if result is None:
@@ -281,7 +280,7 @@ class Exp( commands.Cog, name = "Exp" ):
 
     self.logging.printSpacer()
 
-    self.db.stop()
+    self.disconnectFromDB()
 
     return
 
@@ -321,8 +320,9 @@ class Exp( commands.Cog, name = "Exp" ):
     elif emoji == "☠️":
       classStr = "WARLOCK"
 
-    self.db.start()
-    self.db.executeScript( UPDATE_USER_CLASS_SCRIPT , classStr )
+    self.connectToDB()
+    vals = (classStr, reaction.user_id)
+    self.db.executeScript( UPDATE_USER_CLASS_SCRIPT , vals )
 
     # Remove reaction from the message
     await message.remove_reaction( emoji, user )
@@ -330,10 +330,18 @@ class Exp( commands.Cog, name = "Exp" ):
     # Handle output accordingly
     await user.send(f"You've been switched to the '{classStr}' class on `The Backrooms`!")
     self.logging.send( MODULE, f"User '{user.display_name}' has been given '{classStr}' class")
+    
+    GET_LVL_SCRIPT = """
+    SELECT lvl FROM users WHERE user_id = %s;
+    """
+    vals = (reaction.user_id,)
+    self.db.executeScript( GET_LVL_SCRIPT, vals )
+    result = self.db.cursor.fetchone()
+    lvl = result[0]
 
-    await self.assignXPRole( guildID, userID, db[guildID][userID]["lvl"], True )
+    await self.assignXPRole( guildID, userID, lvl, True )
 
-    self.db.stop()
+    self.disconnectFromDB()
 
     return 
 
@@ -348,8 +356,8 @@ class Exp( commands.Cog, name = "Exp" ):
     await self.bot.wait_until_ready()
 
     self.logging.send( MODULE, "Adjusting levels...")
-
-    self.db.start()
+    
+    self.connectToDB()
     self.db.executeScript( ADJUST_LVLS_GET_SCRIPT )
     results = self.db.cursor.fetchall()
 
@@ -372,11 +380,11 @@ class Exp( commands.Cog, name = "Exp" ):
   @commands.command( name = "givexp" , aliases = ["gxp"] )
   @commands.is_owner()
   async def giveXP( self, ctx: Context, *args ):
-    self.db.start() 
     try:
-      
+      self.connectToDB()
       user_id = str(args[0])
-      self.db.executeScript( CHECK_USER_EXISTS_SCRIPT, user_id )
+      vals = (user_id,)
+      self.db.executeScript( CHECK_USER_EXISTS_SCRIPT, vals )
       result = self.db.cursor.fetchone() 
       if result is None:
         await ctx.send( f"{user_id} not found in database. Creating entry..." )
@@ -392,7 +400,7 @@ class Exp( commands.Cog, name = "Exp" ):
       self.logging.send( MODULE, f"Manually adjusted {user_id} XP by {xp}. New total: {xp_total} XP." )
     except:
       await ctx.send( "ERROR: There was something wrong with adjusting that users XP. Try again with a valid user ID and amount. ")
-    self.db.stop()
+    self.disconnectFromDB()
     return
 
   @commands.command( name = "leaderboard" , aliases = ["lb"])
@@ -405,7 +413,7 @@ class Exp( commands.Cog, name = "Exp" ):
     guildID = str(message.guild.id)
 
     # Sort the users by experience
-    self.db.start() 
+    self.connectToDB()
     self.db.executeScript( LEADERBOARD_SCRIPT )
     results = self.db.cursor.fetchall()
     
@@ -426,6 +434,7 @@ class Exp( commands.Cog, name = "Exp" ):
       user = await message.guild.fetch_member(int(result[0]))
       userNickname = user.display_name
       leaderboardStr += f"{i+1}. {userNickname:<25} | Level {result[2]:>{lvlStrLen}} | {result[1]:>{xpStrLen}} Total XP\n".format()
+      i += 1
     leaderboardStr += "```"
         
     # Send leaderboard string out
@@ -440,9 +449,10 @@ class Exp( commands.Cog, name = "Exp" ):
     message = ctx.message
     guildID = str(message.guild.id)
     userID = str(message.author.id)
-
-    self.db.start()
-    self.db.executeScript( CHECK_PROG_SCRIPT , userID )
+    
+    self.connectToDB()
+    vals = (userID,)
+    self.db.executeScript( CHECK_PROG_SCRIPT , vals )
     result = self.db.cursor.fetchone()
 
     # Get Rank List for user's class
@@ -499,7 +509,6 @@ class Exp( commands.Cog, name = "Exp" ):
     progressStr += "```"
 
     await ctx.send(progressStr)
-    self.db.stop()
     return
 
   @commands.command( name = "rank" )
@@ -517,8 +526,9 @@ class Exp( commands.Cog, name = "Exp" ):
     guildID = str(message.guild.id)
     userID = str(message.author.id)
 
-    self.db.start() 
-    self.db.executeScript( CHECK_RANK_SCRIPT , userID )
+    self.connectToDB()
+    vals = (userID, )
+    self.db.executeScript( CHECK_RANK_SCRIPT , vals )
     result = self.db.cursor.fetchone()
 
     experience = result[1]
@@ -578,7 +588,6 @@ class Exp( commands.Cog, name = "Exp" ):
 
     # Send the embed to the chat
     await ctx.send(embed = embed)
-    self.db.stop()
     return 
 
   @commands.command( name = "doublexp", aliases = ["dxp"] )
@@ -616,9 +625,11 @@ class Exp( commands.Cog, name = "Exp" ):
     basicRoleStr = BASIC_XP_ROLES[lvl-1]
     role = discord.utils.get( guild.roles , name = basicRoleStr )
     await user.add_roles( role )
+    
+    self.connectToDB()
 
-    self.db.start()
-    self.db.executeScript( ASSIGN_XP_GET_SCRIPT , user_id )
+    vals = (user_id,)
+    self.db.executeScript( ASSIGN_XP_GET_SCRIPT , vals )
     result = self.db.cursor.fetchone()
 
     userClass = result[0]
@@ -660,22 +671,22 @@ class Exp( commands.Cog, name = "Exp" ):
     if notify_user:
       await user.send(f"Congrats! You've been assigned the '{roleStr}' role on `The Backrooms`!!")
 
-    self.db.stop()
-
     return
 
   async def dailyXPBonus( self, guild_id: str, user_id: str ) -> None:
     """
     Determines whether or not the user has earned their daily xp. Calculates daily xp if so and awards it to the user.
     """
-    self.db.start()
+    self.connectToDB()
     DAILY_XP_GET_SCRIPT = """
-    SELECT daily_xp_earned , daily_xp_streak FROM users WHERE user_id = ?;
+    SELECT daily_xp_earned , daily_xp_streak FROM users WHERE user_id = %s;
     """
     DAILY_XP_SET_SCRIPT = """
-    UPDATE users SET daily_xp_earned = ? , daily_xp_streak = ?, messaged_today = ? WHERE user_id = ?;
+    UPDATE users SET daily_xp_earned = %s, daily_xp_streak = %s, messaged_today = %s, WHERE user_id = %s;
     """
-    self.db.executeScript( DAILY_XP_GET_SCRIPT , user_id )
+    
+    vals = (user_id,)
+    self.db.executeScript( DAILY_XP_GET_SCRIPT , vals )
     result = self.db.cursor.fetchone()
     dailyXPEarned = result[0]
     dailyXPStreak = result[1]
@@ -708,14 +719,14 @@ class Exp( commands.Cog, name = "Exp" ):
     displays that in chat for the user and updates their db. 
     """
     CHECK_LVL_SCRIPT = """
-    SELECT xp, lvl FROM users WHERE user_id = ?;
+    SELECT xp, lvl FROM users WHERE user_id = %s;
     """
     SET_LVL_SCRIPT = """
-    UPDATE users SET lvl = ? WHERE user_id = ?;
+    UPDATE users SET lvl = %s WHERE user_id = %s;
     """
-
-    self.db.start()
-    self.db.executeScript( CHECK_LVL_SCRIPT, user_id )
+    self.connectToDB()
+    vals = (user_id,)
+    self.db.executeScript( CHECK_LVL_SCRIPT, vals )
     result = self.db.cursor.fetchone()
 
     experience = result[0]
@@ -730,7 +741,8 @@ class Exp( commands.Cog, name = "Exp" ):
 
     # EX: If our curr lvl is 4 and our calc level is 5
     if lvlStart < lvlEnd:
-      self.db.executeScript( SET_LVL_SCRIPT , lvlEnd )
+      vals = (lvlEnd,)
+      self.db.executeScript( SET_LVL_SCRIPT , vals )
       await channel.send( f"{self.user.mention} has leveled up to Level {lvlEnd}!")
       self.logging.send( MODULE, f"{self.user.display_name} has leveled up to Level {lvlEnd}!")
       await self.assignXPRole( guild_id, user_id, lvlEnd, True )
@@ -753,17 +765,20 @@ class Exp( commands.Cog, name = "Exp" ):
     Support function for 'on_message' event.
     Increments experience for the given user on the given server.
     """
-    self.db.start()
     ADD_XP_SCRIPT = """
-    UPDATE users SET xp = xp + ? WHERE user_id = ?;
+    UPDATE users SET xp = %s WHERE user_id = %s;
     """
     GET_XP_SCRIPT = """
-    SELECT xp FROM users WHERE user_id = ?;
+    SELECT xp FROM users WHERE user_id = %s;
     """
-    vals = (user_id, exp)
-    self.executeScript( ADD_XP_SCRIPT , vals )
-    self.exucuteScript( GET_XP_SCRIPT , user_id )
+    self.connectToDB()
+    vals = (user_id,)
+    self.db.executeScript( GET_XP_SCRIPT, vals)
     result = self.db.cursor.fetchone()
+    totalXP = result[0] + exp
+    vals = (totalXP, user_id )
+    self.db.executeScript( ADD_XP_SCRIPT , vals )
+    vals = (user_id,)
     totalXP = result[0]
     self.logging.send( MODULE, f"{self.user.display_name} has earned {exp} XP. Current total: {totalXP} XP." )
     return
@@ -779,11 +794,22 @@ class Exp( commands.Cog, name = "Exp" ):
     INSERT INTO users
       (user_id, xp, lvl, class_name, rank_name, daily_xp_earned, daily_xp_streak, last_message, messaged_today )
     VALUES
-      (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      (%s, %s, %s, %s, %s, %s, %s, %s, %s);
     """
+    self.connectToDB( self )
     vals = ( user_id, 5, 1, "NONE", "NONE", False, 0, currTime, False )
     self.db.executeScript( ADD_USER_SCRIPT, vals )
     self.logging.send( MODULE, f"Added user '{self.user.display_name}' to database.")
+    return
+    
+  def connectToDB( self ) -> None:
+    if not self.db.openDB:
+      self.db.start()
+    return 
+    
+  def disconnectFromDB( self ) -> None:
+    if self.db.openDB:
+      self.db.stop()
     return
 
   # End of Exp Cog

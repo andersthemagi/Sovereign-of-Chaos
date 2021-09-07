@@ -104,10 +104,8 @@ async def on_guild_join( guild: Guild ) -> None:
 @bot.event 
 async def on_message( message: Message ) -> None:
   """
-"""
   Defines behavior for bot on receiving message in chat
   """
-"""
   # Ignore messages from self or other bots
   if message.author == bot.user or message.author.bot:
     return
@@ -117,10 +115,8 @@ async def on_message( message: Message ) -> None:
 @bot.event
 async def on_ready():
   """
-"""
   Defines behavior for bot when ready to execute commands
   """
-"""
   # Change status on Discord
   await bot.change_presence(
     activity = discord.Activity(
@@ -133,15 +129,12 @@ async def on_ready():
   logging.send( MODULE, bot.user.id )
   logging.printSpacer()
   return
-"""
-"""
+
 @bot.event
 async def on_command_completion( ctx: Context ) -> None:
   """
-"""
   Defines behavior for bot whenever a command is completed successfully
   """
-"""
   # Console output to note whenever the bot successfully
   # runs a command
   fullCommandName = ctx.command.qualified_name
@@ -150,7 +143,7 @@ async def on_command_completion( ctx: Context ) -> None:
   logging.send( MODULE, 
     f"Executed {executedCommand} command in {ctx.guild.name} (ID: {ctx.message.guild.id}) by {ctx.message.author} (ID: {ctx.message.author.id})" )
   return
-"""
+
   
 ##############################################
 # Bot / Server Initialization
@@ -158,5 +151,3 @@ async def on_command_completion( ctx: Context ) -> None:
 
 # Runs the bot for use on Discord
 bot.run(os.environ.get("SOC_DISCORD_TOKEN"))
-
-"""
