@@ -22,10 +22,14 @@ from timer import Timer
 # Constants and Setup
 ##############################################
 
-app = Flask( 'discord bot' )
+server_data = db["703015465076785263"]
 
-OWNER_ID = os.getenv( "OWNER_ID" )
-MODULE = "MAIN"
+for user in server_data:
+  print(user)
+  userdata = server_data[user]
+  print(userdata)
+
+"""
 
 # Initialize Bot with cmd prefix
 bot = commands.Bot( 
@@ -39,12 +43,11 @@ loadTimer = Timer()
 loadTimer.start()
 
 # Connect to MySQL DB
-"""
+
 db = database.DB()
 db.start()
 db.executeScriptFromFile(DB_SETUP_PATH)
 db.stop()
-"""
 
 logging = ConsoleLog()
 
@@ -116,8 +119,10 @@ async def on_guild_join( guild: Guild ) -> None:
 @bot.event 
 async def on_message( message: Message ) -> None:
   """
+"""
   Defines behavior for bot on receiving message in chat
   """
+"""
   # Ignore messages from self or other bots
   if message.author == bot.user or message.author.bot:
     return
@@ -127,8 +132,10 @@ async def on_message( message: Message ) -> None:
 @bot.event
 async def on_ready():
   """
+"""
   Defines behavior for bot when ready to execute commands
   """
+"""
   # Change status on Discord
   await bot.change_presence(
     activity = discord.Activity(
@@ -141,12 +148,15 @@ async def on_ready():
   logging.send( MODULE, bot.user.id )
   logging.printSpacer()
   return
-
+"""
+"""
 @bot.event
 async def on_command_completion( ctx: Context ) -> None:
   """
+"""
   Defines behavior for bot whenever a command is completed successfully
   """
+"""
   # Console output to note whenever the bot successfully
   # runs a command
   fullCommandName = ctx.command.qualified_name
@@ -155,7 +165,9 @@ async def on_command_completion( ctx: Context ) -> None:
   logging.send( MODULE, 
     f"Executed {executedCommand} command in {ctx.guild.name} (ID: {ctx.message.guild.id}) by {ctx.message.author} (ID: {ctx.message.author.id})" )
   return
+"""
 
+"""
 ##############################################
 # Other Functions
 ##############################################
@@ -180,3 +192,4 @@ t.start()
 # Runs the bot for use on Discord
 bot.run(os.getenv("TOKEN"))
 
+"""
