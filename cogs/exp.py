@@ -10,7 +10,6 @@ from datetime import datetime, timedelta
 from discord import Guild, Message, Member, RawReactionActionEvent
 from discord.ext import commands, tasks
 from discord.ext.commands import Bot, Context
-from replit import db
 
 from log import ConsoleLog
 
