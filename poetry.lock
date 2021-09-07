@@ -215,6 +215,14 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "pytz"
+version = "2021.1"
+description = "World timezone definitions, modern and historical"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "repl"
 version = "1.0"
 description = "Run command as REPL-environment (useful for git!)."
@@ -305,7 +313,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "fc68287e1b1c3cd84a9e0fb2e444295dd1fd7817da9c0580784dafee179a48a5"
+content-hash = "ce859406ec5e687480d6cdd09527fda2b8cc4a33ae8b85b8b35339609d5e7810"
 
 [metadata.files]
 aiohttp = [
@@ -507,6 +515,10 @@ multidict = [
 ]
 mysql-connector = [
     {file = "mysql-connector-2.2.9.tar.gz", hash = "sha256:1733e6ce52a049243de3264f1fbc22a852cb35458c4ad739ba88189285efdf32"},
+]
+pytz = [
+    {file = "pytz-2021.1-py2.py3-none-any.whl", hash = "sha256:eb10ce3e7736052ed3623d49975ce333bcd712c7bb19a58b9e2089d4057d0798"},
+    {file = "pytz-2021.1.tar.gz", hash = "sha256:83a4a90894bf38e243cf052c8b58f381bfe9a7a483f6a9cab140bc7f702ac4da"},
 ]
 repl = [
     {file = "repl-1.0.tar.gz", hash = "sha256:1fb1b30605383b8b868fde14faf92dc7f654d9c2612fa02e0102dfa55104bc11"},

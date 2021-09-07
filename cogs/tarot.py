@@ -4,12 +4,14 @@
 import asyncio
 import discord
 import json
+import pytz
 import random
 
 from datetime import datetime, timedelta
-from discord import Embed, Guild, User
+from discord import Embed, User
 from discord.ext import commands, tasks
 from discord.ext.commands import Bot, Context
+from replit import db
 from typing import Iterable
 
 import database
@@ -25,12 +27,12 @@ CARD_FILE_PATH = "data/card_data.json"
 CARD_IMAGE_LINK = "https://i.ibb.co/FxCgHwK/cards-fortune-future-moon-star-tarot-tarot-card-1-512.webp"
 READ_TAG = 'r'
 
+
 GET_EVENTS_SCRIPT = """
 SELECT server_id, user_id, event_time
 FROM events
 WHERE category = "tarot";
 """
-
 ##############################################
 # Tarot Cog
 ##############################################
@@ -105,6 +107,99 @@ class Tarot( commands.Cog, name = "Tarot" ):
           
     
   ##############################################
+  # Tarot Cog Events 
+  ##############################################
+  @tasks.loop( hours = 24 )
+  async def dailyTarotReading( self, guild_id: str, user_id: str ) -> None:
+
+    """
+    Sends me a daily tarot reading. Will be adapted
+    to allow any user to subscribe for one. 
+    """
+
+    await self.beforeDailyTarotReading( guild_id, user_id )
+
+    guild = await self.bot.fetch_guild(guild_id)
+    user = await guild.fetch_member( user_id )
+
+    await user.send( f"How have you been {user}? I've got your daily tarot reading ready to go! Take a look: " )
+
+    question = "This spread is useful at the beginning of each day in order to find focus and direction. Even though you may have limited time, these three cards can give you practical insights you can start thinking about immediately.\n\n**1.** What will guide me?\n**2.** What will I experience?\n**3.** What must I learn?"
+
+    numCards = 3
+
+    deck = self.card_list.copy()
+    random.shuffle( deck )
+    cards = self.drawCardsFromList( deck, numCards )
+
+    embed = self.createCardsEmbed( user, cards, question )
+
+    await user.send( embed = embed )
+
+    return 
+
+  async def beforeDailyTarotReading( self, guild_id: str, user_id: str ) -> None:
+
+    tarot_events = db[guild_id]["events"]["tarot"]
+    userdata = None
+
+    guild = await self.bot.fetch_guild(guild_id)
+    user = await guild.fetch_member( user_id )
+
+    for event in tarot_events:
+      if event["user_id"] == user_id:
+        userdata = event 
+
+    eventTime = userdata["time"]
+
+    hour = int(eventTime[0:1])
+    minute = int(eventTime[3:4])
+
+    now = datetime.now()
+    future = datetime(now.year, now.month, now.day, hour, minute)
+    if now.hour >= hour and now.minute > minute:
+        future += timedelta(days=1)
+    delta = (future - now).seconds
+    hour, minute = delta // 3600, (delta % 3600) // 60
+
+    self.logging.send( MODULE, f"Scheduled daily tarot message for '{user}' at {eventTime} server time." )
+
+    await asyncio.sleep(delta)
+
+    return
+
+  @commands.Cog.listener()
+  async def on_ready( self ):
+   
+    keys = db[SERVER_ID].keys()
+    if "events" not in keys:
+      db[SERVER_ID]["events"] = {
+        "tarot" : []
+      }
+
+    tarot_events = db[SERVER_ID]["events"]["tarot"]
+
+    for event in tarot_events:
+      userID = event["user_id"]
+      self.dailyTarotReading.start( SERVER_ID, userID )
+
+    return 
+
+  def addEventToDB( self, ctx ):
+
+    newEvent = {}
+    # Get User ID
+    newEvent["user_id"] = str(ctx.message.author.id)
+
+    # Calculate server time equivalent
+    server_time = datetime.now()
+      # Get Time of Message Indicated
+    user_time = ctx.message.timestamp()
+      # Get Server Time 
+
+    # Add event to db[SERVER_ID]["events"]["tarot"]
+
+  ##############################################
   # Tarot Cog Commands
   ##############################################
 
@@ -153,8 +248,10 @@ class Tarot( commands.Cog, name = "Tarot" ):
 
     cards = self.drawCardsFromList( deck, numCards )
 
+    user = ctx.message.author
+
     # Create embed
-    embed = self.createCardsEmbed( ctx, cards, question )
+    embed = self.createCardsEmbed( user, cards, question )
     
     # Send embed to chat
     await ctx.send( embed = embed )
@@ -167,12 +264,11 @@ class Tarot( commands.Cog, name = "Tarot" ):
 
   # Synchronous Support Functions
 
-  def createCardsEmbed( self, ctx: Context, cardLst: Iterable[list], question: str ) -> Embed:
+  def createCardsEmbed( self, user: User, cardLst: Iterable[list], question: str ) -> Embed:
     """
     Support functions for '!tarot draw'. Creates the card embed and returns it for sending.
     """
     # Get user from context 
-    user = ctx.message.author 
 
     # Create embed 
     embed = discord.Embed(
