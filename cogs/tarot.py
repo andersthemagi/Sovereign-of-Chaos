@@ -72,8 +72,14 @@ class Tarot( commands.Cog, name = "Tarot" ):
     
   async def beforeDailyTarotReading( self, guild: Guild, user: User, event_time: str )  -> None:
       
-      hour = int(event_time[0:1])
-      minute = int(event_time[3:4])
+      if event_time[0:1].startswith("0"):
+          hour = int(event_time[1])
+      else:
+          hour = int(event_time[0:1])
+      if event_time[3:4].startswith("0"):
+            minute = int(event_time[4])
+      else:
+          minute = int(event_time[3:4])
       
       now = datetime.now()
       future = datetime(now.year, now.month, now.day, hour, minute)
@@ -81,7 +87,7 @@ class Tarot( commands.Cog, name = "Tarot" ):
           future += timedelta(days=1)
           
       delta = (future - now).seconds
-      self.logging.send( MODULE, f"Scheduled daily tarot reading for '{user}' at {event_time} server time" )
+      self.logging.send( MODULE, f"Scheduled daily tarot reading for '{user}' at '{hour}:{minute}' MT." )
       
       await asyncio.sleep(delta)
       

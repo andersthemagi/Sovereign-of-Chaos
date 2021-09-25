@@ -28,6 +28,8 @@ DB_USER = os.getenv( "DB_USER" )
 READ_TAG = "r"
 SEMICOLON = ";"
 
+DEBUG = False 
+
 ##############################################
 # DB Class
 ##############################################
@@ -84,6 +86,10 @@ class DB:
     if not self.checkOpenDB():
       self.notOpenDBError()
       return
+    
+    if DEBUG:
+        self.logging.send( MODULE, f"Command(s): {scriptStr}" )
+        self.logging.send( MODULE, f"Value(s): {vals}" )
 
     commandSuccessful = True
     try:
@@ -121,7 +127,8 @@ class DB:
     allCommandsSuccessful = True
     for command in sqlCommands:
       try:
-        print(command)
+        if DEBUG:
+            self.logging.send( MODULE, f"Command: {command}" )
         self.cursor.execute(command)
         self.logging.send( MODULE, f"SQL command in '{filename}' executed successfully!" )
       except Exception as e:

@@ -682,7 +682,7 @@ class Exp( commands.Cog, name = "Exp" ):
     SELECT daily_xp_earned , daily_xp_streak FROM users WHERE user_id = %s;
     """
     DAILY_XP_SET_SCRIPT = """
-    UPDATE users SET daily_xp_earned = %s, daily_xp_streak = %s, messaged_today = %s, WHERE user_id = %s;
+    UPDATE users SET daily_xp_earned = %s, daily_xp_streak = %s, messaged_today = %s WHERE user_id = %s;
     """
     
     vals = (user_id,)
@@ -696,7 +696,7 @@ class Exp( commands.Cog, name = "Exp" ):
       return 
 
     # If the users daily xp bonus is less than 7
-    if dailyXPStreak < 7:
+    if dailyXPStreak < 14:
       dailyXPStreak += 1
 
     # Award XP and update db
@@ -741,7 +741,7 @@ class Exp( commands.Cog, name = "Exp" ):
 
     # EX: If our curr lvl is 4 and our calc level is 5
     if lvlStart < lvlEnd:
-      vals = (lvlEnd,)
+      vals = (lvlEnd, user_id)
       self.db.executeScript( SET_LVL_SCRIPT , vals )
       await channel.send( f"{self.user.mention} has leveled up to Level {lvlEnd}!")
       self.logging.send( MODULE, f"{self.user.display_name} has leveled up to Level {lvlEnd}!")
