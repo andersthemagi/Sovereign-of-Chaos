@@ -252,7 +252,7 @@ class Exp( commands.Cog, name = "Exp" ):
     userdata = result
 
     lastTime = userdata[8]
-    diff = currTime - float(lastTime)
+    diff = currTime - lastTime
     if int(diff) < 5:
       # If so, don't award XP
       self.logging.send( MODULE, f"User {self.user.display_name} has messaged too fast! Needs to wait at least 5 seconds for XP gain.")
@@ -260,7 +260,11 @@ class Exp( commands.Cog, name = "Exp" ):
       return
 
     # Set the last message time to our current time
-    lastTime = currTime
+    vals = (currTime, userID)
+    UPDATE_LAST_TIME_SCRIPT = """
+    UPDATE users SET last_message = %s WHERE user_id = %s;
+    """
+    self.db.executeScript( UPDATE_LAST_TIME_SCRIPT, vals )
 
     # Check if the user is a booster on the server.
     role = discord.utils.find( lambda r: r.name == "Server Booster", message.guild.roles )

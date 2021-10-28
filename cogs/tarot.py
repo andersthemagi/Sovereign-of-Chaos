@@ -4,6 +4,7 @@
 import asyncio
 import discord
 import json
+import pytz
 import random
 
 from datetime import datetime, timedelta
@@ -42,6 +43,8 @@ class Tarot( commands.Cog, name = "Tarot" ):
     self.logging = ConsoleLog()
     self.db = database.DB()
     self.loadCardData()
+    # self.loadTimezones()
+    # self.loadTimezoneEmbed()
     
   @tasks.loop( hours = 24 )
   async def dailyTarotReading( self, tarot_event: Iterable[tuple] ) -> None:
@@ -170,6 +173,44 @@ class Tarot( commands.Cog, name = "Tarot" ):
     await ctx.send( embed = embed )
 
     return
+    
+  @tarot.command( name = "subscribe" , aliases = ["sub"])
+  async def subscribeForDailyTarot( self, ctx: Context ):
+    
+    await self.bot.wait_until_ready()
+    
+    # ERROR CASE: if they already have a event scheduled
+    
+    # Continue conversation in DM's
+    
+    # Ask for Timezone
+    
+    # Get timezone 
+    
+    # Ask for Time 
+    
+    # Convert time from given timezone to MT
+    
+    # Update DB with information
+    
+    # Confirm it has been scheduled at a given time! 
+    
+    return 
+    
+  @tarot.command( name = "unsubscribe", aliases = ["unsub"])
+  async def unsubscribeFromDailyTarot( self, ctx: Context ):
+    
+    await self.bot.wait_until_ready()
+    
+    # ERROR CASE: if they don't have an event scheduled
+    
+    # Confirm they would like to unsubscribe
+    
+    # If yes, then remove them from the DB
+    
+    # Confirm they have been removed from the events DB
+    
+    return
 
   ##############################################
   # Tarot Cog Support Functions
@@ -266,6 +307,17 @@ class Tarot( commands.Cog, name = "Tarot" ):
       self.logging.send( MODULE,
         "WARNING: Tarot module may not work as intended. See error output for more details." )
 
+    return
+    
+  def loadTimezones( self ) -> None:
+    
+    for tz in pytz.common_timezones:
+      print(tz)
+    
+    return 
+    
+  def loadTimezoneEmbed( self ) -> None:
+    
     return
 
   # End of Tarot Cog 

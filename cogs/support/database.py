@@ -28,7 +28,7 @@ DB_USER = os.getenv( "DB_USER" )
 READ_TAG = "r"
 SEMICOLON = ";"
 
-DEBUG = False 
+DEBUG = False
 
 ##############################################
 # DB Class
@@ -64,7 +64,8 @@ class DB:
       )
       self.cursor = self.db.cursor(buffered = True )
       self.openDB = True
-      self.logging.send( MODULE, f"{DB_NAME} at {DB_HOST} connected to successfully!")
+      if DEBUG:
+        self.logging.send( MODULE, f"{DB_NAME} at {DB_HOST} connected to successfully!")
     except Exception as e:
       self.throwException(e)
 
@@ -78,7 +79,8 @@ class DB:
     self.db.close()
     self.cursor.close()
     self.openDB = False 
-    self.logging.send( MODULE, f"{DB_NAME} at {DB_HOST} closed." )
+    if DEBUG:
+      self.logging.send( MODULE, f"{DB_NAME} at {DB_HOST} closed." )
     return
 
   def executeScript( self, scriptStr : str, vals : Iterable[list] = None ) -> None :
@@ -104,7 +106,8 @@ class DB:
     self.db.commit()
 
     if commandSuccessful:
-      self.logging.send( MODULE, "SQL command from string executed successfully!" )
+      if DEBUG:
+        self.logging.send( MODULE, "SQL command from string executed successfully!" )
     else:
       self.logging.send( MODULE, "ERROR: SQL command from string had trouble executing." )
 
@@ -130,7 +133,8 @@ class DB:
         if DEBUG:
             self.logging.send( MODULE, f"Command: {command}" )
         self.cursor.execute(command)
-        self.logging.send( MODULE, f"SQL command in '{filename}' executed successfully!" )
+        if DEBUG:
+          self.logging.send( MODULE, f"SQL command in '{filename}' executed successfully!" )
       except Exception as e:
         self.throwException(e)
         allCommandsSuccessful = False
@@ -138,7 +142,8 @@ class DB:
     self.db.commit()
 
     if allCommandsSuccessful:
-      self.logging.send( MODULE, f"All SQL commands in '{filename}' executed!" )
+      if DEBUG:
+        self.logging.send( MODULE, f"All SQL commands in '{filename}' executed!" )
     else:
       self.logging.send( MODULE, f"ERROR: One or more SQL commands in '{filename}' did not execute successfully." )
 

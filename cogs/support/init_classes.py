@@ -310,6 +310,11 @@ class InitInstance:
     are no duplicates, and handles duplicates by creating
     'decimal initiative'. 
     """
+    
+    # ERROR CASE: If there is only one creature in the order.
+    if len(self.initOrder) <= 1:
+      return
+    
     # Support function to make sure input is correct 
     def check(msg):
       return msg.content == "1" or msg.content == "2"
@@ -464,15 +469,18 @@ class InitInstance:
     """
     # Collect initiative 
     collectInitiative = True 
+    print("Collecting Initiative")
     while collectInitiative:
       msg = await self.bot.wait_for("message")
       collectInitiative = await self.checkMsg( ctx, msg )
+    print("Done collecting initiative. Sorting")
 
     # Sort the list
     self.sortInitOrder()
+    print("Done sorting. checking duplicate counts...")
     # Check if there are duplicate initiative counts
     await self.checkDuplicateCounts( ctx )
-
+    print("Done checking duplicates. Initiative order done.")
     await ctx.send("----------")
     await ctx.send("Initiative Order collected!")
 
@@ -559,8 +567,9 @@ class InitInstance:
     """
     Sorts the initiative order from highest value to lowest.
     """
-    self.initOrder.sort(
-      key = lambda x: x.initCount, 
-      reverse = True
-    )
+    if len(self.initOrder) > 1:
+      self.initOrder.sort(
+        key = lambda x: x.initCount, 
+        reverse = True
+      )
     return
