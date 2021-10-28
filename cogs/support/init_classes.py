@@ -118,7 +118,7 @@ class InitInstance:
       return 
 
     await ctx.send("----------")
-    await ctx.send("Accepting input for characters!\n\nPlease type in '<name> <roll>' into the chat and I'll make a note of it. Example ```'Flint 13' OR\n'13 Flint' OR\n'Diva 13 Thiccums'```")
+    await ctx.send("Accepting input for characters!\n\nPlease type in '<name> <roll>' into the chat and I'll make a note of it. Type 'done' to finish.\nExample: ```'Flint 13' OR\n'13 Flint' OR\n'Diva 13 Thiccums'```")
     await ctx.send("----------")
 
     await self.getInitOrder( ctx )
@@ -184,7 +184,7 @@ class InitInstance:
       while getInput:
         await ctx.send("Please type the name of the creature you would like to edit the initiative order for. Type 'nvm' to exit.")
         msg = await self.bot.wait_for("message")
-        if msg == "nvm":
+        if msg.content == "nvm":
           await ctx.send("Alright. I'll be on the lookout for when you do want to remove a creature. Carry on!")
           return
         creature, getInput = self.findCreatureinList( msg )
@@ -236,9 +236,9 @@ class InitInstance:
       creature = None
       # Get the name of the creature to remove
       while getInput:
-        await ctx.send("Please type the name of the creature you would like to remove.")
+        await ctx.send("Please type the name of the creature you would like to remove. Type 'nvm' to exit.")
         msg = await self.bot.wait_for("message")
-        if msg == "nvm":
+        if msg.content == "nvm":
           await ctx.send("Alright. I'll be on the lookout for when you do want to remove a creature. Carry on!")
           return
         creature, getInput = self.findCreatureinList( msg )
@@ -385,6 +385,10 @@ class InitInstance:
     """
     content = msg.content
     channel = msg.channel
+    
+    if msg.author == self.bot.user or msg.author.bot:
+        return True
+        
     try:
 
       # If the channel is different than the starting channel for initiative
@@ -469,18 +473,14 @@ class InitInstance:
     """
     # Collect initiative 
     collectInitiative = True 
-    print("Collecting Initiative")
     while collectInitiative:
       msg = await self.bot.wait_for("message")
       collectInitiative = await self.checkMsg( ctx, msg )
-    print("Done collecting initiative. Sorting")
 
     # Sort the list
     self.sortInitOrder()
-    print("Done sorting. checking duplicate counts...")
     # Check if there are duplicate initiative counts
     await self.checkDuplicateCounts( ctx )
-    print("Done checking duplicates. Initiative order done.")
     await ctx.send("----------")
     await ctx.send("Initiative Order collected!")
 
@@ -530,7 +530,10 @@ class InitInstance:
     returnStr = ""
 
     # Formats Initiative Count to be the same length, visually appealing
-    formatStr = "." + str(toplength - 2) + "f"
+    if toplength - 2 < 0:
+      formatStr = "." + str(0) + "f"
+    else:
+      formatStr = "." + str(toplength - 2) + "f"
     count = str(format(char.initCount, formatStr))
     addStr = ("{:<" + str(toplength + 1) + "}").format(count)
     addStr = addStr.strip()

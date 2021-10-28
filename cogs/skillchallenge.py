@@ -54,6 +54,9 @@ class SkillChallenge( commands.Cog, name = "Skill Challenge" ):
 
     await sc.start( ctx )
     
+    if sc.initChannel is None:
+      del self.instances[channel]
+    
     return
 
   @skillchallenge.command( name = "add" )

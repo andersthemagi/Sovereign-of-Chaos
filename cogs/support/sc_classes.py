@@ -212,19 +212,27 @@ class SC_Instance( InitInstance ):
     displayStr = f"```md\n1. {TIER_1_STR}\n2. {TIER_2_STR}\n"
     displayStr += f"3. {TIER_3_STR}\n4. {TIER_4_STR}\n```"
     await ctx.send(displayStr)
-    await ctx.send("Which tier of play would you like to use (1-4)?")
+    await ctx.send("Which tier of play would you like to use (1-4)? Type 'nvm' to exit.")
     collectingTier = True 
     while collectingTier:
       msg = await self.bot.wait_for("message")
+      if msg.content == "nvm":
+        await ctx.send("Exiting skill challenge creation.")
+        self.reset()
+        return
       collectingTier, tier = await self.checkForValidTier( ctx, msg )
 
     # Choose a difficulty setting
     displayStr = f"```md\n1. Easy\n2. Medium\n3. Hard\n```"
     await ctx.send(displayStr)
-    await ctx.send("What difficulty will this challenge be (1-3)?")
+    await ctx.send("What difficulty will this challenge be (1-3)? Type 'nvm' to exit")
     collectingDifficulty = True 
     while collectingDifficulty:
       msg = await self.bot.wait_for("message")
+      if msg.content == "nvm":
+        await ctx.send("Exiting skill challenge creation.")
+        self.reset()
+        return
       collectingDifficulty, difficulty = await self.checkForValidDifficulty( ctx, msg )
 
     presetStr = f"SC_TIER{tier}_D{difficulty}"
@@ -273,11 +281,14 @@ class SC_Instance( InitInstance ):
     displayStr += "```"
 
     await ctx.send(displayStr)
-    await ctx.send("What kind of action would you like to add? **Type one of the kinds of actions above** and I'll walk you through the rest.")
+    await ctx.send("What kind of action would you like to add? **Type one of the kinds of actions above** and I'll walk you through the rest. Otherwise, type 'nvm' to exit this menu.")
     
     gettingType = True
     while gettingType:
       msg = await self.bot.wait_for("message")
+      if msg.content == "nvm":
+        await ctx.send("Sounds good! Cancelling.")
+        return
       actionType, gettingType = await self.checkMsgForActionType( ctx, msg )
 
     # - Resolve based on what type of action it is
@@ -659,24 +670,25 @@ class SC_Instance( InitInstance ):
     Support function for '!sc add' command. Resolves the addition of an executed attack to the skill challenge
     """
     # Who made the roll?
-    await ctx.send("Ah an attack was made. Who made said attack?")
+    await ctx.send("Ah an attack was made. Who made said attack? Type 'nvm' at any point to cancel this process.")
     msg = await self.bot.wait_for("message")
+    if msg.content == 'nvm':
+      await ctx.send("Sounds good! Cancelling.")
+      return 
     creatureName = msg.content
 
     # Name of attack
     await ctx.send(f"So {creatureName} made an attack? With what, exactly?")
     msg = await self.bot.wait_for("message")
+    if msg.content == 'nvm':
+      await ctx.send("Sounds good! Cancelling.")
+      return 
     tool = msg.content
       
     if self.checkForStartVowel( tool ):
       indefArticle = "an"
     else:
       indefArticle = "a"
-
-    # Add skill to the list
-    skillName = f"{tool}[{creatureName}]"
-    newAction = SC_LockableSkill( skillName, SC_ActionType.ATTACK )
-    self.addActionToLst( newAction )
 
     await ctx.send(f"{creatureName} attacked with {indefArticle} {tool}, then. Did they manage to hit?")
 
@@ -685,7 +697,15 @@ class SC_Instance( InitInstance ):
     while collectingResponse:
       msg = await self.bot.wait_for("message")
       content = msg.content.lower()
+      if msg.content == "nvm":
+        await ctx.send("Sounds good! Cancelling.")
+        return
       collectingResponse = await self.checkValidYNResponse( ctx , content )
+      
+    # Add skill to the list
+    skillName = f"{tool}[{creatureName}]"
+    newAction = SC_LockableSkill( skillName, SC_ActionType.ATTACK )
+    self.addActionToLst( newAction )
 
     return
 
@@ -696,15 +716,17 @@ class SC_Instance( InitInstance ):
     # Name of item?
     await ctx.send("Okay an item was used, I can work with that. Who used that item?")
     msg = await self.bot.wait_for("message")
+    if msg.content == "nvm":
+        await ctx.send("Sounds good! Cancelling.")
+        return
     creatureName = msg.content
 
     await ctx.send(f"So {creatureName} used an item? What was it?")
     msg = await self.bot.wait_for("message")
+    if msg.content == "nvm":
+        await ctx.send("Sounds good! Cancelling.")
+        return
     item = msg.content
-
-    skillName = f"{item}[{creatureName}]"
-    newAction = SC_LockableSkill( skillName, SC_ActionType.ITEM )
-    self.addActionToLst( newAction )
 
     if self.checkForStartVowel( item ):
       indefArticle = "an"
@@ -718,8 +740,15 @@ class SC_Instance( InitInstance ):
     collectingResponse = True
     while collectingResponse:
       msg = await self.bot.wait_for("message")
+      if msg.content == "nvm":
+        await ctx.send("Sounds good! Cancelling.")
+        return
       content = msg.content.lower()
       collectingResponse = await self.checkValidYNResponse( ctx, content )
+      
+    skillName = f"{item}[{creatureName}]"
+    newAction = SC_LockableSkill( skillName, SC_ActionType.ITEM )
+    self.addActionToLst( newAction )
 
     return 
 
@@ -730,24 +759,33 @@ class SC_Instance( InitInstance ):
     # Name of creature
     await ctx.send("So you don't really have an idea what ***kind*** of thing just happened. Fair enough, to be honest with you. Who performed the action?")
     msg = await self.bot.wait_for("message")
+    if msg.content == "nvm":
+        await ctx.send("Sounds good! Cancelling.")
+        return
     creatureName = msg.content
 
     # Name of action
     await ctx.send(f"Okay, so {creatureName} did it. What did they do?")
     msg = await self.bot.wait_for("message")
+    if msg.content == "nvm":
+        await ctx.send("Sounds good! Cancelling.")
+        return
     actionName = msg.content 
-
-    skillName = f"{actionName}[{creatureName}]"
-    newAction = SC_LockableSkill( skillName, SC_ActionType.OTHER )
-    self.addActionToLst( newAction )
 
     await ctx.send(f"{creatureName} did '{actionName}'. Interesting. Did it succeed even?")
 
     collectingResponse = True
     while collectingResponse:
       msg = await self.bot.wait_for("message")
+      if msg.content == "nvm":
+        await ctx.send("Sounds good! Cancelling.")
+        return
       content = msg.content.lower()
       collectingResponse = await self.checkValidYNResponse( ctx, content )
+      
+    skillName = f"{actionName}[{creatureName}]"
+    newAction = SC_LockableSkill( skillName, SC_ActionType.OTHER )
+    self.addActionToLst( newAction )
 
     return
 
@@ -758,16 +796,18 @@ class SC_Instance( InitInstance ):
     # Who used the skill?
     await ctx.send("A skill was used! Who used it?")
     msg = await self.bot.wait_for("message")
+    if msg.content == "nvm":
+        await ctx.send("Sounds good! Cancelling.")
+        return
     creatureName = msg.content 
 
     # Name of skill?
     await ctx.send(f"Which skill did {creatureName} use?")
     msg = await self.bot.wait_for("message")
+    if msg.content == "nvm":
+        await ctx.send("Sounds good! Cancelling.")
+        return
     skillName = msg.content 
-
-    lockableName = f"{skillName}[{creatureName}]"
-    newAction = SC_LockableSkill( lockableName, SC_ActionType.SKILL )
-    self.addActionToLst( newAction )
 
     # Roll?
     await ctx.send(f"What did {creatureName} roll for '{skillName}'?")
@@ -775,18 +815,25 @@ class SC_Instance( InitInstance ):
     while collectingRoll:
       try:
         msg = await self.bot.wait_for("message")
+        if msg.content == "nvm":
+          await ctx.send("Sounds good! Cancelling.")
+          return
         roll = int(msg.content)
         collectingRoll = False 
       except:
         await ctx.send("I don't think that was something I could use as a number. Try to type in a number like `1` or `-200` or something.")
 
+    lockableName = f"{skillName}[{creatureName}]"
+    newAction = SC_LockableSkill( lockableName, SC_ActionType.SKILL )
+    self.addActionToLst( newAction )
+    
     # Check roll against DC
     if roll < self.skillDC:
       await ctx.send(f"A **{roll}** does not succeed on a **DC {self.skillDC}** check. One (1) failure for the party with debatable morals!")
-      self.successes += 1
+      self.fails += 1
     else:
       await ctx.send(f"A **{roll}** beats or meets a **{self.skillDC}**! I'll add a success to your current challenge.")
-      self.fails += 1
+      self.successes += 1
 
     return 
 
@@ -797,11 +844,17 @@ class SC_Instance( InitInstance ):
     # Who cast the spell?
     await ctx.send("Might ***AND*** Magic! Who used that spell?")
     msg = await self.bot.wait_for("message")
+    if msg.content == "nvm":
+        await ctx.send("Sounds good! Cancelling.")
+        return
     creatureName = msg.content
 
     # Name of spell?
     await ctx.send(f"What spell did {creatureName} use?")
     msg = await self.bot.wait_for("message")
+    if msg.content == "nvm":
+      await ctx.send("Sounds good! Cancelling.")
+      return
     spellName = msg.content
 
     # Level of spell?
@@ -810,14 +863,13 @@ class SC_Instance( InitInstance ):
     while collectingLvl:
       try:
         msg = await self.bot.wait_for("message")
+        if msg.content == "nvm":
+          await ctx.send("Sounds good! Cancelling.")
+          return
         spellLvl = int(msg.content)
         collectingLvl = False
       except:
         await ctx.send("I don't think that was a number. Please try with a valid number. ")
-
-    lockableName = f"{spellName}({spellLvl})[{creatureName}]"
-    newAction = SC_LockableSkill( lockableName, SC_ActionType.SPELL )
-    self.addActionToLst( newAction )
 
     if spellLvl == 0:
       suffix = "th"
@@ -840,9 +892,15 @@ class SC_Instance( InitInstance ):
     collectingResponse = True
     while collectingResponse:
       msg = await self.bot.wait_for("message")
+      if msg.content == "nvm":
+        await ctx.send("Sounds good! Cancelling.")
+        return
       content = msg.content.lower()
       collectingResponse = await self.checkValidYNResponse( ctx, content )
-
+      
+    lockableName = f"{spellName}({spellLvl})[{creatureName}]"
+    newAction = SC_LockableSkill( lockableName, SC_ActionType.SPELL )
+    self.addActionToLst( newAction )
     # output success / failure
 
     return
