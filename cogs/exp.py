@@ -98,6 +98,17 @@ ROLE_LISTS = [
   ROGUE_XP_ROLES, WARLOCK_XP_ROLES
 ]
 
+ADD_USER_SCRIPT = """
+INSERT INTO users
+  (user_id, xp, lvl, class_name, rank_name, daily_xp_earned, daily_xp_streak, last_message, messaged_today )
+VALUES
+  (%s, %s, %s, %s, %s, %s, %s, %s, %s);
+"""
+
+ADD_XP_SCRIPT = """
+UPDATE users SET xp = %s WHERE user_id = %s;
+"""
+
 ADJUST_LVLS_GET_SCRIPT = """
 SELECT user_id, xp, lvl FROM users;
 """
@@ -114,8 +125,8 @@ ASSIGN_XP_SET_SCRIPT = """
 UPDATE users SET rank_name = %s WHERE user_id = %s;
 """
 
-LEADERBOARD_SCRIPT = """
-SELECT user_id, xp, lvl FROM users ORDER BY xp DESC LIMIT 10;
+CHECK_LVL_SCRIPT = """
+SELECT xp, lvl FROM users WHERE user_id = %s;
 """
 
 CHECK_PROG_SCRIPT = """
@@ -128,6 +139,25 @@ SELECT user_id, xp, lvl, class_name, rank_name FROM users WHERE user_id = %s;
 
 CHECK_USER_EXISTS_SCRIPT = """SELECT * FROM users WHERE user_id = %s;"""
 
+DAILY_XP_GET_SCRIPT = """
+SELECT daily_xp_earned , daily_xp_streak FROM users WHERE user_id = %s;
+"""
+DAILY_XP_SET_SCRIPT = """
+UPDATE users SET daily_xp_earned = %s, daily_xp_streak = %s, messaged_today = %s WHERE user_id = %s;
+"""
+
+GET_LVL_SCRIPT = """
+SELECT lvl FROM users WHERE user_id = %s;
+"""
+
+GET_XP_SCRIPT = """
+SELECT xp FROM users WHERE user_id = %s;
+"""
+
+LEADERBOARD_SCRIPT = """
+SELECT user_id, xp, lvl FROM users ORDER BY xp DESC LIMIT 10;
+"""
+
 RESET_DAILY_STREAK_SCRIPT = """
 UPDATE users SET daily_xp_streak = 0 WHERE messaged_today = False;
 """
@@ -138,6 +168,14 @@ UPDATE users SET daily_xp_earned = False;
 
 RESET_MESSAGED_TODAY_SCRIPT = """
 UPDATE users SET messaged_today = False;
+"""
+
+SET_LVL_SCRIPT = """
+UPDATE users SET lvl = %s WHERE user_id = %s;
+"""
+
+UPDATE_LAST_TIME_SCRIPT = """
+UPDATE users SET last_message = %s WHERE user_id = %s;
 """
 
 UPDATE_USER_CLASS_SCRIPT = """
@@ -261,9 +299,6 @@ class Exp( commands.Cog, name = "Exp" ):
 
     # Set the last message time to our current time
     vals = (currTime, userID)
-    UPDATE_LAST_TIME_SCRIPT = """
-    UPDATE users SET last_message = %s WHERE user_id = %s;
-    """
     self.db.executeScript( UPDATE_LAST_TIME_SCRIPT, vals )
 
     # Check if the user is a booster on the server.
@@ -335,9 +370,6 @@ class Exp( commands.Cog, name = "Exp" ):
     await user.send(f"You've been switched to the '{classStr}' class on `The Backrooms`!")
     self.logging.send( MODULE, f"User '{user.display_name}' has been given '{classStr}' class")
     
-    GET_LVL_SCRIPT = """
-    SELECT lvl FROM users WHERE user_id = %s;
-    """
     vals = (reaction.user_id,)
     self.db.executeScript( GET_LVL_SCRIPT, vals )
     result = self.db.cursor.fetchone()
@@ -437,7 +469,9 @@ class Exp( commands.Cog, name = "Exp" ):
     for result in results:
       user = await message.guild.fetch_member(int(result[0]))
       userNickname = user.display_name
-      leaderboardStr += f"{i+1}. {userNickname:<25} | Level {result[2]:>{lvlStrLen}} | {result[1]:>{xpStrLen}} Total XP\n".format()
+      if "_" in userNickname:
+        userNickname.replace("_", "$$_$$")
+      leaderboardStr += f"{i+1:>2}. {userNickname:<25} | Level {result[2]:>{lvlStrLen}} | {result[1]:>{xpStrLen}} Total XP\n".format()
       i += 1
     leaderboardStr += "```"
         
@@ -516,7 +550,7 @@ class Exp( commands.Cog, name = "Exp" ):
     return
 
   @commands.command( name = "rank" )
-  async def checkRank( self, ctx: Context ) -> None:
+  async def checkRank( self, ctx: Context, *args ) -> None:
     """
     Allows a user to see their own rank on the server. 
     Rank includes:
@@ -528,7 +562,27 @@ class Exp( commands.Cog, name = "Exp" ):
 
     message = ctx.message
     guildID = str(message.guild.id)
-    userID = str(message.author.id)
+    
+    # Check if the arguments exist for looking up a different user
+    if len(args) > 0:
+      try:
+        # Check if mentions exist 
+        if len(message.mentions) > 0:
+          userID = str(message.mentions[0].id)
+        else:
+          # Check if the user ID exists or is valid on this server
+          userID = str(args[0])
+        
+        guild = await self.bot.fetch_guild(guildID)
+        user = await guild.fetch_member(userID)
+          
+      except:
+        await ctx.send("I can't seem to parse that input. Perhaps the user ID doesn't exist on this server?\nYou could also verify you're using the command properly below: ```!rank\n!rank <user_id>  OR !rank <@mention>```")
+        return
+    else:
+      userID = str(message.author.id)
+      guild = await self.bot.fetch_guild(guildID)
+      user = await guild.fetch_member(userID)
 
     self.connectToDB()
     vals = (userID, )
@@ -540,8 +594,8 @@ class Exp( commands.Cog, name = "Exp" ):
     classStr = result[3]
     rankStr = result[4]
 
-    userNickname = message.author.display_name
-    userPicURL = str(message.author.avatar_url)
+    userNickname = user.display_name
+    userPicURL = str(user.avatar_url)
 
     # if the users name ends with s or x, change the possesive string
     if userNickname.endswith("s") or userNickname.endswith("x"):
@@ -552,7 +606,7 @@ class Exp( commands.Cog, name = "Exp" ):
     # Check if the user is a server booster or not
     role = discord.utils.find( lambda r: r.name == "Server Booster", message.guild.roles )
 
-    if role in message.author.roles:
+    if role in user.roles:
       boosterStr = "YES (x2 XP)"
     else:
       boosterStr = "NO"
@@ -682,12 +736,6 @@ class Exp( commands.Cog, name = "Exp" ):
     Determines whether or not the user has earned their daily xp. Calculates daily xp if so and awards it to the user.
     """
     self.connectToDB()
-    DAILY_XP_GET_SCRIPT = """
-    SELECT daily_xp_earned , daily_xp_streak FROM users WHERE user_id = %s;
-    """
-    DAILY_XP_SET_SCRIPT = """
-    UPDATE users SET daily_xp_earned = %s, daily_xp_streak = %s, messaged_today = %s WHERE user_id = %s;
-    """
     
     vals = (user_id,)
     self.db.executeScript( DAILY_XP_GET_SCRIPT , vals )
@@ -722,13 +770,8 @@ class Exp( commands.Cog, name = "Exp" ):
     Determines whether or not the given user has leveled up. If so,
     displays that in chat for the user and updates their db. 
     """
-    CHECK_LVL_SCRIPT = """
-    SELECT xp, lvl FROM users WHERE user_id = %s;
-    """
-    SET_LVL_SCRIPT = """
-    UPDATE users SET lvl = %s WHERE user_id = %s;
-    """
     self.connectToDB()
+    
     vals = (user_id,)
     self.db.executeScript( CHECK_LVL_SCRIPT, vals )
     result = self.db.cursor.fetchone()
@@ -769,12 +812,6 @@ class Exp( commands.Cog, name = "Exp" ):
     Support function for 'on_message' event.
     Increments experience for the given user on the given server.
     """
-    ADD_XP_SCRIPT = """
-    UPDATE users SET xp = %s WHERE user_id = %s;
-    """
-    GET_XP_SCRIPT = """
-    SELECT xp FROM users WHERE user_id = %s;
-    """
     self.connectToDB()
     vals = (user_id,)
     self.db.executeScript( GET_XP_SCRIPT, vals)
@@ -794,12 +831,6 @@ class Exp( commands.Cog, name = "Exp" ):
     """
     currTime = time.time()
     # Adds the user's data dictionary to the Replit DB
-    ADD_USER_SCRIPT = """
-    INSERT INTO users
-      (user_id, xp, lvl, class_name, rank_name, daily_xp_earned, daily_xp_streak, last_message, messaged_today )
-    VALUES
-      (%s, %s, %s, %s, %s, %s, %s, %s, %s);
-    """
     self.connectToDB( self )
     vals = ( user_id, 5, 1, "NONE", "NONE", False, 0, currTime, False )
     self.db.executeScript( ADD_USER_SCRIPT, vals )
