@@ -19,6 +19,7 @@ from log import ConsoleLog
 ##############################################
 
 MODULE = "EXP"
+CURRENCY_SYMBOL = "₡"
 
 REACT_ROLE_MSG_IDS = [
   "882013329411948606"
@@ -100,9 +101,9 @@ ROLE_LISTS = [
 
 ADD_USER_SCRIPT = """
 INSERT INTO users
-  (user_id, xp, lvl, class_name, rank_name, daily_xp_earned, daily_xp_streak, last_message, messaged_today )
+  (user_id, xp, currency, lvl, class_name, rank_name, daily_xp_earned, daily_xp_streak, last_message, messaged_today )
 VALUES
-  (%s, %s, %s, %s, %s, %s, %s, %s, %s);
+  (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
 """
 
 ADD_XP_SCRIPT = """
@@ -134,7 +135,7 @@ SELECT class_name, xp, lvl FROM users WHERE user_id = %s;
 """
 
 CHECK_RANK_SCRIPT = """
-SELECT user_id, xp, lvl, class_name, rank_name FROM users WHERE user_id = %s;
+SELECT user_id, xp, lvl, class_name, rank_name , currency , total_earned FROM users WHERE user_id = %s;
 """
 
 CHECK_USER_EXISTS_SCRIPT = """SELECT * FROM users WHERE user_id = %s;"""
@@ -266,6 +267,11 @@ class Exp( commands.Cog, name = "Exp" ):
 
     if message.guild == None:
       return
+      
+    if message.content.startswith("!") and not message.content.startswith("!roll"):
+      return
+    elif len(message.content) < 2:
+      return
 
     guildID = str(message.guild.id)
     userID = str(message.author.id)
@@ -307,6 +313,9 @@ class Exp( commands.Cog, name = "Exp" ):
       awardedXP = 10
     else:
       awardedXP = 5
+      
+    if message.content.startswith("!roll"):
+      awardedXP = 1
 
     if self.doubleXP:
       awardedXP *= 2
@@ -593,6 +602,8 @@ class Exp( commands.Cog, name = "Exp" ):
     lvl = result[2]
     classStr = result[3]
     rankStr = result[4]
+    currency = result[5]
+    total_earned = result[6]
 
     userNickname = user.display_name
     userPicURL = str(user.avatar_url)
@@ -639,8 +650,18 @@ class Exp( commands.Cog, name = "Exp" ):
       value = experience
     )
     embed.add_field(
-      name = "Server Booster?",
+      name = "Balance:",
       inline = True,
+      value = f"**{CURRENCY_SYMBOL}** " + str(currency)
+    )
+    embed.add_field(
+      name = "YTD:",
+      inline = True,
+      value = f"**{CURRENCY_SYMBOL}** " + str(total_earned)
+    )
+    embed.add_field(
+      name = "Server Booster?",
+      inline = False,
       value = boosterStr
     )
 
@@ -832,7 +853,7 @@ class Exp( commands.Cog, name = "Exp" ):
     currTime = time.time()
     # Adds the user's data dictionary to the Replit DB
     self.connectToDB( self )
-    vals = ( user_id, 5, 1, "NONE", "NONE", False, 0, currTime, False )
+    vals = ( user_id, 5, 1, 1, "NONE", "NONE", False, 0, currTime, False )
     self.db.executeScript( ADD_USER_SCRIPT, vals )
     self.logging.send( MODULE, f"Added user '{self.user.display_name}' to database.")
     return
