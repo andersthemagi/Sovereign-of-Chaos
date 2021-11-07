@@ -85,7 +85,7 @@ class Currency( commands.Cog, name = "Currency" ):
 		
 		balance = result[0]
 		runningTotal = result[1]
-		self.logging.send( MODULE, f"User {user.display_name} earned 1 currency. Current Balance: {CURRENCY_SYMBOL} {balance} | Running Total: {CURRENCY_SYMBOL} {runningTotal}" )
+		self.logging.send( MODULE, f"User {user.display_name} earned {CURRENCY_SYMBOL} 1. Current Balance: {CURRENCY_SYMBOL} {balance} | Running Total: {CURRENCY_SYMBOL} {runningTotal}" )
 		
 		self.disconnectFromDB()
 		return

@@ -36,7 +36,7 @@ answers = [
   'Very doubtful.'
 ]
 
-HELP_LINK = "https://andresgsepulveda.github.io/magicalmusings.github.io/sovereign/"
+HELP_LINK = "https://sovereign-of-chaos.anvil.app"
 
 MODULE = "GENERAL"
 
