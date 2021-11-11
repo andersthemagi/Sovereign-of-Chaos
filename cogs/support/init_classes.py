@@ -238,6 +238,7 @@ class InitInstance:
       while getInput:
         await ctx.send("Please type the name of the creature you would like to remove. Type 'nvm' to exit.")
         msg = await self.bot.wait_for("message")
+        
         if msg.content == "nvm":
           await ctx.send("Alright. I'll be on the lookout for when you do want to remove a creature. Carry on!")
           return
@@ -394,6 +395,8 @@ class InitInstance:
       # If the channel is different than the starting channel for initiative
       if channel != self.initChannel:
         return True
+      if "`" in content:
+        return True 
       # If someone indicates we're finished
       elif content == "done":
         return False

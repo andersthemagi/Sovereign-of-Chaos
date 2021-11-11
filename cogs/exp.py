@@ -101,9 +101,9 @@ ROLE_LISTS = [
 
 ADD_USER_SCRIPT = """
 INSERT INTO users
-  (user_id, xp, currency, lvl, class_name, rank_name, daily_xp_earned, daily_xp_streak, last_message, messaged_today )
+  (user_id, xp, currency, total_earned, lvl, class_name, rank_name, daily_xp_earned, daily_xp_streak, last_message, messaged_today )
 VALUES
-  (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+  (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
 """
 
 ADD_XP_SCRIPT = """
@@ -270,7 +270,7 @@ class Exp( commands.Cog, name = "Exp" ):
       
     if message.content.startswith("!") and not message.content.startswith("!roll"):
       return
-    elif len(message.content) < 2:
+    elif len(message.content) < 2 and not message.attachments:
       return
 
     guildID = str(message.guild.id)
@@ -294,8 +294,9 @@ class Exp( commands.Cog, name = "Exp" ):
 
     # Check if the user has sent a message in the last 5 seconds
     userdata = result
+    # print(result)
 
-    lastTime = userdata[8]
+    lastTime = userdata[10]
     diff = currTime - lastTime
     if int(diff) < 5:
       # If so, don't award XP
@@ -734,6 +735,8 @@ class Exp( commands.Cog, name = "Exp" ):
       roleList = ROGUE_XP_ROLES
     elif userClass == "WARLOCK":
       roleList = WARLOCK_XP_ROLES
+    else:
+      roleList = BASIC_XP_ROLES
 
     # Get the role in discord
     roleStr = roleList[lvl-1]
@@ -768,9 +771,10 @@ class Exp( commands.Cog, name = "Exp" ):
     if dailyXPEarned:
       return 
 
-    # If the users daily xp bonus is less than 7
-    if dailyXPStreak < 14:
-      dailyXPStreak += 1
+    dailyXPStreak += 1
+      
+    if dailyXPStreak >= 30:
+      awardedXP = 30 * 5
 
     # Award XP and update db
     awardedXP = dailyXPStreak * 5
@@ -852,8 +856,8 @@ class Exp( commands.Cog, name = "Exp" ):
     """
     currTime = time.time()
     # Adds the user's data dictionary to the Replit DB
-    self.connectToDB( self )
-    vals = ( user_id, 5, 1, 1, "NONE", "NONE", False, 0, currTime, False )
+    self.connectToDB()
+    vals = ( user_id, 5, 1, 1, 0, "BASIC", "Level 0", False, 0.0, currTime, False )
     self.db.executeScript( ADD_USER_SCRIPT, vals )
     self.logging.send( MODULE, f"Added user '{self.user.display_name}' to database.")
     return

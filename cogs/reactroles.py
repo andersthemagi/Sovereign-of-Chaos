@@ -14,6 +14,7 @@ from log import ConsoleLog
 ##############################################
 
 GENERAL_CHANNEL_ID = "703015465567518802"
+REACT_ROLES_CHANNEL_ID = "881919775922606142"
 
 MEMBER_EMOJI = "✅"
 MEMBER_ROLE = "Member"
@@ -106,8 +107,9 @@ class ReactRoles( commands.Cog, name = "reactroles" ):
       self.logging.send( MODULE, f"'Member' role assigned to {member}!" )
 
       # Send Message to General Chat
-      channel = await guild.fetch_channel(GENERAL_CHANNEL_ID)
-      await channel.send(f"Howdy {member.mention}! Welcome to The Backrooms discord server!! Take a look at {channel.mention} if you want to choose a class, pronouns, or show off what region you're from. Feel free to message this channel if you are unsure about anything or if you have any questions.")
+      channel = await self.bot.fetch_channel(GENERAL_CHANNEL_ID)
+      reactroleschannel = await self.bot.fetch_channel(REACT_ROLES_CHANNEL_ID)
+      await channel.send(f"Howdy {member.mention}! Welcome to The Backrooms discord server!! Take a look at {reactroleschannel.mention} if you want to choose a class, pronouns, or show off what region you're from. Feel free to message this channel if you are unsure about anything or if you have any questions.")
     else:
       self.logging.send( MODULE, f"User '{member}' already has role 'Member'." )
     return 

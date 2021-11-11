@@ -57,7 +57,7 @@ class Currency( commands.Cog, name = "Currency" ):
 		# ERROR CASE: If the user is using a command
 		if message.content.startswith( "!" ):
 			return
-		elif len(message.content) < 2:
+		elif len(message.content) < 2 and not message.attachments:
 			return
 			
 		user = message.author
@@ -426,13 +426,18 @@ class Currency( commands.Cog, name = "Currency" ):
 	### - Currently N/A.
 	
 	async def checkYN( self, ctx, msg , userID ):
+		content = msg.content.lower()
+		
 		if msg.author == self.bot.user or msg.author.bot:
 			return "IGNORE"
 			
-		if msg.content == "y" and msg.author.id == userID:
+		if msg.author.id != userID:
+			return "IGNORE"
+			
+		if content == "y" and msg.author.id == userID:
 			return "CONTINUE"
 			
-		elif msg.content == "n" and msg.author.id == userID:
+		elif content == "n" and msg.author.id == userID:
 			return "STOP"
 			
 		else:

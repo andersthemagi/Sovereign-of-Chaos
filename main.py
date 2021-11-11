@@ -9,6 +9,7 @@ import sys
 sys.path.insert(1, './cogs/support')
 
 from discord import Guild, Message
+from discord_components import DiscordComponents, ComponentsBot, Button
 from discord.ext import commands
 from discord.ext.commands import Context
 
@@ -26,6 +27,7 @@ bot = commands.Bot(
   command_prefix = '!',
   owner = os.environ.get("OWNER_ID"))
 bot.remove_command( 'help' )
+DiscordComponents(bot)
 
 DB_SETUP_PATH = "scripts/travelerdb-setup.sql"
 
