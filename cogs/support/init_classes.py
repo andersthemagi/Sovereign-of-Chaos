@@ -19,6 +19,9 @@ class CreatureType( enum.Enum ):
   ALLY = 1,
   ENEMY = 2,
   PLAYER = 3
+  
+  def __str__(self):
+    return self.name
 
 # Creature class
 # - data structure representing a creature in the initiative order 
@@ -73,9 +76,10 @@ class InitInstance:
     # Display random start quip
     await self.displayRandStartQuip( ctx )
 
-    await ctx.send("----------")
-    await ctx.send("Initiative Tracker is online!\n\nPlease type in '<name> <roll>' into the chat and I'll make a note of it. Example ```'Flint 13' OR\n'13 Flint' OR\n'Diva 13 Thiccums'```")
-    await ctx.send("----------")
+    messageStr = "----------"
+    messageStr += "\nInitiative Tracker is online!\n\nPlease type in '<name> <roll>' into the chat and I'll make a note of it. Example ```'Flint 13' OR\n'13 Flint' OR\n'Diva 13 Thiccums'```"
+    messageStr += "\n----------"
+    await ctx.send(messageStr)
 
     # Grab initiative order from the chat
     await self.getInitOrder( ctx )
@@ -101,9 +105,10 @@ class InitInstance:
       await self.displayActiveInitError( ctx )
       return
 
-    await ctx.send("Ending the encounter!")
-    await ctx.send("----------")
-    await ctx.send("Final Results: ")
+    messageStr = "Ending the encounter!"
+    messageStr += "\n----------"
+    messageStr += "\nFinal Results: "
+    await ctx.send(messageStr)
     await self.displayInitOrder( ctx )
     self.reset()
 
@@ -116,10 +121,12 @@ class InitInstance:
     if not self.activeInitiative:
       await self.displayActiveInitError( ctx )
       return 
+      
+    messageStr += "----------"
+    messageStr += "\nAccepting input for characters!\n\nPlease type in '<name> <roll>' into the chat and I'll make a note of it. Type 'done' to finish.\nExample: ```'Flint 13' OR\n'13 Flint' OR\n'Diva 13 Thiccums'```"
+    messageStr += "\n----------"
 
-    await ctx.send("----------")
-    await ctx.send("Accepting input for characters!\n\nPlease type in '<name> <roll>' into the chat and I'll make a note of it. Type 'done' to finish.\nExample: ```'Flint 13' OR\n'13 Flint' OR\n'Diva 13 Thiccums'```")
-    await ctx.send("----------")
+    await ctx.send(messageStr)
 
     await self.getInitOrder( ctx )
 
@@ -436,7 +443,7 @@ class InitInstance:
       newCreature = Creature( name, initCount , ctype )
       self.initOrder.append( newCreature )
       # let the user know the creature was successfully added
-      await ctx.send(f"Creature '{name}' with initiative count '{initCount}' added!")
+      await ctx.send(f"Creature '{name}' with initiative count '{initCount}' of type: '{ctype}' added!")
       return True 
 
     # Something was not right about the creature
@@ -484,8 +491,7 @@ class InitInstance:
     self.sortInitOrder()
     # Check if there are duplicate initiative counts
     await self.checkDuplicateCounts( ctx )
-    await ctx.send("----------")
-    await ctx.send("Initiative Order collected!")
+    await ctx.send("----------\nInitiative Order collected!")
 
     return
 
