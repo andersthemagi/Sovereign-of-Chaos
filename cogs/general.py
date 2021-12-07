@@ -10,6 +10,8 @@ from discord.ext.commands import Bot, Context
 
 from log import ConsoleLog
 
+LAUGH_TRACK_LINK = "https://www.youtube.com/watch?v=J83lw0eFIJA"
+
 ##############################################
 # Constants and Setup
 ##############################################
@@ -47,6 +49,20 @@ class General( commands.Cog, name = "General" ):
   ##############################################
   def __init__( self, bot: Bot ):
     self.bot = bot
+
+  @commands.Cog.listener()
+  async def on_message( self, msg: Message) -> None:
+
+    if msg.author.bot or msg.author == self.bot.user:
+      return 
+
+    content = msg.content 
+    if "/j" not in content:
+      return 
+
+    await msg.channel.send(LAUGH_TRACK_LINK)
+
+    return
 
   ##############################################
   # General Cog Commands
