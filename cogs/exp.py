@@ -748,6 +748,8 @@ class Exp( commands.Cog, name = "Exp" ):
     
     vals = ( roleStr , user_id )
     self.db.executeScript( ASSIGN_XP_SET_SCRIPT , vals )
+    
+    self.logging.send( MODULE, f"User {user.display_name} given role {roleStr}")
 
     # Let the user know they earned a new role through DM.
     if notify_user:
